@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM-Guided Robust Optimization for Epilepsy Neurostimulation</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --dark:    #1e293b;
+    --darker:  #0f172a;
+    --accent:  #4f46e5;
+    --accent2: #4338ca;
+    --teal:    #0d9488;
+    --amber:   #d97706;
+    --red:     #dc2626;
+    --green:   #16a34a;
+    --text:    #1e293b;
+    --muted:   #64748b;
+    --card:    #ffffff;
+    --border:  #e2e8f0;
+    --radius:  12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f8fafc;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%);
+    padding: 72px 24px 64px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: #c7d2fe;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    max-width: 760px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    color: #a5b4fc;
+    font-size: 1.05rem;
+    max-width: 580px;
+    margin: 0 auto 48px;
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .metric-card {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    min-width: 170px;
+    flex: 1;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+    backdrop-filter: blur(8px);
+  }
+  .metric-card:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
+  .metric-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    display: block;
+    line-height: 1.1;
+  }
+  .metric-label { font-size: 0.8rem; color: #c7d2fe; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  /* ── SECTIONS ── */
+  section { max-width: 1000px; margin: 0 auto; padding: 64px 24px; }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .section-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .pipe-stage {
+    flex: 1;
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pipe-stage + .pipe-stage { margin-left: 0; }
+  .pipe-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    color: var(--accent);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  .pipe-num {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .pipe-stage h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .pipe-stage p  { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+  .pipe-files { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .pipe-tag {
+    font-size: 0.7rem;
+    background: rgba(99,102,241,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: monospace;
+  }
+  .pipe-highlight { border-color: var(--accent); }
+
+  /* ── DEMO ── */
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 700px) { .demo-grid { grid-template-columns: 1fr; } }
+
+  .controls {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .control-group { margin-bottom: 24px; }
+  .control-group:last-child { margin-bottom: 0; }
+  .control-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: block;
+  }
+  .control-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  select {
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+  }
+  select:focus { border-color: var(--accent); }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .stat-box {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-box .val { font-size: 1.35rem; font-weight: 700; }
+  .stat-box .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+  .stat-box.worst .val { color: var(--red); }
+  .stat-box.mean  .val { color: var(--teal); }
+  .stat-box.impr  .val { color: var(--green); }
+  .stat-box.impr  { grid-column: span 2; }
+
+  .optimal-badge {
+    display: none;
+    background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(20,184,166,0.15));
+    border: 1px solid rgba(34,197,94,0.4);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: var(--green);
+    margin-top: 14px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .optimal-badge.show { display: block; }
+
+  .chart-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .chart-title { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ── TRAJECTORY ── */
+  .traj-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  /* ── TOP IDEAS ── */
+  .ideas-grid { display: flex; flex-direction: column; gap: 16px; }
+  .idea-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .idea-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(79,70,229,0.1); }
+  .idea-rank {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    opacity: 0.5;
+    line-height: 1;
+    min-width: 36px;
+    text-align: center;
+    padding-top: 2px;
+  }
+  .idea-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .idea-card p  { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+  .idea-opp { font-size: 0.82rem; color: var(--teal); font-style: italic; margin-bottom: 12px; }
+
+  .score-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+  }
+  .pill-total  { background: rgba(99,102,241,0.2);  color: var(--accent2); border: 1px solid rgba(99,102,241,0.3); }
+  .pill-nov    { background: rgba(245,158,11,0.15); color: var(--amber);   border: 1px solid rgba(245,158,11,0.3); }
+  .pill-tvb    { background: rgba(20,184,166,0.15); color: var(--teal);    border: 1px solid rgba(20,184,166,0.3); }
+  .pill-ci     { background: rgba(34,197,94,0.15);  color: var(--green);   border: 1px solid rgba(34,197,94,0.3); }
+
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: #ffffff;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-tag">Research Pipeline · 2026</div>
+  <h1>LLM-Guided Robust Optimization for Epilepsy Neurostimulation</h1>
+  <p>A three-stage pipeline — from systematic literature mining to TVB digital twin simulation to LLM-guided robust parameter optimization — targeting drug-resistant epilepsy.</p>
+
+  <div class="metrics">
+    <div class="metric-card">
+      <span class="metric-value">136</span>
+      <div class="metric-label">Papers Mined</div>
+    </div>
+    <div class="metric-card">
+      <span class="metric-value">1,080</span>
+      <div class="metric-label">Research Ideas Extracted</div>
+    </div>
+    <div class="metric-card">
+      <span class="metric-value">586</span>
+      <div class="metric-label">Open Questions</div>
+    </div>
+    <div class="metric-card">
+      <span class="metric-value" style="color:#22c55e">+40%</span>
+      <div class="metric-label">Worst-Case Reward Improvement</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     PIPELINE
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Pipeline Overview</div>
+  <div class="section-sub">Three stages from raw literature to a validated stimulation strategy.</div>
+
+  <div class="pipeline">
+    <div class="pipe-stage">
+      <div class="pipe-num">1</div>
+      <h3>Literature Mining</h3>
+      <p>10 PubMed queries → 136 deduplicated papers. Claude Haiku extracts structured gaps from every abstract. Claude Opus scores 30 thematic clusters on novelty, TVB feasibility, and clinical impact.</p>
+      <div class="pipe-files">
+        <span class="pipe-tag">fetch_all_papers.py</span>
+        <span class="pipe-tag">extract_gaps.py</span>
+        <span class="pipe-tag">rank_ideas.py</span>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">→</div>
+
+    <div class="pipe-stage">
+      <div class="pipe-num">2</div>
+      <h3>TVB Digital Twin</h3>
+      <p>The Virtual Brain Epileptor model instantiated for 5 virtual patients with sampled variability in epileptogenicity (x₀) and inter-regional coupling (K). Each parameter set produces a reward signal measuring seizure suppression.</p>
+      <div class="pipe-files">
+        <span class="pipe-tag">simulate.py</span>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">→</div>
+
+    <div class="pipe-stage pipe-highlight">
+      <div class="pipe-num" style="background:var(--green)">3</div>
+      <h3>Robust Optimization</h3>
+      <p>Claude Opus proposes stimulation parameters, observes worst-case patient reward, reasons over history, and iterates. Optimizes for robustness across the patient distribution — not just the average.</p>
+      <div class="pipe-files">
+        <span class="pipe-tag">rl_loop.py</span>
+        <span class="pipe-tag">visualize.py</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     INTERACTIVE DEMO
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Interactive Parameter Explorer</div>
+  <div class="section-sub">Adjust stimulation parameters to see per-patient rewards from the precomputed TVB simulation grid.</div>
+
+  <div class="demo-grid">
+    <!-- Controls -->
+    <div class="controls">
+      <div class="control-group">
+        <span class="control-label">Epileptogenicity x₀</span>
+        <div class="control-value" id="x0-display">−1.6</div>
+        <input type="range" id="x0-slider" min="-3.0" max="-1.1" step="0.1" value="-1.6">
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Inter-Regional Coupling K</span>
+        <select id="coupling-select">
+          <option value="0.012">0.0120</option>
+          <option value="0.0152" selected>0.0152 (baseline)</option>
+          <option value="0.0165">0.0165 (optimal)</option>
+          <option value="0.0175">0.0175</option>
+          <option value="0.02">0.0200</option>
+        </select>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box worst">
+          <div class="val" id="stat-worst">—</div>
+          <div class="lbl">Worst-Case</div>
+        </div>
+        <div class="stat-box mean">
+          <div class="val" id="stat-mean">—</div>
+          <div class="lbl">Mean Reward</div>
+        </div>
+        <div class="stat-box impr">
+          <div class="val" id="stat-impr">—</div>
+          <div class="lbl">vs Baseline (−0.5285)</div>
+        </div>
+      </div>
+
+      <div class="optimal-badge" id="optimal-badge">
+        ✦ Optimal point — x₀ = −2.1, K = 0.0165<br>
+        <small style="font-weight:400;opacity:0.8">Best worst-case reward found by LLM optimizer</small>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-title">Patient Reward Distribution</div>
+      <canvas id="patient-chart" height="220"></canvas>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     OPTIMIZATION TRAJECTORY
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Optimization Trajectory</div>
+  <div class="section-sub">Worst-case reward per LLM iteration. Each point is a proposed (x₀, K) pair evaluated across all 5 virtual patients.</div>
+
+  <div class="traj-card">
+    <canvas id="traj-chart" height="160"></canvas>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     TOP IDEAS
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Top Research Ideas</div>
+  <div class="section-sub">Ranked by combined score (Novelty + TVB Feasibility + Clinical Impact, max 30) using Claude Opus as judge.</div>
+
+  <div class="ideas-grid" id="ideas-grid"></div>
+</section>
+
+<footer>
+  Built with <a href="https://www.thevirtualbrain.org/" target="_blank">The Virtual Brain</a> ·
+  <a href="https://www.anthropic.com/" target="_blank">Anthropic Claude API</a> ·
+  Data: 136 PubMed papers, April 2026
+</footer>
+
+
+<!-- ══════════════════════════════════════════════
+     EMBEDDED DATA
+══════════════════════════════════════════════ -->
+<script>
+const PRECOMPUTED = [{"x0": -3.0, "coupling": 0.012, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0152, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0165, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0175, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.02, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -2.9, "coupling": 0.012, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0152, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0165, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0175, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.02, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.8, "coupling": 0.012, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0152, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0165, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0175, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.02, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.7, "coupling": 0.012, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0152, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0165, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0175, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.02, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.6, "coupling": 0.012, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0152, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0165, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0175, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.02, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.5, "coupling": 0.012, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0152, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0165, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0175, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.02, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.4, "coupling": 0.012, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0152, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0165, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0175, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.02, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.3, "coupling": 0.012, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0152, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0165, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0175, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.3, "coupling": 0.02, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.2, "coupling": 0.012, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0152, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0165, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0175, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.2, "coupling": 0.02, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.1, "coupling": 0.012, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0152, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0165, "worst": -0.3182, "mean": -0.2736, "patients": [-0.1935, -0.3182, -0.2421, -0.3103, -0.304]}, {"x0": -2.1, "coupling": 0.0175, "worst": -0.3211, "mean": -0.2765, "patients": [-0.1972, -0.3211, -0.2458, -0.3139, -0.3044]}, {"x0": -2.1, "coupling": 0.02, "worst": -0.3244, "mean": -0.2773, "patients": [-0.1982, -0.3244, -0.2471, -0.3141, -0.3026]}, {"x0": -2.0, "coupling": 0.012, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0152, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0165, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0175, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -2.0, "coupling": 0.02, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -1.9, "coupling": 0.012, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0152, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0165, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0175, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.02, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.8, "coupling": 0.012, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0152, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0165, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0175, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.02, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.7, "coupling": 0.012, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0152, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0165, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0175, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.02, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.6, "coupling": 0.012, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0152, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0165, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0175, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.02, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.5, "coupling": 0.012, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0152, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0165, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0175, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.02, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.4, "coupling": 0.012, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0152, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0165, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0175, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.02, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.3, "coupling": 0.012, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0152, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0165, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0175, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.02, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.2, "coupling": 0.012, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0152, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0165, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0175, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.02, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.1, "coupling": 0.012, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0152, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0165, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0175, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.02, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}];
+
+const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
+
+const TOP_IDEAS = [
+  {
+    rank: 1, total: 25, novelty: 7, tvb: 10, clinical: 8,
+    theme: "Digital Twins & Multimodal AI for Precision Neurology",
+    summary: "Integrating neuroimaging, EEG, and multi-omic data with computational simulations to create patient-specific digital models for personalized diagnosis and treatment planning.",
+    opportunity: "Establish TVB as the simulation backbone of a digital twin platform that ingests imaging, EEG, and genetics to optimize individual stimulation parameters."
+  },
+  {
+    rank: 2, total: 25, novelty: 7, tvb: 9, clinical: 9,
+    theme: "Computational Biomarkers for Neuromodulation Outcome Prediction",
+    summary: "Identifying quantitative computational and electrophysiological biomarkers that predict surgical outcomes, RNS responses, and DBS efficacy using network analysis.",
+    opportunity: "Prospectively validate a TVB-derived network excitability index against RNS/DBS outcomes in a multi-center registry."
+  },
+  {
+    rank: 3, total: 24, novelty: 7, tvb: 9, clinical: 8,
+    theme: "Optimal Stimulation Target Identification via Network Analysis",
+    summary: "Using connectivity metrics and circuit-based approaches to identify optimal stimulation locations beyond the seizure onset zone, focusing on node centrality.",
+    opportunity: "Retrospective analysis correlating TVB-predicted optimal targets with actual responder outcomes across multiple centers."
+  }
+];
+</script>
+
+<!-- ══════════════════════════════════════════════
+     APP LOGIC
+══════════════════════════════════════════════ -->
+<script>
+// ── Lookup ──────────────────────────────────────
+function lookup(x0, coupling) {
+  const x0r = Math.round(parseFloat(x0) * 10) / 10;
+  const kr  = parseFloat(coupling);
+  return PRECOMPUTED.find(d =>
+    Math.abs(d.x0 - x0r) < 0.001 &&
+    Math.abs(d.coupling - kr) < 0.0001
+  ) || null;
+}
+
+// ── Patient bar chart ────────────────────────────
+const patCtx = document.getElementById('patient-chart').getContext('2d');
+const patChart = new Chart(patCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Patient 1', 'Patient 2', 'Patient 3', 'Patient 4', 'Patient 5'],
+    datasets: [{
+      label: 'Reward',
+      data: [0, 0, 0, 0, 0],
+      backgroundColor: Array(5).fill('rgba(99,102,241,0.6)'),
+      borderColor: Array(5).fill('rgba(99,102,241,1)'),
+      borderWidth: 1,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 250 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `Reward: ${ctx.parsed.y.toFixed(4)}`
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: -0.85, max: 0,
+        grid:   { color: 'rgba(0,0,0,0.06)' },
+        ticks:  { color: '#64748b', font: { size: 11 } },
+        title:  { display: true, text: 'Reward', color: '#64748b', font: { size: 11 } }
+      },
+      x: {
+        grid:  { display: false },
+        ticks: { color: '#64748b', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ── Trajectory chart ─────────────────────────────
+const trajCtx = document.getElementById('traj-chart').getContext('2d');
+const trajChart = new Chart(trajCtx, {
+  type: 'line',
+  data: {
+    labels: RESULTS.map(r => `Iter ${r.iteration}`),
+    datasets: [
+      {
+        label: 'Worst-Case Reward',
+        data: RESULTS.map(r => r.worst_case_reward),
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,0.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: RESULTS.map((r, i) => i === 4 ? '#22c55e' : '#ef4444'),
+        pointBorderColor:     RESULTS.map((r, i) => i === 4 ? '#22c55e' : '#ef4444'),
+        pointRadius: RESULTS.map((r, i) => i === 4 ? 8 : 5),
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.3,
+      },
+      {
+        label: 'Mean Reward',
+        data: RESULTS.map(r => r.mean_reward),
+        borderColor: '#14b8a6',
+        backgroundColor: 'rgba(20,184,166,0)',
+        borderWidth: 1.5,
+        borderDash: [5, 4],
+        pointRadius: 3,
+        fill: false,
+        tension: 0.3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 400 },
+    plugins: {
+      legend: {
+        labels: { color: '#64748b', font: { size: 12 }, boxWidth: 16 }
+      },
+      tooltip: {
+        callbacks: {
+          afterBody: (items) => {
+            const i = items[0].dataIndex;
+            const r = RESULTS[i];
+            const extra = [`x₀: ${r.x0}`, `K: ${r.coupling_a}`];
+            if (i === 4) extra.push('★ Best found');
+            return extra;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: -0.58, max: -0.26,
+        grid:  { color: 'rgba(0,0,0,0.06)' },
+        ticks: { color: '#64748b', font: { size: 11 } },
+        title: { display: true, text: 'Worst-Case Reward', color: '#64748b', font: { size: 11 } }
+      },
+      x: {
+        grid:  { color: 'rgba(0,0,0,0.04)' },
+        ticks: { color: '#64748b', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ── Demo updater ─────────────────────────────────
+const BASELINE_WORST = -0.5285;
+
+function updateDemo() {
+  const x0  = document.getElementById('x0-slider').value;
+  const k   = document.getElementById('coupling-select').value;
+  const d   = lookup(x0, k);
+
+  document.getElementById('x0-display').textContent = parseFloat(x0).toFixed(1);
+
+  if (!d) return;
+
+  // Update bar chart
+  const isOptimal = Math.abs(d.x0 - (-2.1)) < 0.01 && Math.abs(d.coupling - 0.0165) < 0.0001;
+  const isBaseline = Math.abs(d.x0 - (-1.6)) < 0.01 && Math.abs(d.coupling - 0.0152) < 0.0001;
+
+  const barColor = isOptimal
+    ? 'rgba(34,197,94,0.65)'
+    : isBaseline
+    ? 'rgba(239,68,68,0.65)'
+    : 'rgba(99,102,241,0.65)';
+  const borderColor = isOptimal ? '#22c55e' : isBaseline ? '#ef4444' : '#6366f1';
+
+  patChart.data.datasets[0].data            = d.patients;
+  patChart.data.datasets[0].backgroundColor = Array(5).fill(barColor);
+  patChart.data.datasets[0].borderColor     = Array(5).fill(borderColor);
+  patChart.update();
+
+  // Stats
+  const impr = ((d.worst - BASELINE_WORST) / Math.abs(BASELINE_WORST) * 100).toFixed(1);
+  const sign = d.worst > BASELINE_WORST ? '+' : '';
+  document.getElementById('stat-worst').textContent = d.worst.toFixed(4);
+  document.getElementById('stat-mean').textContent  = d.mean.toFixed(4);
+  document.getElementById('stat-impr').textContent  = `${sign}${impr}%`;
+
+  const imprEl = document.querySelector('.stat-box.impr');
+  imprEl.querySelector('.val').style.color = d.worst > BASELINE_WORST ? 'var(--green)' : 'var(--red)';
+
+  // Optimal badge
+  document.getElementById('optimal-badge').classList.toggle('show', isOptimal);
+}
+
+document.getElementById('x0-slider').addEventListener('input', updateDemo);
+document.getElementById('coupling-select').addEventListener('change', updateDemo);
+updateDemo(); // init
+
+// ── Top ideas ────────────────────────────────────
+const grid = document.getElementById('ideas-grid');
+TOP_IDEAS.forEach(idea => {
+  grid.insertAdjacentHTML('beforeend', `
+    <div class="idea-card">
+      <div class="idea-rank">#${idea.rank}</div>
+      <div>
+        <h3>${idea.theme}</h3>
+        <p>${idea.summary}</p>
+        <p class="idea-opp">→ ${idea.opportunity}</p>
+        <div class="score-pills">
+          <span class="pill pill-total">Total ${idea.total}/30</span>
+          <span class="pill pill-nov">Novelty ${idea.novelty}/10</span>
+          <span class="pill pill-tvb">TVB ${idea.tvb}/10</span>
+          <span class="pill pill-ci">Clinical ${idea.clinical}/10</span>
+        </div>
+      </div>
+    </div>
+  `);
+});
+</script>
+</body>
+</html>
