@@ -1,0 +1,58 @@
+[
+  {
+    "iteration": 0,
+    "x0": -1.6,
+    "coupling_a": 0.0152,
+    "worst_case_reward": -0.5285,
+    "mean_reward": -0.4604
+  },
+  {
+    "iteration": 1,
+    "x0": -2.2,
+    "coupling_a": 0.0175,
+    "worst_case_reward": -0.3258,
+    "mean_reward": -0.2795
+  },
+  {
+    "iteration": 2,
+    "x0": -2.5,
+    "coupling_a": 0.012,
+    "worst_case_reward": -0.3534,
+    "mean_reward": -0.2978
+  },
+  {
+    "iteration": 3,
+    "x0": -2.3,
+    "coupling_a": 0.02,
+    "worst_case_reward": -0.3383,
+    "mean_reward": -0.2839
+  },
+  {
+    "iteration": 4,
+    "x0": -2.1,
+    "coupling_a": 0.0165,
+    "worst_case_reward": -0.3182,
+    "mean_reward": -0.2736
+  },
+  {
+    "iteration": 5,
+    "x0": -2.0,
+    "coupling_a": 0.017,
+    "worst_case_reward": -0.3442,
+    "mean_reward": -0.3091
+  },
+  {
+    "iteration": 6,
+    "x0": -2.15,
+    "coupling_a": 0.0168,
+    "worst_case_reward": -0.3211,
+    "mean_reward": -0.2765
+  },
+  {
+    "iteration": 7,
+    "x0": -2.1,
+    "coupling_a": 0.0158,
+    "worst_case_reward": -0.3182,
+    "mean_reward": -0.2736
+  }
+]
