@@ -493,16 +493,27 @@
       </div>
       <p>10 PubMed queries → 136 deduplicated papers. Claude Haiku extracts structured gaps from every abstract. Claude Opus scores 30 thematic clusters on novelty, TVB feasibility, and clinical impact.</p>
       <div class="pipe-narrative">
-        <p>
-          The pipeline begins with the literature rather than code. Before writing a single simulation,
-          we systematically asked: <em>what problems in computational epilepsy neuroscience remain genuinely unsolved?</em>
-          Ten targeted PubMed queries spanning digital twins, closed-loop stimulation, and patient variability
-          yielded 136 deduplicated papers. <strong>Claude Haiku</strong> processed every abstract in bulk — deliberately
-          chosen for speed and cost at this scale (1,080 extraction tasks). <strong>Claude Opus</strong> then scored 30
-          thematic clusters on novelty, TVB feasibility, and clinical impact, where genuine expert reasoning
-          matters more than throughput. The top-ranked gap (25/30):
-          <em>"RL controllers optimised on single virtual patients fail to transfer to real devices due to individual variability."</em>
-          That finding became Stage 3.
+        <p>We performed a structured four-step literature mining pipeline:</p>
+        <ol style="margin:10px 0 10px 18px;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
+            <strong>Query generation</strong> — 10 targeted PubMed queries spanning virtual brain modeling, closed-loop stimulation, and patient-specific epilepsy treatment
+          </li>
+          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
+            <strong>Retrieval + deduplication</strong> — 136 papers after exact DOI and title matching across query results
+          </li>
+          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
+            <strong>Gap extraction</strong> — 1,080 LLM-based extraction tasks using a structured prompt (Claude Haiku). Each abstract was processed to extract: stated limitations, implicit methodological constraints, and unresolved clinical translation gaps
+          </li>
+          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
+            <strong>Clustering + ranking</strong> — gaps were grouped into ~30 thematic clusters via semantic similarity, then scored by Claude Opus on three axes: <em>Novelty</em> (how unlikely the gap is to be explicitly addressed in existing literature), <em>TVB Feasibility</em> (whether the question can be instantiated within TVB simulations), and <em>Clinical Impact</em> (relevance to real-world epilepsy treatment). Final score = equal-weighted sum (max 30).
+          </li>
+        </ol>
+        <p>The top-ranked gap scored 25/30 under this rubric — consistent with our selection of robust cross-patient transfer as the core research question. This score is an auxiliary consistency signal, not a proof of correctness.</p>
+        <p style="margin-top:8px;padding:8px 12px;background:#fefce8;border:1px solid #fde68a;border-radius:6px;font-size:0.79rem;color:#92400e;">
+          <strong>Note:</strong> this is an automated pipeline without human expert validation. Ranked ideas should be treated as hypotheses for further scrutiny.
+        </p>
+        <p style="margin-top:12px;font-size:0.82rem;">
+          <a href="METHODOLOGY.md" style="color:var(--accent);font-weight:600;text-decoration:none;" target="_blank">→ Full methodology, queries, prompts, and scoring rubric: METHODOLOGY.md on GitHub</a>
         </p>
       </div>
       <div class="pipe-files" style="margin-top:14px;">
@@ -855,6 +866,10 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <section>
   <div class="section-title">Top Research Ideas</div>
   <div class="section-sub">Ranked by combined score (Novelty + TVB Feasibility + Clinical Impact, max 30) using Claude Opus as judge.</div>
+  <p style="font-size:0.82rem;color:var(--muted);margin-bottom:24px;">
+    Scoring rubric definitions and full ranked list available in
+    <a href="METHODOLOGY.md" style="color:var(--accent);text-decoration:none;font-weight:600;" target="_blank">METHODOLOGY.md</a>
+  </p>
 
   <div class="ideas-grid" id="ideas-grid"></div>
 </section>
