@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LLM-Guided Robust Optimization for Epilepsy Neurostimulation</title>
+<title>LLM-Guided Minimax Optimization for Epilepsy Neurostimulation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -453,8 +453,8 @@
 ══════════════════════════════════════════════ -->
 <div class="hero">
   <div class="hero-tag">Cathy Liu · Research Pipeline · 2026</div>
-  <h1>LLM-Guided Robust Optimization for Epilepsy Neurostimulation</h1>
-  <p>A three-stage pipeline — from systematic literature mining to TVB digital twin simulation to LLM-guided robust parameter optimization — targeting drug-resistant epilepsy.</p>
+  <h1>LLM-Guided Minimax Optimization for Epilepsy Neurostimulation</h1>
+  <p>A three-stage pipeline — from systematic literature mining to TVB digital twin simulation to LLM-guided minimax parameter optimization — targeting drug-resistant epilepsy.</p>
 
   <div class="metrics">
     <div class="metric-card">
@@ -683,7 +683,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <div class="pipe-stage pipe-highlight">
       <div class="pipe-header">
         <div class="pipe-num" style="background:var(--green)">3</div>
-        <h3>Robust Optimization</h3>
+        <h3>Minimax Optimization</h3>
       </div>
 
       <div class="pipe-narrative" style="margin-bottom:14px;">
@@ -693,6 +693,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
           clinically unacceptable. The optimisation objective is therefore the
           <strong>minimax reward</strong>: the minimum across all five virtual patients, not the mean.
           Two algorithmic approaches were evaluated and compared below.
+        </p>
+        <p style="margin-top:10px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;font-size:0.81rem;color:#0c4a6e;line-height:1.65;">
+          We frame the problem as a minimax optimization under sampled patient variability —
+          optimizing for worst-case performance rather than claiming cross-patient robustness.
+          This is evaluated on a small cohort of 5 virtual patients with limited perturbations
+          (K ±0.003); robustness claims are restricted to this sampled variability regime.
         </p>
       </div>
 
@@ -881,8 +887,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </p>
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
       Train worst-case: <strong>−0.2847</strong> → Test worst-case: <strong>−0.3346</strong>.
-      The direction is consistent, indicating the solution generalizes to unseen patients within
-      the same variability regime — not just the 5 it was optimized on.
+      The direction is consistent, indicating the solution generalizes to newly sampled patients
+      from the same perturbation distribution — not just the 5 it was optimized on.
     </p>
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
       Robustness degrades gracefully as variability increases: optimized worst-case remains
@@ -893,6 +899,10 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       Stress test across 30 patients confirms distributional advantage: optimized
       median = <strong>−0.299</strong> (vs baseline −0.442), std = <strong>0.037</strong>
       (vs 0.040), worst-case = <strong>−0.405</strong> (vs −0.518).
+    </p>
+    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-top:14px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+      These results should be interpreted as a proof-of-concept for robustness-oriented
+      optimization, rather than a definitive demonstration of cross-patient robustness.
     </p>
   </div>
 
