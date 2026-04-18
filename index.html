@@ -108,43 +108,68 @@
   .section-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
   hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
 
-  /* ── PIPELINE ── */
+  /* ── PIPELINE (vertical) ── */
   .pipeline {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
     gap: 0;
-    flex-wrap: wrap;
   }
   .pipe-stage {
-    flex: 1;
-    min-width: 220px;
     background: #ffffff;
     border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
     border-radius: var(--radius);
-    padding: 28px 24px;
+    padding: 36px 40px;
     position: relative;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  .pipe-stage + .pipe-stage { margin-left: 0; }
-  .pipe-arrow {
+  @media (max-width: 600px) { .pipe-stage { padding: 24px 20px; } }
+  .pipe-highlight { border-left-color: var(--green); }
+
+  /* vertical connector between stages */
+  .pipe-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 4px 0;
+  }
+  .pipe-connector-line {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, var(--border), #a5b4fc);
+  }
+  .pipe-connector-arrow {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 9px solid #a5b4fc;
+  }
+
+  /* stage header row: number badge + title inline */
+  .pipe-header {
     display: flex;
     align-items: center;
-    padding: 0 4px;
-    color: var(--accent);
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    align-self: center;
+    gap: 16px;
+    margin-bottom: 16px;
   }
   .pipe-num {
-    width: 28px; height: 28px;
+    width: 38px; height: 38px;
     background: var(--accent);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem; font-weight: 700;
-    margin-bottom: 12px;
+    font-size: 0.95rem; font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
   }
-  .pipe-stage h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-  .pipe-stage p  { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+  .pipe-stage h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0;
+    line-height: 1.2;
+  }
+  .pipe-stage > p  { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
   .pipe-files { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; }
   .pipe-tag {
     font-size: 0.7rem;
@@ -155,7 +180,6 @@
     padding: 2px 7px;
     font-family: monospace;
   }
-  .pipe-highlight { border-color: var(--accent); }
 
   /* ── PIPE NARRATIVE ── */
   .pipe-narrative {
@@ -433,8 +457,10 @@
 
   <div class="pipeline">
     <div class="pipe-stage">
-      <div class="pipe-num">1</div>
-      <h3>Literature Mining</h3>
+      <div class="pipe-header">
+        <div class="pipe-num">1</div>
+        <h3>Literature Mining</h3>
+      </div>
       <p>10 PubMed queries → 136 deduplicated papers. Claude Haiku extracts structured gaps from every abstract. Claude Opus scores 30 thematic clusters on novelty, TVB feasibility, and clinical impact.</p>
       <div class="pipe-narrative">
         <p>
@@ -456,11 +482,16 @@
       </div>
     </div>
 
-    <div class="pipe-arrow">→</div>
+    <div class="pipe-connector">
+      <div class="pipe-connector-line"></div>
+      <div class="pipe-connector-arrow"></div>
+    </div>
 
     <div class="pipe-stage">
-      <div class="pipe-num">2</div>
-      <h3>TVB Digital Twin</h3>
+      <div class="pipe-header">
+        <div class="pipe-num">2</div>
+        <h3>TVB Digital Twin</h3>
+      </div>
       <p>The Virtual Brain Epileptor model instantiated for 5 virtual patients with sampled variability in epileptogenicity (x₀) and inter-regional coupling (K). Each parameter set produces a reward signal measuring seizure suppression.</p>
 
       <!-- Inline brain-network SVG -->
@@ -598,13 +629,18 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       </div>
     </div>
 
-    <div class="pipe-arrow">→</div>
+    <div class="pipe-connector">
+      <div class="pipe-connector-line"></div>
+      <div class="pipe-connector-arrow" style="border-top-color:#6ee7b7"></div>
+    </div>
 
     <div class="pipe-stage pipe-highlight">
-      <div class="pipe-num" style="background:var(--green)">3</div>
-      <h3>Robust Optimization</h3>
+      <div class="pipe-header">
+        <div class="pipe-num" style="background:var(--green)">3</div>
+        <h3>Robust Optimization</h3>
+      </div>
 
-      <div class="pipe-narrative" style="margin-top:0;padding-top:0;border-top:none;margin-bottom:14px;">
+      <div class="pipe-narrative" style="margin-bottom:14px;">
         <p>
           A DBS or RNS device is implanted in <strong>one specific patient</strong> — parameters that achieve
           excellent average reward but leave any individual in uncontrolled seizure activity are
