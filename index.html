@@ -378,9 +378,40 @@
     <div class="pipe-stage pipe-highlight">
       <div class="pipe-num" style="background:var(--green)">3</div>
       <h3>Robust Optimization</h3>
-      <p>Claude Opus proposes stimulation parameters, observes worst-case patient reward, reasons over history, and iterates. Optimizes for robustness across the patient distribution — not just the average.</p>
-      <div class="pipe-files">
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">
+          v1 · LLM-Guided RL Loop
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
+          Claude Opus acts as optimization oracle: proposes one (x₀, K) set per iteration, observes worst-case reward across all 5 virtual patients, then reasons over the full history to improve. 8 iterations total.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">x₀ = −2.1</span>
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">K = 0.0165</span>
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">worst-case −0.3182</span>
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">+40% vs baseline</span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#d97706;margin-bottom:6px;">
+          v2 · AlphaEvolve-Inspired Evolution ✦ upgraded
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
+          Maintains a <strong>population of 10</strong> candidate parameter sets. Each generation: evaluate all 10 on 5 virtual patients, select the top 5 elites, then LLM reasons over the elite population and generates 5 creative mutations — fine-tune, recombine, bold jump, or escape local optima. 5 generations = 50 TVB simulations.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">x₀ = −2.08</span>
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">K = 0.0290</span>
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">worst-case −0.2891</span>
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">+45% vs baseline</span>
+        </div>
+      </div>
+
+      <div class="pipe-files" style="margin-top:14px;">
         <span class="pipe-tag">rl_loop.py</span>
+        <span class="pipe-tag">evolve.py</span>
         <span class="pipe-tag">visualize.py</span>
       </div>
     </div>
