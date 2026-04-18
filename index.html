@@ -157,6 +157,27 @@
   }
   .pipe-highlight { border-color: var(--accent); }
 
+  /* ── PIPE NARRATIVE ── */
+  .pipe-narrative {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .pipe-narrative p {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.65;
+  }
+  .pipe-narrative strong { color: var(--text); font-weight: 600; }
+  .pipe-narrative em { color: var(--accent2); font-style: italic; }
+
+  /* brain network svg wrapper */
+  .brain-svg-wrap {
+    margin: 14px 0 10px;
+    display: flex;
+    justify-content: center;
+  }
+
   /* ── DEMO ── */
   .demo-grid {
     display: grid;
@@ -355,7 +376,20 @@
       <div class="pipe-num">1</div>
       <h3>Literature Mining</h3>
       <p>10 PubMed queries → 136 deduplicated papers. Claude Haiku extracts structured gaps from every abstract. Claude Opus scores 30 thematic clusters on novelty, TVB feasibility, and clinical impact.</p>
-      <div class="pipe-files">
+      <div class="pipe-narrative">
+        <p>
+          The pipeline begins with the literature rather than code. Before writing a single simulation,
+          we systematically asked: <em>what problems in computational epilepsy neuroscience remain genuinely unsolved?</em>
+          Ten targeted PubMed queries spanning digital twins, closed-loop stimulation, and patient variability
+          yielded 136 deduplicated papers. <strong>Claude Haiku</strong> processed every abstract in bulk — deliberately
+          chosen for speed and cost at this scale (1,080 extraction tasks). <strong>Claude Opus</strong> then scored 30
+          thematic clusters on novelty, TVB feasibility, and clinical impact, where genuine expert reasoning
+          matters more than throughput. The top-ranked gap (25/30):
+          <em>"RL controllers optimised on single virtual patients fail to transfer to real devices due to individual variability."</em>
+          That finding became Stage 3.
+        </p>
+      </div>
+      <div class="pipe-files" style="margin-top:14px;">
         <span class="pipe-tag">fetch_all_papers.py</span>
         <span class="pipe-tag">extract_gaps.py</span>
         <span class="pipe-tag">rank_ideas.py</span>
@@ -368,7 +402,68 @@
       <div class="pipe-num">2</div>
       <h3>TVB Digital Twin</h3>
       <p>The Virtual Brain Epileptor model instantiated for 5 virtual patients with sampled variability in epileptogenicity (x₀) and inter-regional coupling (K). Each parameter set produces a reward signal measuring seizure suppression.</p>
-      <div class="pipe-files">
+
+      <!-- Inline brain-network SVG -->
+      <div class="brain-svg-wrap">
+        <svg width="200" height="130" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Whole-brain connectivity network">
+          <!-- Edges (drawn first so nodes sit on top) -->
+          <!-- hub A (100,65) to others -->
+          <line x1="100" y1="65" x2="40"  y2="28"  stroke="#c7d2fe" stroke-width="1.4"/>
+          <line x1="100" y1="65" x2="160" y2="28"  stroke="#c7d2fe" stroke-width="1.4"/>
+          <line x1="100" y1="65" x2="28"  y2="75"  stroke="#c7d2fe" stroke-width="1.8"/>
+          <line x1="100" y1="65" x2="172" y2="75"  stroke="#c7d2fe" stroke-width="1.8"/>
+          <line x1="100" y1="65" x2="55"  y2="112" stroke="#c7d2fe" stroke-width="1.2"/>
+          <line x1="100" y1="65" x2="145" y2="112" stroke="#c7d2fe" stroke-width="1.2"/>
+          <line x1="100" y1="65" x2="100" y2="14"  stroke="#a5b4fc" stroke-width="2.2"/>
+          <!-- peripheral edges -->
+          <line x1="40"  y1="28"  x2="100" y2="14"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="160" y1="28"  x2="100" y2="14"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="40"  y1="28"  x2="28"  y2="75"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="160" y1="28"  x2="172" y2="75"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="28"  y1="75"  x2="55"  y2="112" stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="172" y1="75"  x2="145" y2="112" stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="55"  y1="112" x2="145" y2="112" stroke="#e0e7ff" stroke-width="1"/>
+          <!-- epileptic node edge (red) -->
+          <line x1="100" y1="65" x2="70"  y2="50"  stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 2"/>
+          <!-- Nodes -->
+          <!-- hub centre — indigo -->
+          <circle cx="100" cy="65" r="9" fill="#4f46e5" opacity="0.9"/>
+          <!-- top hub — indigo -->
+          <circle cx="100" cy="14" r="7" fill="#6366f1" opacity="0.85"/>
+          <!-- large peripheral -->
+          <circle cx="28"  cy="75"  r="6" fill="#818cf8" opacity="0.75"/>
+          <circle cx="172" cy="75"  r="6" fill="#818cf8" opacity="0.75"/>
+          <!-- small peripheral -->
+          <circle cx="40"  cy="28"  r="5" fill="#a5b4fc" opacity="0.8"/>
+          <circle cx="160" cy="28"  r="5" fill="#a5b4fc" opacity="0.8"/>
+          <circle cx="55"  cy="112" r="5" fill="#a5b4fc" opacity="0.8"/>
+          <circle cx="145" cy="112" r="5" fill="#a5b4fc" opacity="0.8"/>
+          <!-- epileptic node — amber/red -->
+          <circle cx="70"  cy="50"  r="6" fill="#f97316" opacity="0.9"/>
+          <circle cx="70"  cy="50"  r="9" fill="#f97316" opacity="0.18"/>
+          <!-- labels -->
+          <text x="100" y="68" text-anchor="middle" font-size="6" fill="#ffffff" font-weight="700">Hub</text>
+          <text x="70"  y="68" text-anchor="middle" font-size="5.5" fill="#9a3412">SOZ</text>
+        </svg>
+      </div>
+
+      <div class="pipe-narrative">
+        <p>
+          The <strong>Epileptor</strong> model captures seizure dynamics through six coupled ODEs with a
+          dual-timescale structure: fast variables (x₁, y₁) represent rapid ictal oscillations, while
+          slow variable z governs the gradual buildup toward seizure onset and eventual self-termination.
+          The key clinical parameter is <strong>x₀</strong>, the epileptogenicity — values near −1.6 push
+          tissue toward the seizure bifurcation threshold, while −3.0 represents well-controlled tissue
+          far from seizure. Five virtual patients are generated by sampling inter-regional coupling K
+          ± 0.003 steps around a baseline, modelling the biological variability a clinician encounters
+          across a real cohort. Each simulation runs for 1,000 time steps at dt = 0.05 ms; reward is
+          defined as −var(x₁), a model-agnostic proxy for seizure intensity that requires no
+          hand-crafted features. TVB was chosen for its patient-specific whole-brain connectivity
+          framework, its rigorous validation against clinical EEG, and its clean Python API that
+          integrates directly into automated optimisation loops.
+        </p>
+      </div>
+      <div class="pipe-files" style="margin-top:14px;">
         <span class="pipe-tag">simulate.py</span>
       </div>
     </div>
@@ -378,6 +473,16 @@
     <div class="pipe-stage pipe-highlight">
       <div class="pipe-num" style="background:var(--green)">3</div>
       <h3>Robust Optimization</h3>
+
+      <div class="pipe-narrative" style="margin-top:0;padding-top:0;border-top:none;margin-bottom:14px;">
+        <p>
+          A DBS or RNS device is implanted in <strong>one specific patient</strong> — parameters that achieve
+          excellent average reward but leave any individual in uncontrolled seizure activity are
+          clinically unacceptable. The optimisation objective is therefore the
+          <strong>minimax reward</strong>: the minimum across all five virtual patients, not the mean.
+          Two algorithmic approaches were evaluated and compared below.
+        </p>
+      </div>
 
       <div style="margin-bottom:14px">
         <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">
@@ -399,7 +504,7 @@
           v2 · AlphaEvolve-Inspired Evolution ✦ upgraded
         </div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
-          Maintains a <strong>population of 10</strong> candidate parameter sets. Each generation: evaluate all 10 on 5 virtual patients, select the top 5 elites, then LLM reasons over the elite population and generates 5 creative mutations — fine-tune, recombine, bold jump, or escape local optima. 5 generations = 50 TVB simulations.
+          Maintains a <strong>population of 10</strong> candidate parameter sets. Each generation: evaluate all 10 on 5 virtual patients, select the top-5 elites, then the LLM reasons jointly over the elite set and proposes 5 diverse mutations — fine-tune near an elite, recombine two elites, execute a bold jump, or explicitly escape a local optimum. 5 generations = 50 TVB simulations. Population diversity pays dividends in higher-dimensional search: by Generation 3 the best candidate had already surpassed the v1 optimum.
         </p>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
           <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">x₀ = −2.08</span>
