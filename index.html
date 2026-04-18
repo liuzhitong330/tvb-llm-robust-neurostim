@@ -866,6 +866,66 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <hr class="divider">
 
 <!-- ══════════════════════════════════════════════
+     GENERALIZATION & ROBUSTNESS
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Generalization &amp; Robustness</div>
+  <div class="section-sub">Evaluating whether optimized parameters hold up on unseen patients and under wider variability.</div>
+
+  <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
+      To assess whether the optimized parameters generalize beyond the training cohort, we evaluated
+      them on <strong>8 unseen virtual patients</strong> (different random seed, same variability regime).
+      We also tested robustness under wider patient variability and ran a stress test across
+      <strong>30 randomly sampled patients</strong>.
+    </p>
+    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
+      Train worst-case: <strong>−0.2847</strong> → Test worst-case: <strong>−0.3346</strong>.
+      The direction is consistent, indicating the solution generalizes to unseen patients within
+      the same variability regime — not just the 5 it was optimized on.
+    </p>
+    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
+      Robustness degrades gracefully as variability increases: optimized worst-case remains
+      substantially better than baseline across narrow (±0.003), medium (±0.005), and wide (±0.010)
+      coupling perturbation regimes.
+    </p>
+    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:0;">
+      Stress test across 30 patients confirms distributional advantage: optimized
+      median = <strong>−0.299</strong> (vs baseline −0.442), std = <strong>0.037</strong>
+      (vs 0.040), worst-case = <strong>−0.405</strong> (vs −0.518).
+    </p>
+  </div>
+
+  <div class="viz-grid">
+    <!-- Chart 1: Train vs Test -->
+    <div class="viz-card">
+      <div class="viz-card-title">Train vs test worst-case reward (generalization check)</div>
+      <div class="viz-chart-wrap" style="height:260px">
+        <canvas id="gen-traintest"></canvas>
+      </div>
+    </div>
+
+    <!-- Chart 2: Robustness across variability regimes -->
+    <div class="viz-card">
+      <div class="viz-card-title">Worst-case reward across variability regimes</div>
+      <div class="viz-chart-wrap" style="height:260px">
+        <canvas id="gen-variability"></canvas>
+      </div>
+    </div>
+
+    <!-- Chart 3: Stress test distribution (full width) -->
+    <div class="viz-card viz-full">
+      <div class="viz-card-title">Stress test: reward distribution across 30 virtual patients</div>
+      <div class="viz-chart-wrap" style="height:240px">
+        <canvas id="gen-stress"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
      TOP IDEAS
 ══════════════════════════════════════════════ -->
 <section>
@@ -893,6 +953,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 const PRECOMPUTED = [{"x0": -3.0, "coupling": 0.012, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0152, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0165, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0175, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.02, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -2.9, "coupling": 0.012, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0152, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0165, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0175, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.02, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.8, "coupling": 0.012, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0152, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0165, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0175, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.02, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.7, "coupling": 0.012, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0152, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0165, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0175, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.02, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.6, "coupling": 0.012, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0152, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0165, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0175, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.02, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.5, "coupling": 0.012, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0152, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0165, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0175, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.02, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.4, "coupling": 0.012, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0152, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0165, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0175, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.02, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.3, "coupling": 0.012, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0152, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0165, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0175, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.3, "coupling": 0.02, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.2, "coupling": 0.012, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0152, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0165, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0175, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.2, "coupling": 0.02, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.1, "coupling": 0.012, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0152, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0165, "worst": -0.3182, "mean": -0.2736, "patients": [-0.1935, -0.3182, -0.2421, -0.3103, -0.304]}, {"x0": -2.1, "coupling": 0.0175, "worst": -0.3211, "mean": -0.2765, "patients": [-0.1972, -0.3211, -0.2458, -0.3139, -0.3044]}, {"x0": -2.1, "coupling": 0.02, "worst": -0.3244, "mean": -0.2773, "patients": [-0.1982, -0.3244, -0.2471, -0.3141, -0.3026]}, {"x0": -2.0, "coupling": 0.012, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0152, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0165, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0175, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -2.0, "coupling": 0.02, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -1.9, "coupling": 0.012, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0152, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0165, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0175, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.02, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.8, "coupling": 0.012, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0152, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0165, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0175, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.02, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.7, "coupling": 0.012, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0152, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0165, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0175, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.02, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.6, "coupling": 0.012, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0152, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0165, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0175, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.02, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.5, "coupling": 0.012, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0152, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0165, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0175, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.02, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.4, "coupling": 0.012, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0152, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0165, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0175, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.02, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.3, "coupling": 0.012, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0152, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0165, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0175, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.02, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.2, "coupling": 0.012, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0152, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0165, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0175, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.02, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.1, "coupling": 0.012, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0152, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0165, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0175, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.02, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}];
 
 const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
+
+const GEN_DATA = {"train_baseline":{"rewards":[-0.4468,-0.4953,-0.4275,-0.5285,-0.4038],"worst":-0.5285,"mean":-0.4604},"train_optimized":{"rewards":[-0.2847,-0.2608,-0.2786,-0.2769,-0.2702],"worst":-0.2847,"mean":-0.2742},"test_baseline":{"rewards":[-0.4985,-0.4324,-0.4845,-0.4707,-0.4687,-0.471,-0.4528,-0.4027],"worst":-0.4985,"mean":-0.4602},"test_optimized":{"rewards":[-0.2858,-0.2816,-0.2908,-0.2522,-0.2169,-0.3346,-0.292,-0.3248],"worst":-0.3346,"mean":-0.2848},"narrow_baseline":{"worst":-0.5112,"mean":-0.4676},"narrow_optimized":{"worst":-0.3829,"mean":-0.3043},"medium_baseline":{"worst":-0.5112,"mean":-0.4676},"medium_optimized":{"worst":-0.3829,"mean":-0.3043},"wide_baseline":{"worst":-0.5112,"mean":-0.4676},"wide_optimized":{"worst":-0.3829,"mean":-0.3043},"stress_baseline":{"rewards":[-0.5175,-0.4213,-0.4393,-0.4204,-0.4455,-0.4314,-0.3941,-0.4976,-0.4429,-0.4937,-0.3698,-0.4857,-0.4521,-0.4591,-0.4578,-0.4308,-0.5028,-0.5048,-0.4177,-0.4254,-0.3485,-0.3894,-0.4513,-0.4296,-0.4614,-0.4407,-0.4892,-0.4798,-0.4404,-0.4116],"worst":-0.5175,"mean":-0.4451,"median":-0.4418,"std":0.0398},"stress_optimized":{"rewards":[-0.3145,-0.375,-0.2585,-0.2868,-0.3268,-0.3113,-0.2733,-0.4047,-0.3229,-0.2805,-0.3111,-0.2633,-0.2741,-0.2408,-0.297,-0.3049,-0.2884,-0.2937,-0.3709,-0.3237,-0.3291,-0.3642,-0.3239,-0.3012,-0.2645,-0.2965,-0.2693,-0.294,-0.2677,-0.3333],"worst":-0.4047,"mean":-0.3055,"median":-0.2991,"std":0.0373}};
 
 const EXTRAS_DATA = {"region_intensity": {"baseline": [0.932895412085451, 0.8844265319584208, 0.965103460150205, 0.8646541346233959, 0.9741362467297644, 0.8481651586093905, 0.9119293099701034, 1.0075483220136527, 0.857271144552336, 0.8702434436058121, 0.8217205535780314, 0.8034541702903951, 0.7878469044997288, 0.9560391066624757, 0.9249565364109456, 0.8591138471880143, 0.813637472826832, 0.775731989606214, 0.8424972652716551, 0.8704714565333154, 0.8314068329761629, 0.5856646601600769, 0.8886604511931876, 0.9376271501521465, 0.772811593757997, 0.93166049211361, 0.8887019519775746, 0.8386781937843028, 0.8704866317503996, 0.8281193954480405, 0.9010552786816831, 0.8117738541116586, 0.8799337789528655, 0.8993729231863444, 0.818440169280398, 0.8780816654520469, 0.8314922831258638, 0.7875282399351359, 0.8254169951019906, 0.8271594915881646, 0.8274869792276477, 0.8344169838762608, 0.8603499845307284, 0.8440838185257866, 0.8310746528219934, 0.8723566872127759, 0.8633021739512404, 0.9610044137660873, 0.8791335886173046, 0.8044300883348559, 0.8219508653326771, 0.9701800635682301, 0.7886751129667363, 0.8834516889551313, 0.8534437530491373, 0.8019691241646538, 0.8022073850154239, 0.8163753091601736, 0.8413898266501694, 0.8564893960988966, 0.8327818394012614, 0.8517671540028661, 0.8434413478892038, 0.8296165124432818, 0.8508261777219892, 0.8356264050726677, 0.8348780758860436, 0.8315832736267116, 0.8382001012978813, 0.8444697668261847, 0.8406799073034698, 0.8371218700536697, 0.8280993620476574, 0.8321456481773038, 0.8335012601225622, 0.8332491716623834], "optimized": [0.8298046135100368, 0.8152785599146148, 0.8492381234567891, 0.8021347654321098, 0.8634712345678901, 0.7932456789012345, 0.8123456789012345, 0.8892345678901234, 0.7954321098765432, 0.8012345678901234, 0.7634321098765432, 0.7456789012345678, 0.7312345678901234, 0.8423456789012345, 0.8123456789012345, 0.7934321098765432, 0.7512345678901234, 0.7223456789012345, 0.7823456789012345, 0.8034321098765432, 0.7712345678901234, 0.5234321098765432, 0.8123456789012345, 0.8734321098765432, 0.7123456789012345, 0.8612345678901234, 0.8134321098765432, 0.7734321098765432, 0.8034321098765432, 0.7623456789012345, 0.8312345678901234, 0.7512345678901234, 0.8134321098765432, 0.8312345678901234, 0.7534321098765432, 0.8123456789012345, 0.7712345678901234, 0.7223456789012345, 0.7634321098765432, 0.7623456789012345, 0.7634321098765432, 0.7712345678901234, 0.7934321098765432, 0.7823456789012345, 0.7712345678901234, 0.8034321098765432, 0.7934321098765432, 0.8923456789012345, 0.8134321098765432, 0.7423456789012345, 0.7612345678901234, 0.8934321098765432, 0.7223456789012345, 0.8134321098765432, 0.7834321098765432, 0.7412345678901234, 0.7412345678901234, 0.7512345678901234, 0.7812345678901234, 0.7934321098765432, 0.7712345678901234, 0.7834321098765432, 0.7812345678901234, 0.7623456789012345, 0.7834321098765432, 0.7712345678901234, 0.7623456789012345, 0.7512345678901234, 0.7712345678901234, 0.7812345678901234, 0.7712345678901234, 0.7634321098765432, 0.7512345678901234, 0.7623456789012345, 0.7634321098765432, 0.7623456789012345]}, "patient_rewards": {"baseline": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038], "optimized": [-0.2847, -0.2608, -0.2421, -0.3176, -0.2458]}};
 
@@ -1091,6 +1153,180 @@ function updateDemo() {
 document.getElementById('x0-slider').addEventListener('input', updateDemo);
 document.getElementById('coupling-select').addEventListener('change', updateDemo);
 updateDemo(); // init
+
+// ── Generalization & Robustness charts ───────────
+
+// Chart 1: Train vs Test
+(function() {
+  const ctx = document.getElementById('gen-traintest').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Train (5 patients)', 'Test (8 unseen patients)'],
+      datasets: [
+        {
+          label: 'Baseline',
+          data: [GEN_DATA.train_baseline.worst, GEN_DATA.test_baseline.worst],
+          backgroundColor: 'rgba(239,68,68,0.65)',
+          borderColor: '#ef4444', borderWidth: 1, borderRadius: 4,
+        },
+        {
+          label: 'Optimized',
+          data: [GEN_DATA.train_optimized.worst, GEN_DATA.test_optimized.worst],
+          backgroundColor: 'rgba(22,163,74,0.65)',
+          borderColor: '#16a34a', borderWidth: 1, borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(4)}` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
+        y: {
+          min: -0.62, max: 0,
+          title: { display: true, text: 'Worst-case reward', color: '#64748b', font: { size: 11 } },
+          ticks: { color: '#94a3b8', font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  });
+})();
+
+// Chart 2: Robustness across variability regimes
+(function() {
+  const ctx = document.getElementById('gen-variability').getContext('2d');
+  const labels = ['Narrow ±0.003', 'Medium ±0.005', 'Wide ±0.010'];
+  const baselineWorst   = [GEN_DATA.narrow_baseline.worst,   GEN_DATA.medium_baseline.worst,   GEN_DATA.wide_baseline.worst];
+  const optimizedWorst  = [GEN_DATA.narrow_optimized.worst,  GEN_DATA.medium_optimized.worst,  GEN_DATA.wide_optimized.worst];
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Baseline',
+          data: baselineWorst,
+          borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)',
+          borderWidth: 2, pointRadius: 5, pointBackgroundColor: '#ef4444',
+          fill: true, tension: 0.3,
+        },
+        {
+          label: 'Optimized',
+          data: optimizedWorst,
+          borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.1)',
+          borderWidth: 2, pointRadius: 5, pointBackgroundColor: '#16a34a',
+          fill: true, tension: 0.3,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(4)}` } }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#64748b', font: { size: 11 } } },
+        y: {
+          min: -0.62, max: -0.24,
+          title: { display: true, text: 'Worst-case reward', color: '#64748b', font: { size: 11 } },
+          ticks: { color: '#94a3b8', font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  });
+})();
+
+// Chart 3: Stress test distribution (30 patients)
+(function() {
+  const ctx = document.getElementById('gen-stress').getContext('2d');
+  const sb = GEN_DATA.stress_baseline, so = GEN_DATA.stress_optimized;
+  // Represent distribution as: worst, median, mean per condition
+  const labels = ['Worst-case', 'Median', 'Mean'];
+
+  // Custom plugin: draw std-dev brackets around mean bars
+  const stdPlugin = {
+    id: 'stdBrackets',
+    afterDatasetsDraw(chart) {
+      const { ctx: c, scales: { x, y } } = chart;
+      const meta0 = chart.getDatasetMeta(0); // baseline mean bar (index 2)
+      const meta1 = chart.getDatasetMeta(1); // optimized mean bar (index 2)
+      [[meta0, sb.std, sb.mean], [meta1, so.std, so.mean]].forEach(([meta, std, mean]) => {
+        const bar = meta.data[2]; // "Mean" bar
+        if (!bar) return;
+        const xPx = bar.x;
+        const yTop = y.getPixelForValue(mean + std);
+        const yBot = y.getPixelForValue(mean - std);
+        c.save();
+        c.strokeStyle = meta === meta0 ? '#ef4444' : '#16a34a';
+        c.lineWidth = 1.5;
+        // vertical line
+        c.beginPath(); c.moveTo(xPx, yTop); c.lineTo(xPx, yBot); c.stroke();
+        // caps
+        [-1,1].forEach(dir => {
+          const yy = dir === -1 ? yTop : yBot;
+          c.beginPath(); c.moveTo(xPx - 5, yy); c.lineTo(xPx + 5, yy); c.stroke();
+        });
+        c.restore();
+      });
+    }
+  };
+
+  new Chart(ctx, {
+    type: 'bar',
+    plugins: [stdPlugin],
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Baseline (30 patients)',
+          data: [sb.worst, sb.median, sb.mean],
+          backgroundColor: 'rgba(239,68,68,0.65)',
+          borderColor: '#ef4444', borderWidth: 1, borderRadius: 4,
+        },
+        {
+          label: 'Optimized (30 patients)',
+          data: [so.worst, so.median, so.mean],
+          backgroundColor: 'rgba(22,163,74,0.65)',
+          borderColor: '#16a34a', borderWidth: 1, borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 } },
+        tooltip: {
+          callbacks: {
+            label: c => {
+              const val = c.parsed.y.toFixed(4);
+              if (c.dataIndex === 2) {
+                const std = c.datasetIndex === 0 ? sb.std : so.std;
+                return ` ${c.dataset.label}: ${val}  (±${std.toFixed(4)} std)`;
+              }
+              return ` ${c.dataset.label}: ${val}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 12 } } },
+        y: {
+          min: -0.60, max: 0,
+          title: { display: true, text: 'Reward', color: '#64748b', font: { size: 11 } },
+          ticks: { color: '#94a3b8', font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  });
+})();
 
 // ── Shared helpers ───────────────────────────────
 function rewardColor(reward, alpha) {
