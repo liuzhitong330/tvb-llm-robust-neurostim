@@ -97,6 +97,202 @@
   }
   .metric-label { font-size: 0.8rem; color: #c7d2fe; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
 
+  /* ── MODALS ── */
+  .metric-card[data-modal], .metric-card[data-scroll] {
+    cursor: pointer;
+  }
+  .metric-card[data-modal]:hover .metric-value,
+  .metric-card[data-scroll]:hover .metric-value {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal-card {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 620px;
+    width: 100%;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .modal-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: #f1f5f9; }
+  .modal-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    flex-shrink: 0;
+    line-height: 1.5;
+  }
+  .modal-body {
+    overflow-y: auto;
+    padding: 16px 24px 20px;
+    flex: 1;
+  }
+  .modal-body a { color: var(--accent); text-decoration: none; }
+  .modal-body a:hover { text-decoration: underline; }
+
+  /* Modal 1 — papers list */
+  .modal-paper-list { list-style: none; padding: 0; margin: 0; }
+  .modal-paper-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.88rem;
+  }
+  .modal-paper-item:last-child { border-bottom: none; }
+  .modal-paper-year {
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-footer-link {
+    display: block;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .modal-footer-link:hover { text-decoration: underline; }
+
+  /* Modal 2 — ideas cards */
+  .modal-idea-card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .modal-idea-source {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Modal 3 — ranked ideas */
+  .modal-ranked-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: start;
+  }
+  .modal-ranked-item:last-child { border-bottom: none; }
+  .modal-rank-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: #f1f5f9;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .modal-ranked-content { min-width: 0; }
+  .modal-ranked-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+  .modal-ranked-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    flex: 1;
+    min-width: 0;
+  }
+  .modal-score-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-score-pills {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+  }
+  .modal-pill {
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 1px 7px;
+    font-weight: 600;
+  }
+  .modal-pill-novelty { background: #ede9fe; color: #6d28d9; }
+  .modal-pill-tvb     { background: #d1fae5; color: #065f46; }
+  .modal-pill-clinical{ background: #fef3c7; color: #92400e; }
+  .modal-ranked-summary {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
   /* ── SECTIONS ── */
   section { max-width: 1000px; margin: 0 auto; padding: 64px 24px; }
   .section-title {
@@ -457,19 +653,19 @@
   <p>A three-stage pipeline — from systematic literature mining to TVB digital twin simulation to LLM-guided minimax parameter optimization — targeting drug-resistant epilepsy.</p>
 
   <div class="metrics">
-    <div class="metric-card">
+    <div class="metric-card" data-modal="modal-papers" role="button" tabindex="0" aria-label="View papers list">
       <span class="metric-value">136</span>
       <div class="metric-label">Papers Mined</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-modal="modal-ideas" role="button" tabindex="0" aria-label="View sample research ideas">
       <span class="metric-value">1,080</span>
       <div class="metric-label">Research Ideas Extracted</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-modal="modal-gaps" role="button" tabindex="0" aria-label="View top ranked research gaps">
       <span class="metric-value">586</span>
       <div class="metric-label">Open Questions</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-scroll="section-generalization" role="button" tabindex="0" aria-label="Scroll to Generalization section">
       <span class="metric-value" style="color:#22c55e">+40%</span>
       <div class="metric-label">Worst-Case Reward Improvement</div>
     </div>
@@ -875,7 +1071,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      GENERALIZATION & ROBUSTNESS
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="section-title">Generalization &amp; Robustness</div>
+  <div class="section-title" id="section-generalization">Generalization &amp; Robustness</div>
   <div class="section-sub">Evaluating whether optimized parameters hold up on unseen patients and under wider variability.</div>
 
   <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
@@ -959,6 +1155,157 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   Data: 136 PubMed papers, April 2026
 </footer>
 
+<!-- ══════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════ -->
+
+<!-- Modal 1: Papers -->
+<div class="modal-overlay" id="modal-papers" role="dialog" aria-modal="true" aria-labelledby="modal-papers-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modal-papers-title">Papers mined from PubMed</h2>
+      <button class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-note">
+      Retrieved via 10 targeted PubMed queries. Full list available on GitHub.
+    </div>
+    <div class="modal-body">
+      <ul class="modal-paper-list" id="modal-papers-list"></ul>
+      <a class="modal-footer-link" href="https://github.com/the-virtual-brain/tvb-root" target="_blank" rel="noopener">View all 136 papers on GitHub →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2: Sample ideas -->
+<div class="modal-overlay" id="modal-ideas" role="dialog" aria-modal="true" aria-labelledby="modal-ideas-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modal-ideas-title">Sample extracted research ideas</h2>
+      <button class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-note">
+      Each abstract was processed by Claude Haiku to extract open questions, future experiments, and limitations. Showing 15 representative examples.
+    </div>
+    <div class="modal-body" id="modal-ideas-body"></div>
+  </div>
+</div>
+
+<!-- Modal 3: Top gaps -->
+<div class="modal-overlay" id="modal-gaps" role="dialog" aria-modal="true" aria-labelledby="modal-gaps-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modal-gaps-title">Top ranked research gaps</h2>
+      <button class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-note">
+      Ranked by Claude Opus across Novelty, TVB Feasibility, and Clinical Impact (1–10 each).
+    </div>
+    <div class="modal-body" id="modal-gaps-body"></div>
+  </div>
+</div>
+
+<script>
+// ── Modal population ─────────────────────────────
+
+// Modal 1 — papers
+(function() {
+  const list = document.getElementById('modal-papers-list');
+  MODAL_DATA.papers.forEach(p => {
+    const li = document.createElement('li');
+    li.className = 'modal-paper-item';
+    li.innerHTML = `<span class="modal-paper-year">${p.year}</span><a href="${p.url}" target="_blank" rel="noopener">${p.title}</a>`;
+    list.appendChild(li);
+  });
+})();
+
+// Modal 2 — sample ideas
+(function() {
+  const body = document.getElementById('modal-ideas-body');
+  MODAL_DATA.sample_ideas.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'modal-idea-card';
+    const src = item.paper_title.length > 60 ? item.paper_title.slice(0,60) + '…' : item.paper_title;
+    div.innerHTML = `<div>${item.idea}</div><div class="modal-idea-source">${src}</div>`;
+    body.appendChild(div);
+  });
+})();
+
+// Modal 3 — top ranked gaps
+(function() {
+  const body = document.getElementById('modal-gaps-body');
+  MODAL_DATA.top_ideas.forEach((item, i) => {
+    const score = (item.novelty || 0) + (item.tvb || 0) + (item.clinical || 0);
+    const rankNum = i + 1;
+    // Derive a short title from summary
+    const summaryFull = item.summary || '';
+    const shortTitle = summaryFull.length > 70 ? summaryFull.slice(0,70) + '…' : summaryFull;
+    const div = document.createElement('div');
+    div.className = 'modal-ranked-item';
+    div.innerHTML = `
+      <div class="modal-rank-num">${rankNum}</div>
+      <div class="modal-ranked-content">
+        <div class="modal-ranked-header">
+          <div class="modal-ranked-title">${shortTitle}</div>
+          <span class="modal-score-badge">${score}/30</span>
+        </div>
+        <div class="modal-score-pills">
+          <span class="modal-pill modal-pill-novelty">Novelty ${item.novelty}/10</span>
+          <span class="modal-pill modal-pill-tvb">TVB ${item.tvb}/10</span>
+          <span class="modal-pill modal-pill-clinical">Clinical ${item.clinical}/10</span>
+        </div>
+        <div class="modal-ranked-summary">${summaryFull}</div>
+      </div>`;
+    body.appendChild(div);
+  });
+})();
+
+// ── Modal open / close ───────────────────────────
+function openModal(id) {
+  const overlay = document.getElementById(id);
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // focus close button
+  const btn = overlay.querySelector('.modal-close');
+  if (btn) btn.focus();
+}
+function closeModal(overlay) {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Wire metric cards
+document.querySelectorAll('.metric-card[data-modal]').forEach(card => {
+  const activate = () => openModal(card.dataset.modal);
+  card.addEventListener('click', activate);
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
+});
+
+// Wire scroll card
+document.querySelectorAll('.metric-card[data-scroll]').forEach(card => {
+  const activate = () => {
+    const target = document.getElementById(card.dataset.scroll);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  card.addEventListener('click', activate);
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
+});
+
+// Close on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay);
+  });
+  overlay.querySelector('.modal-close').addEventListener('click', () => closeModal(overlay));
+});
+
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(o => closeModal(o));
+  }
+});
+</script>
 
 <!-- ══════════════════════════════════════════════
      EMBEDDED DATA
@@ -998,6 +1345,8 @@ const TOP_IDEAS = [
     opportunity: "Retrospective analysis correlating TVB-predicted optimal targets with actual responder outcomes across multiple centers."
   }
 ];
+
+const MODAL_DATA = {"papers":[{"pmid":"41923273","title":"Functional Segregation of Epileptogenicity within the Human Amygdala.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41923273/"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41914206/"},{"pmid":"41863185","title":"Responsive neurostimulation in children, adolescents, and young Adults-Longitudinal effectiveness and safety.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41863185/"},{"pmid":"41567348","title":"Large language models for neurology: a mini review.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41567348/"},{"pmid":"41758135","title":"SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-Derived Biomarkers.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41758135/"},{"pmid":"41460946","title":"Ion dynamics underlying the seizure delay effect of low-frequency electrical stimulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41460946/"},{"pmid":"41358301","title":"Individual-specific resting-state networks predict language dominance in drug-resistant epilepsy.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41358301/"},{"pmid":"41183383","title":"Deployable electrode arrays for brain interfaces: structural reconfiguration strategies for long-term stability and high-fidelity recording-a review.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41183383/"},{"pmid":"41251192","title":"sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multicenter retrospective study of the efficacy and safety of depth electrode-mediated neuromodulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41251192/"},{"pmid":"41282745","title":"Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41282745/"},{"pmid":"41105471","title":"Optimizing responsive neurostimulation targeting based on interictal high-frequency oscillations and phase-amplitude coupling.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41105471/"},{"pmid":"40967238","title":"Personalized whole-brain models of seizure propagation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40967238/"},{"pmid":"40993190","title":"Invasive neurophysiology and whole brain connectomics for neural decoding in patients with brain implants.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40993190/"},{"pmid":"40601969","title":"Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40601969/"},{"pmid":"40630858","title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation paradigm for seizure abolishment.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40630858/"},{"pmid":"40354815","title":"Memory optimized random forest classifier for EEG seizure detection in implantable monitoring and closed-loop neurostimulation devices.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40354815/"},{"pmid":"40423629","title":"Deep learning on brief interictal intracranial recordings can accurately characterize seizure onset zones.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40423629/"},{"pmid":"40294526","title":"Stereo-electroencephalography in the setting of a preexisting deep brain stimulation device: illustrative case.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40294526/"},{"pmid":"40215461","title":"Virtual epilepsy patient cohort: Generation and evaluation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40215461/"},{"pmid":"40185725","title":"Stimulation mapping and whole-brain modeling reveal gradients of excitability and recurrence in cortical networks.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40185725/"}],"sample_ideas":[{"pmid":"41923273","idea":"What are the specific neuronal and cytoarchitectural mechanisms underlying the differential epileptogenicity of amygdala nuclei?","paper_title":"Functional Segregation of Epileptogenicity within the Human Amygdala."},{"pmid":"41914206","idea":"Who is most likely to benefit from neuromodulation therapy in drug-resistant epilepsy?","paper_title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy."},{"pmid":"41863185","idea":"What are the mechanisms underlying the dynamic nature of seizure control trajectories in RNS-treated patients over time?","paper_title":"Responsive neurostimulation in children, adolescents, and young Adults-Longitudi"},{"pmid":"41567348","idea":"How can large language models be made more reliable and robust for clinical neurology applications?","paper_title":"Large language models for neurology: a mini review."},{"pmid":"41758135","idea":"How do SeizureFormer predictions generalize to larger patient populations beyond the five patients tested?","paper_title":"SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-D"},{"pmid":"41460946","idea":"What are the biological mechanisms underlying spontaneous and recurrent transition to seizures in the epileptic brain?","paper_title":"Ion dynamics underlying the seizure delay effect of low-frequency electrical sti"},{"pmid":"41358301","idea":"How does individual-specific network topography vary across different seizure onset zones and epilepsy types?","paper_title":"Individual-specific resting-state networks predict language dominance in drug-re"},{"pmid":"41183383","idea":"How can deployment mechanisms be optimized to achieve both maximal spatial coverage and minimal insertion trauma?","paper_title":"Deployable electrode arrays for brain interfaces: structural reconfiguration str"},{"pmid":"41251192","idea":"Why does the relationship between Euclidean distance to sEEG-EF and seizure reduction disappear at long-term follow-up despite being significant at 1-year in strong responders?","paper_title":"sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multice"},{"pmid":"41282745","idea":"How do thalamic stimulation effects translate to long-term seizure outcome reduction in individual patients?","paper_title":"Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulati"},{"pmid":"41105471","idea":"Can interictal HFOs and PAC serve as reliable spatial biomarkers for RNS targeting across diverse patient populations and epilepsy types?","paper_title":"Optimizing responsive neurostimulation targeting based on interictal high-freque"},{"pmid":"40967238","idea":"How can personalized whole-brain models be optimized to improve prediction accuracy of individual seizure propagation patterns?","paper_title":"Personalized whole-brain models of seizure propagation."},{"pmid":"40993190","idea":"How can brain signal decoding be optimized for reliable real-time clinical implementation across diverse patient populations and implant types?","paper_title":"Invasive neurophysiology and whole brain connectomics for neural decoding in pat"},{"pmid":"40601969","idea":"How can AI/ML models be effectively translated to clinical settings given interpatient variability?","paper_title":"Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy."},{"pmid":"40630858","idea":"How do different phase-amplitude coupling frequencies and parameters optimize seizure suppression across different patient populations?","paper_title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation pa"}],"top_ideas":[{"rank":"","title":"","score":"","novelty":7,"tvb":10,"clinical":8,"summary":"Integrating multi-omic data, neuroimaging, computational simulations, and AI systems to create patient-specific digital models for personalized diagno"},{"rank":"","title":"","score":"","novelty":7,"tvb":9,"clinical":9,"summary":"Identifying quantitative computational and electrophysiological biomarkers predicting surgical outcomes, RNS responses, and DBS efficacy using network"},{"rank":"","title":"","score":"","novelty":7,"tvb":9,"clinical":8,"summary":"Using connectivity metrics, network influence measures, and circuit-based approaches to identify optimal brain stimulation locations beyond seizure on"},{"rank":"","title":"","score":"","novelty":5,"tvb":10,"clinical":8,"summary":"Developing and validating patient-specific neural mass and network models to predict seizure propagation, optimize surgical targeting, and guide neuro"},{"rank":"","title":"","score":"","novelty":7,"tvb":7,"clinical":9,"summary":"Designing real-time systems that dynamically adjust stimulation parameters based on brain state estimation and physiological feedback, including reinf"},{"rank":"","title":"","score":"","novelty":7,"tvb":7,"clinical":8,"summary":"Developing methods to optimize stimulation parameters and complex waveforms at the individual level through computational modeling, artifact-free reco"},{"rank":"","title":"","score":"","novelty":5,"tvb":9,"clinical":8,"summary":"Identifying epileptogenic networks, analyzing seizure propagation pathways, characterizing secondary foci, and mapping multi-lobar involvement using f"},{"rank":"","title":"","score":"","novelty":6,"tvb":8,"clinical":8,"summary":"Characterizing anterior and centromedian thalamic stimulation mechanisms, optimizing parameters for absence and neocortical seizures, and investigatin"},{"rank":"","title":"","score":"","novelty":6,"tvb":6,"clinical":9,"summary":"Investigating mechanisms of RNS-induced seizure suppression, identifying biomarkers predicting long-term responder status, and characterizing network "},{"rank":"","title":"","score":"","novelty":6,"tvb":7,"clinical":8,"summary":"Developing continuous forecasting systems predicting seizure risk at short-term, circadian, and multidien timescales using biomarkers, machine learnin"},{"rank":"","title":"","score":"","novelty":6,"tvb":8,"clinical":7,"summary":"Using CCEP-derived transfer functions, in-degree connectivity, and amplitude responses to predict optimal stimulation parameters, map seizure zones, a"},{"rank":"","title":"","score":"","novelty":5,"tvb":10,"clinical":6,"summary":"Using bifurcation analysis and Epileptor model extensions to characterize seizure mechanisms, design parameter modifications, and develop closed-loop "},{"rank":"","title":"","score":"","novelty":5,"tvb":9,"clinical":7,"summary":"Incorporating structural connectivity heterogeneity, regional excitability variations, and white matter organization into random walk and network mode"},{"rank":"","title":"","score":"","novelty":6,"tvb":7,"clinical":8,"summary":"Investigating how DBS suppresses seizures through potassium accumulation, axonal depolarization block, desynchronization, and whole-brain network modu"},{"rank":"","title":"","score":"","novelty":7,"tvb":8,"clinical":6,"summary":"Examining stimulus-induced shifts from integrated to distributed connectivity patterns and relating network topology evolution to seizure zone propert"}]};
 </script>
 
 <!-- ══════════════════════════════════════════════

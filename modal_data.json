@@ -1,0 +1,338 @@
+{
+  "papers": [
+    {
+      "pmid": "41923273",
+      "title": "Functional Segregation of Epileptogenicity within the Human Amygdala.",
+      "year": "2026",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41923273/"
+    },
+    {
+      "pmid": "41914206",
+      "title": "Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.",
+      "year": "2026",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41914206/"
+    },
+    {
+      "pmid": "41863185",
+      "title": "Responsive neurostimulation in children, adolescents, and young Adults-Longitudinal effectiveness and safety.",
+      "year": "2026",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41863185/"
+    },
+    {
+      "pmid": "41567348",
+      "title": "Large language models for neurology: a mini review.",
+      "year": "2026",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41567348/"
+    },
+    {
+      "pmid": "41758135",
+      "title": "SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-Derived Biomarkers.",
+      "year": "2026",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41758135/"
+    },
+    {
+      "pmid": "41460946",
+      "title": "Ion dynamics underlying the seizure delay effect of low-frequency electrical stimulation.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41460946/"
+    },
+    {
+      "pmid": "41358301",
+      "title": "Individual-specific resting-state networks predict language dominance in drug-resistant epilepsy.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41358301/"
+    },
+    {
+      "pmid": "41183383",
+      "title": "Deployable electrode arrays for brain interfaces: structural reconfiguration strategies for long-term stability and high-fidelity recording-a review.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41183383/"
+    },
+    {
+      "pmid": "41251192",
+      "title": "sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multicenter retrospective study of the efficacy and safety of depth electrode-mediated neuromodulation.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41251192/"
+    },
+    {
+      "pmid": "41282745",
+      "title": "Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulation.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41282745/"
+    },
+    {
+      "pmid": "41105471",
+      "title": "Optimizing responsive neurostimulation targeting based on interictal high-frequency oscillations and phase-amplitude coupling.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41105471/"
+    },
+    {
+      "pmid": "40967238",
+      "title": "Personalized whole-brain models of seizure propagation.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40967238/"
+    },
+    {
+      "pmid": "40993190",
+      "title": "Invasive neurophysiology and whole brain connectomics for neural decoding in patients with brain implants.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40993190/"
+    },
+    {
+      "pmid": "40601969",
+      "title": "Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40601969/"
+    },
+    {
+      "pmid": "40630858",
+      "title": "Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation paradigm for seizure abolishment.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40630858/"
+    },
+    {
+      "pmid": "40354815",
+      "title": "Memory optimized random forest classifier for EEG seizure detection in implantable monitoring and closed-loop neurostimulation devices.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40354815/"
+    },
+    {
+      "pmid": "40423629",
+      "title": "Deep learning on brief interictal intracranial recordings can accurately characterize seizure onset zones.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40423629/"
+    },
+    {
+      "pmid": "40294526",
+      "title": "Stereo-electroencephalography in the setting of a preexisting deep brain stimulation device: illustrative case.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40294526/"
+    },
+    {
+      "pmid": "40215461",
+      "title": "Virtual epilepsy patient cohort: Generation and evaluation.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40215461/"
+    },
+    {
+      "pmid": "40185725",
+      "title": "Stimulation mapping and whole-brain modeling reveal gradients of excitability and recurrence in cortical networks.",
+      "year": "2025",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40185725/"
+    }
+  ],
+  "sample_ideas": [
+    {
+      "pmid": "41923273",
+      "idea": "What are the specific neuronal and cytoarchitectural mechanisms underlying the differential epileptogenicity of amygdala nuclei?",
+      "paper_title": "Functional Segregation of Epileptogenicity within the Human Amygdala."
+    },
+    {
+      "pmid": "41914206",
+      "idea": "Who is most likely to benefit from neuromodulation therapy in drug-resistant epilepsy?",
+      "paper_title": "Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy."
+    },
+    {
+      "pmid": "41863185",
+      "idea": "What are the mechanisms underlying the dynamic nature of seizure control trajectories in RNS-treated patients over time?",
+      "paper_title": "Responsive neurostimulation in children, adolescents, and young Adults-Longitudi"
+    },
+    {
+      "pmid": "41567348",
+      "idea": "How can large language models be made more reliable and robust for clinical neurology applications?",
+      "paper_title": "Large language models for neurology: a mini review."
+    },
+    {
+      "pmid": "41758135",
+      "idea": "How do SeizureFormer predictions generalize to larger patient populations beyond the five patients tested?",
+      "paper_title": "SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-D"
+    },
+    {
+      "pmid": "41460946",
+      "idea": "What are the biological mechanisms underlying spontaneous and recurrent transition to seizures in the epileptic brain?",
+      "paper_title": "Ion dynamics underlying the seizure delay effect of low-frequency electrical sti"
+    },
+    {
+      "pmid": "41358301",
+      "idea": "How does individual-specific network topography vary across different seizure onset zones and epilepsy types?",
+      "paper_title": "Individual-specific resting-state networks predict language dominance in drug-re"
+    },
+    {
+      "pmid": "41183383",
+      "idea": "How can deployment mechanisms be optimized to achieve both maximal spatial coverage and minimal insertion trauma?",
+      "paper_title": "Deployable electrode arrays for brain interfaces: structural reconfiguration str"
+    },
+    {
+      "pmid": "41251192",
+      "idea": "Why does the relationship between Euclidean distance to sEEG-EF and seizure reduction disappear at long-term follow-up despite being significant at 1-year in strong responders?",
+      "paper_title": "sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multice"
+    },
+    {
+      "pmid": "41282745",
+      "idea": "How do thalamic stimulation effects translate to long-term seizure outcome reduction in individual patients?",
+      "paper_title": "Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulati"
+    },
+    {
+      "pmid": "41105471",
+      "idea": "Can interictal HFOs and PAC serve as reliable spatial biomarkers for RNS targeting across diverse patient populations and epilepsy types?",
+      "paper_title": "Optimizing responsive neurostimulation targeting based on interictal high-freque"
+    },
+    {
+      "pmid": "40967238",
+      "idea": "How can personalized whole-brain models be optimized to improve prediction accuracy of individual seizure propagation patterns?",
+      "paper_title": "Personalized whole-brain models of seizure propagation."
+    },
+    {
+      "pmid": "40993190",
+      "idea": "How can brain signal decoding be optimized for reliable real-time clinical implementation across diverse patient populations and implant types?",
+      "paper_title": "Invasive neurophysiology and whole brain connectomics for neural decoding in pat"
+    },
+    {
+      "pmid": "40601969",
+      "idea": "How can AI/ML models be effectively translated to clinical settings given interpatient variability?",
+      "paper_title": "Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy."
+    },
+    {
+      "pmid": "40630858",
+      "idea": "How do different phase-amplitude coupling frequencies and parameters optimize seizure suppression across different patient populations?",
+      "paper_title": "Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation pa"
+    }
+  ],
+  "top_ideas": [
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 7,
+      "tvb": 10,
+      "clinical": 8,
+      "summary": "Integrating multi-omic data, neuroimaging, computational simulations, and AI systems to create patient-specific digital models for personalized diagno"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 7,
+      "tvb": 9,
+      "clinical": 9,
+      "summary": "Identifying quantitative computational and electrophysiological biomarkers predicting surgical outcomes, RNS responses, and DBS efficacy using network"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 7,
+      "tvb": 9,
+      "clinical": 8,
+      "summary": "Using connectivity metrics, network influence measures, and circuit-based approaches to identify optimal brain stimulation locations beyond seizure on"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 5,
+      "tvb": 10,
+      "clinical": 8,
+      "summary": "Developing and validating patient-specific neural mass and network models to predict seizure propagation, optimize surgical targeting, and guide neuro"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 7,
+      "tvb": 7,
+      "clinical": 9,
+      "summary": "Designing real-time systems that dynamically adjust stimulation parameters based on brain state estimation and physiological feedback, including reinf"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 7,
+      "tvb": 7,
+      "clinical": 8,
+      "summary": "Developing methods to optimize stimulation parameters and complex waveforms at the individual level through computational modeling, artifact-free reco"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 5,
+      "tvb": 9,
+      "clinical": 8,
+      "summary": "Identifying epileptogenic networks, analyzing seizure propagation pathways, characterizing secondary foci, and mapping multi-lobar involvement using f"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 6,
+      "tvb": 8,
+      "clinical": 8,
+      "summary": "Characterizing anterior and centromedian thalamic stimulation mechanisms, optimizing parameters for absence and neocortical seizures, and investigatin"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 6,
+      "tvb": 6,
+      "clinical": 9,
+      "summary": "Investigating mechanisms of RNS-induced seizure suppression, identifying biomarkers predicting long-term responder status, and characterizing network "
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 6,
+      "tvb": 7,
+      "clinical": 8,
+      "summary": "Developing continuous forecasting systems predicting seizure risk at short-term, circadian, and multidien timescales using biomarkers, machine learnin"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 6,
+      "tvb": 8,
+      "clinical": 7,
+      "summary": "Using CCEP-derived transfer functions, in-degree connectivity, and amplitude responses to predict optimal stimulation parameters, map seizure zones, a"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 5,
+      "tvb": 10,
+      "clinical": 6,
+      "summary": "Using bifurcation analysis and Epileptor model extensions to characterize seizure mechanisms, design parameter modifications, and develop closed-loop "
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 5,
+      "tvb": 9,
+      "clinical": 7,
+      "summary": "Incorporating structural connectivity heterogeneity, regional excitability variations, and white matter organization into random walk and network mode"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 6,
+      "tvb": 7,
+      "clinical": 8,
+      "summary": "Investigating how DBS suppresses seizures through potassium accumulation, axonal depolarization block, desynchronization, and whole-brain network modu"
+    },
+    {
+      "rank": "",
+      "title": "",
+      "score": "",
+      "novelty": 7,
+      "tvb": 8,
+      "clinical": 6,
+      "summary": "Examining stimulus-induced shifts from integrated to distributed connectivity patterns and relating network topology evolution to seizure zone propert"
+    }
+  ]
+}
