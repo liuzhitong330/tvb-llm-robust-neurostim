@@ -943,6 +943,20 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      INTERACTIVE DEMO
 ══════════════════════════════════════════════ -->
 <section>
+<section style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
+  <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">3D brain activity map</h2>
+  <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">76 cortical and subcortical regions from The Virtual Brain connectome. Color encodes seizure intensity — red = high activity, blue = low activity. Drag to rotate.</p>
+  <div style="display:flex;gap:12px;margin-bottom:1rem;">
+    <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'baseline'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Baseline</button>
+    <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'optimized'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Optimized</button>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+      <span style="font-size:12px;color:var(--color-text-secondary);">Low</span>
+      <div style="width:120px;height:10px;border-radius:5px;background:linear-gradient(to right,#2196f3,#ff5722);"></div>
+      <span style="font-size:12px;color:var(--color-text-secondary);">High seizure activity</span>
+    </div>
+  </div>
+  <iframe id="brain-iframe" src="brain3d.html" style="width:100%;height:500px;border:none;border-radius:var(--border-radius-lg);"></iframe>
+</section>
   <div class="section-title">Interactive Parameter Explorer</div>
   <div class="section-sub">Adjust stimulation parameters to see per-patient rewards from the precomputed TVB simulation grid.</div>
 
