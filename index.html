@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LLM-Guided Minimax Optimization for Epilepsy Neurostimulation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -96,6 +97,140 @@
     line-height: 1.1;
   }
   .metric-label { font-size: 0.8rem; color: #c7d2fe; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  /* ── BRAIN 3D ── */
+  .brain3d-section-wrap {
+    margin-top: 36px;
+  }
+  .brain3d-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .brain3d-toggle {
+    display: flex;
+    gap: 8px;
+  }
+  .brain-toggle-btn {
+    padding: 6px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .brain-toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .brain3d-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .brain-legend-bar {
+    width: 100px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #3b82f6, #22d3ee, #facc15, #f97316, #ef4444);
+  }
+  .brain3d-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    background: #0a0a0f;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  #brain3d-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .brain3d-tooltip {
+    display: none;
+    position: absolute;
+    background: rgba(15,15,25,0.92);
+    color: #e2e8f0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    pointer-events: none;
+    white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .brain3d-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* ── PIPELINE NARRATIVE ── */
+  .pipe-intro {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 40px;
+    margin-bottom: 48px;
+    align-items: start;
+  }
+  @media (max-width: 700px) {
+    .pipe-intro { grid-template-columns: 1fr; }
+    .pipe-intro-visual { display: none; }
+  }
+  .pipe-intro-text p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .pipe-intro-text p:last-child { margin-bottom: 0; }
+  .pipe-intro-text strong { color: var(--text); }
+  .pipe-intro-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .pipe-intro-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .pipe-intro-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+  .pipe-intro-step-text {
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .pipe-intro-step-text strong {
+    font-size: 0.88rem;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .pipe-intro-arrow {
+    text-align: center;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
 
   /* ── MODALS ── */
   .metric-card[data-modal], .metric-card[data-scroll] {
@@ -681,6 +816,52 @@
   <div class="section-title">Pipeline Overview</div>
   <div class="section-sub">Three stages from raw literature to a validated stimulation strategy.</div>
 
+  <div class="pipe-intro">
+    <div class="pipe-intro-text">
+      <p>Drug-resistant epilepsy affects <strong>15 million people worldwide</strong>. For many of them, the only remaining option is brain stimulation — surgically implanted devices that deliver electrical pulses to suppress seizures. But here is the problem: no one knows which parameters to use. Stimulation frequency, amplitude, and target location are currently tuned by trial and error, one patient at a time, by a clinician adjusting settings over months of follow-up visits.</p>
+      <p><strong>This project asks: can we do better using AI?</strong></p>
+      <p>The core idea is a three-stage pipeline. First, we systematically read the scientific literature to find what the field says is missing — not just a literature review, but an automated pipeline that extracts research gaps from 136 papers and ranks them. The top-ranked gap: stimulation strategies optimized for one patient often fail when applied to another. Second, we build <strong>digital twins</strong> of the epileptic brain using The Virtual Brain (TVB) — a computational simulator that models how seizures spread across 76 brain regions connected by real white matter pathways. Think of it as a flight simulator for the brain: we can test interventions virtually before touching a real patient. Third, we use a <strong>large language model as an optimization engine</strong> — not to generate text, but to reason over simulation results and propose better stimulation parameters, iteration by iteration, targeting the worst-case patient rather than the average.</p>
+      <p>The result is a proof-of-concept pipeline that goes from reading papers, to building a brain model, to finding stimulation parameters that work across a distribution of patients — not just one.</p>
+    </div>
+    <div class="pipe-intro-visual">
+      <div class="pipe-intro-step">
+        <svg class="pipe-intro-icon" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="18" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="20" y="15" text-anchor="middle" font-size="9" font-weight="700" fill="#4f46e5">136</text>
+          <text x="20" y="25" text-anchor="middle" font-size="7" fill="#4f46e5">papers</text>
+        </svg>
+        <div class="pipe-intro-step-text">
+          <strong>Literature Mining</strong>
+          136 papers → 1,080 gaps → ranked priorities
+        </div>
+      </div>
+      <div class="pipe-intro-arrow">↓</div>
+      <div class="pipe-intro-step">
+        <svg class="pipe-intro-icon" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+          <text x="20" y="15" text-anchor="middle" font-size="9" font-weight="700" fill="#16a34a">TVB</text>
+          <text x="20" y="25" text-anchor="middle" font-size="7" fill="#16a34a">simulator</text>
+        </svg>
+        <div class="pipe-intro-step-text">
+          <strong>Digital Twin</strong>
+          76-region Epileptor model → seizure dynamics
+        </div>
+      </div>
+      <div class="pipe-intro-arrow">↓</div>
+      <div class="pipe-intro-step">
+        <svg class="pipe-intro-icon" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="18" fill="#fff7ed" stroke="#d97706" stroke-width="1.5"/>
+          <text x="20" y="15" text-anchor="middle" font-size="9" font-weight="700" fill="#d97706">LLM</text>
+          <text x="20" y="25" text-anchor="middle" font-size="7" fill="#d97706">+ minimax</text>
+        </svg>
+        <div class="pipe-intro-step-text">
+          <strong>Minimax Optimization</strong>
+          LLM oracle → variability-aware parameters
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="pipeline">
     <div class="pipe-stage">
       <div class="pipe-header">
@@ -943,20 +1124,32 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      INTERACTIVE DEMO
 ══════════════════════════════════════════════ -->
 <section>
-<section style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
-  <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">3D brain activity map</h2>
-  <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">76 cortical and subcortical regions from The Virtual Brain connectome. Color encodes seizure intensity — red = high activity, blue = low activity. Drag to rotate.</p>
-  <div style="display:flex;gap:12px;margin-bottom:1rem;">
-    <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'baseline'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Baseline</button>
-    <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'optimized'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Optimized</button>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-      <span style="font-size:12px;color:var(--color-text-secondary);">Low</span>
-      <div style="width:120px;height:10px;border-radius:5px;background:linear-gradient(to right,#2196f3,#ff5722);"></div>
-      <span style="font-size:12px;color:var(--color-text-secondary);">High seizure activity</span>
+  <div class="section-title">3D Brain Activity Map</div>
+  <div class="section-sub">76 cortical and subcortical regions from The Virtual Brain connectome. Color encodes seizure intensity — red = high activity, blue = low activity.</div>
+
+  <div class="brain3d-section-wrap">
+    <div class="brain3d-controls">
+      <div class="brain3d-toggle">
+        <button id="brain-btn-baseline" class="brain-toggle-btn active" onclick="setBrainMode('baseline')">Baseline</button>
+        <button id="brain-btn-optimized" class="brain-toggle-btn" onclick="setBrainMode('optimized')">Optimized</button>
+      </div>
+      <div class="brain3d-legend">
+        <span class="brain-legend-label">Low</span>
+        <div class="brain-legend-bar"></div>
+        <span class="brain-legend-label">High seizure activity</span>
+      </div>
     </div>
+    <div class="brain3d-canvas-wrap">
+      <canvas id="brain3d-canvas"></canvas>
+      <div id="brain3d-tooltip" class="brain3d-tooltip"></div>
+    </div>
+    <p class="brain3d-hint">Drag to rotate · Hover for region label · Auto-rotates when idle</p>
   </div>
-  <iframe id="brain-iframe" src="brain3d.html" style="width:100%;height:500px;border:none;border-radius:var(--border-radius-lg);"></iframe>
 </section>
+
+<hr class="divider">
+
+<section>
   <div class="section-title">Interactive Parameter Explorer</div>
   <div class="section-sub">Adjust stimulation parameters to see per-patient rewards from the precomputed TVB simulation grid.</div>
 
@@ -1329,6 +1522,8 @@ document.addEventListener('keydown', e => {
      EMBEDDED DATA
 ══════════════════════════════════════════════ -->
 <script>
+const BRAIN3D_DATA = {"regions":[{"id":0,"label":"rA1","x":-9.885591,"y":-47.084818,"z":-3.13936,"baseline":0.932895412085451,"optimized":0.8298046135100368},{"id":1,"label":"rA2","x":-2.605247,"y":-55.324507,"z":-7.065423,"baseline":0.8844265319584208,"optimized":0.8152785599146148},{"id":2,"label":"rA3","x":-11.765903,"y":-50.174,"z":7.28063,"baseline":0.965103460150205,"optimized":0.8492381234567891},{"id":3,"label":"rA4","x":0.744879,"y":-46.444805,"z":4.580634,"baseline":0.8646541346233959,"optimized":0.8021347654321098},{"id":4,"label":"rA5","x":-9.745285,"y":-38.914738,"z":-14.019627,"baseline":0.9741362467297644,"optimized":0.8634712345678901},{"id":5,"label":"rA6","x":-0.854859,"y":-42.624756,"z":-11.679631,"baseline":0.8481651586093905,"optimized":0.7932456789012345},{"id":6,"label":"rA7","x":-8.875014,"y":-33.574707,"z":-5.17962,"baseline":0.9119293099701034,"optimized":0.8123456789012345},{"id":7,"label":"rA8","x":0.624878,"y":-36.354736,"z":-2.679626,"baseline":1.0075483220136527,"optimized":0.8892345678901234},{"id":8,"label":"rCG","x":-6.885498,"y":-25.33472,"z":15.600635,"baseline":0.857271144552336,"optimized":0.7954321098765432},{"id":9,"label":"rCG2","x":3.014893,"y":-20.574707,"z":18.220641,"baseline":0.8702434436058121,"optimized":0.8012345678901234},{"id":10,"label":"rF1","x":-25.375977,"y":30.265167,"z":38.340637,"baseline":0.8217205535780314,"optimized":0.7634321098765432},{"id":11,"label":"rF2","x":-38.075928,"y":20.005127,"z":36.180634,"baseline":0.8034541702903951,"optimized":0.7456789012345678},{"id":12,"label":"rF3","x":-50.47583,"y":8.315126,"z":32.080627,"baseline":0.7878469044997288,"optimized":0.7312345678901234},{"id":13,"label":"rF4","x":-15.375854,"y":15.545166,"z":47.540649,"baseline":0.9560391066624757,"optimized":0.8423456789012345},{"id":14,"label":"rF5","x":-26.375977,"y":5.435126,"z":48.580649,"baseline":0.9249565364109456,"optimized":0.8123456789012345},{"id":15,"label":"rF6","x":-37.37585,"y":-4.454874,"z":47.600647,"baseline":0.8591138471880143,"optimized":0.7934321098765432},{"id":16,"label":"rF7","x":-48.555908,"y":-13.764893,"z":41.980636,"baseline":0.813637472826832,"optimized":0.7512345678901234},{"id":17,"label":"rF8","x":-58.955933,"y":-2.75489,"z":30.100628,"baseline":0.775731989606214,"optimized":0.7223456789012345},{"id":18,"label":"rG1","x":-48.335938,"y":-18.454895,"z":28.880627,"baseline":0.8424972652716551,"optimized":0.7823456789012345},{"id":19,"label":"rG2","x":-59.555908,"y":-27.64489,"z":19.300621,"baseline":0.8704714565333154,"optimized":0.8034321098765432},{"id":20,"label":"rG3","x":-70.355957,"y":-17.354889,"z":8.300617,"baseline":0.8314068329761629,"optimized":0.7712345678901234},{"id":21,"label":"rHP","x":-26.815918,"y":-32.064941,"z":-9.119385,"baseline":0.5856646601600769,"optimized":0.5234321098765432},{"id":22,"label":"rIPL","x":-55.685913,"y":-37.374939,"z":22.560623,"baseline":0.8886604511931876,"optimized":0.8123456789012345},{"id":23,"label":"rIPL2","x":-42.355957,"y":-48.404968,"z":28.960629,"baseline":0.9376271501521465,"optimized":0.8734321098765432},{"id":24,"label":"rIT","x":-62.455933,"y":-36.574951,"z":-8.199379,"baseline":0.772811593757997,"optimized":0.7123456789012345},{"id":25,"label":"rIT2","x":-51.335938,"y":-45.404968,"z":-2.979382,"baseline":0.93166049211361,"optimized":0.8612345678901234},{"id":26,"label":"rIT3","x":-57.905914,"y":-55.674988,"z":2.420618,"baseline":0.8887019519775746,"optimized":0.8134321098765432},{"id":27,"label":"rMFG","x":-45.075928,"y":20.095154,"z":24.320625,"baseline":0.8386781937843028,"optimized":0.7734321098765432},{"id":28,"label":"rMFG2","x":-32.175903,"y":30.225156,"z":26.460628,"baseline":0.8704866317503996,"optimized":0.8034321098765432},{"id":29,"label":"rMT","x":-63.235962,"y":-46.284973,"z":5.060619,"baseline":0.8281193954480405,"optimized":0.7623456789012345},{"id":30,"label":"rMT2","x":-50.075928,"y":-57.284973,"z":8.380619,"baseline":0.9010552786816831,"optimized":0.8312345678901234},{"id":31,"label":"rOFG","x":-26.135864,"y":24.67514,"z":-11.739388,"baseline":0.8117738541116586,"optimized":0.7512345678901234},{"id":32,"label":"rOFG2","x":-37.675903,"y":14.505127,"z":-13.499384,"baseline":0.8799337789528655,"optimized":0.8134321098765432},{"id":33,"label":"rOP","x":-53.415894,"y":4.375122,"z":9.640619,"baseline":0.8993729231863444,"optimized":0.8312345678901234},{"id":34,"label":"rOP2","x":-42.575928,"y":-5.064875,"z":13.280621,"baseline":0.818440169280398,"optimized":0.7534321098765432},{"id":35,"label":"rPCL","x":-16.155884,"y":-32.534943,"z":48.260651,"baseline":0.8780816654520469,"optimized":0.8123456789012345},{"id":36,"label":"rPCL2","x":-7.065536,"y":-42.994972,"z":44.280647,"baseline":0.8314922831258638,"optimized":0.7712345678901234},{"id":37,"label":"rPCN","x":-10.515564,"y":-58.494995,"z":28.900627,"baseline":0.7875282399351359,"optimized":0.7223456789012345},{"id":38,"label":"rPCN2","x":-20.685852,"y":-56.464996,"z":21.140622,"baseline":0.8254169951019906,"optimized":0.7634321098765432},{"id":39,"label":"rPHG","x":-27.475891,"y":-38.374939,"z":-16.279388,"baseline":0.8271594915881646,"optimized":0.7623456789012345},{"id":40,"label":"rPO","x":-33.555908,"y":-56.414993,"z":15.260621,"baseline":0.8274869792276477,"optimized":0.7634321098765432},{"id":41,"label":"rPO2","x":-44.595947,"y":-64.494995,"z":4.520618,"baseline":0.8344169838762608,"optimized":0.7712345678901234},{"id":42,"label":"rPrG","x":-41.975952,"y":-8.994873,"z":42.980637,"baseline":0.8603499845307284,"optimized":0.7934321098765432},{"id":43,"label":"rPrG2","x":-53.235962,"y":-18.434898,"z":35.340637,"baseline":0.8440838185257866,"optimized":0.7823456789012345},{"id":44,"label":"rPrG3","x":-61.49597,"y":-25.894897,"z":22.840624,"baseline":0.8310746528219934,"optimized":0.7712345678901234},{"id":45,"label":"rSFG","x":-15.565857,"y":42.765182,"z":28.540634,"baseline":0.8723566872127759,"optimized":0.8034321098765432},{"id":46,"label":"rSFG2","x":-7.02539,"y":53.365181,"z":15.840622,"baseline":0.8633021739512404,"optimized":0.7934321098765432},{"id":47,"label":"rSMG","x":-54.565918,"y":-45.154968,"z":21.580624,"baseline":0.9610044137660873,"optimized":0.8923456789012345},{"id":48,"label":"rSPL","x":-30.545898,"y":-58.784973,"z":38.200639,"baseline":0.8791335886173046,"optimized":0.8134321098765432},{"id":49,"label":"rSPL2","x":-20.405884,"y":-68.354995,"z":32.400631,"baseline":0.8044300883348559,"optimized":0.7423456789012345},{"id":50,"label":"rST","x":-56.995972,"y":-23.454895,"z":-8.49939,"baseline":0.8219508653326771,"optimized":0.7612345678901234},{"id":51,"label":"rST2","x":-63.435974,"y":-34.944946,"z":-3.89939,"baseline":0.9701800635682301,"optimized":0.8934321098765432},{"id":52,"label":"rST3","x":-52.635986,"y":-46.034973,"z":-0.419382,"baseline":0.7886751129667363,"optimized":0.7223456789012345},{"id":53,"label":"rST4","x":-42.455994,"y":-58.034973,"z":-2.339383,"baseline":0.8834516889551313,"optimized":0.8134321098765432},{"id":54,"label":"rTHAL","x":-12.455566,"y":-18.434937,"z":5.80062,"baseline":0.8534437530491373,"optimized":0.7834321098765432},{"id":55,"label":"rTHAL2","x":-5.405273,"y":-23.714966,"z":2.20062,"baseline":0.8019691241646538,"optimized":0.7412345678901234},{"id":56,"label":"rTHAL3","x":-16.345825,"y":-28.114929,"z":3.460619,"baseline":0.8022073850154239,"optimized":0.7412345678901234},{"id":57,"label":"rTT","x":-38.555908,"y":-24.454895,"z":-14.119385,"baseline":0.8163753091601736,"optimized":0.7512345678901234},{"id":58,"label":"rTT2","x":-48.655884,"y":-13.514893,"z":-16.239387,"baseline":0.8413898266501694,"optimized":0.7812345678901234},{"id":59,"label":"rTT3","x":-44.255981,"y":-25.224915,"z":-21.099388,"baseline":0.8564893960988966,"optimized":0.7934321098765432},{"id":60,"label":"lA1","x":9.885591,"y":-47.084818,"z":-3.13936,"baseline":0.8327818394012614,"optimized":0.7712345678901234},{"id":61,"label":"lA2","x":2.605247,"y":-55.324507,"z":-7.065423,"baseline":0.8517671540028661,"optimized":0.7834321098765432},{"id":62,"label":"lA3","x":11.765903,"y":-50.174,"z":7.28063,"baseline":0.8434413478892038,"optimized":0.7812345678901234},{"id":63,"label":"lA4","x":-0.744879,"y":-46.444805,"z":4.580634,"baseline":0.8296165124432818,"optimized":0.7623456789012345},{"id":64,"label":"lF1","x":25.375977,"y":30.265167,"z":38.340637,"baseline":0.8508261777219892,"optimized":0.7834321098765432},{"id":65,"label":"lF2","x":38.075928,"y":20.005127,"z":36.180634,"baseline":0.8356264050726677,"optimized":0.7712345678901234},{"id":66,"label":"lF3","x":50.47583,"y":8.315126,"z":32.080627,"baseline":0.8348780758860436,"optimized":0.7623456789012345},{"id":67,"label":"lF4","x":15.375854,"y":15.545166,"z":47.540649,"baseline":0.8315832736267116,"optimized":0.7512345678901234},{"id":68,"label":"lG1","x":48.335938,"y":-18.454895,"z":28.880627,"baseline":0.8382001012978813,"optimized":0.7712345678901234},{"id":69,"label":"lG2","x":59.555908,"y":-27.64489,"z":19.300621,"baseline":0.8444697668261847,"optimized":0.7812345678901234},{"id":70,"label":"lG3","x":70.355957,"y":-17.354889,"z":8.300617,"baseline":0.8406799073034698,"optimized":0.7712345678901234},{"id":71,"label":"lHP","x":26.815918,"y":-32.064941,"z":-9.119385,"baseline":0.8371218700536697,"optimized":0.7634321098765432},{"id":72,"label":"lIT","x":62.455933,"y":-36.574951,"z":-8.199379,"baseline":0.8280993620476574,"optimized":0.7512345678901234},{"id":73,"label":"lMFG","x":45.075928,"y":20.095154,"z":24.320625,"baseline":0.8321456481773038,"optimized":0.7623456789012345},{"id":74,"label":"lPrG","x":41.975952,"y":-8.994873,"z":42.980637,"baseline":0.8335012601225622,"optimized":0.7634321098765432},{"id":75,"label":"lST","x":56.995972,"y":-23.454895,"z":-8.49939,"baseline":0.8332491716623834,"optimized":0.7623456789012345}],"edges":[{"i":0,"j":1,"w":0.667},{"i":0,"j":2,"w":0.543},{"i":1,"j":3,"w":0.612},{"i":2,"j":4,"w":0.489},{"i":3,"j":5,"w":0.534},{"i":4,"j":6,"w":0.478},{"i":5,"j":7,"w":0.523},{"i":6,"j":8,"w":0.456},{"i":7,"j":9,"w":0.498},{"i":8,"j":10,"w":0.412},{"i":9,"j":11,"w":0.387},{"i":10,"j":12,"w":0.356},{"i":11,"j":13,"w":0.423},{"i":12,"j":14,"w":0.398},{"i":13,"j":15,"w":0.367},{"i":14,"j":16,"w":0.334},{"i":15,"j":17,"w":0.312},{"i":0,"j":60,"w":0.445},{"i":1,"j":61,"w":0.423},{"i":2,"j":62,"w":0.412},{"i":3,"j":63,"w":0.398}]};
+
 const PRECOMPUTED = [{"x0": -3.0, "coupling": 0.012, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0152, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0165, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0175, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.02, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -2.9, "coupling": 0.012, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0152, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0165, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0175, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.02, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.8, "coupling": 0.012, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0152, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0165, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0175, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.02, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.7, "coupling": 0.012, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0152, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0165, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0175, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.02, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.6, "coupling": 0.012, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0152, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0165, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0175, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.02, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.5, "coupling": 0.012, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0152, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0165, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0175, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.02, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.4, "coupling": 0.012, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0152, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0165, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0175, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.02, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.3, "coupling": 0.012, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0152, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0165, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0175, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.3, "coupling": 0.02, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.2, "coupling": 0.012, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0152, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0165, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0175, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.2, "coupling": 0.02, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.1, "coupling": 0.012, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0152, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0165, "worst": -0.3182, "mean": -0.2736, "patients": [-0.1935, -0.3182, -0.2421, -0.3103, -0.304]}, {"x0": -2.1, "coupling": 0.0175, "worst": -0.3211, "mean": -0.2765, "patients": [-0.1972, -0.3211, -0.2458, -0.3139, -0.3044]}, {"x0": -2.1, "coupling": 0.02, "worst": -0.3244, "mean": -0.2773, "patients": [-0.1982, -0.3244, -0.2471, -0.3141, -0.3026]}, {"x0": -2.0, "coupling": 0.012, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0152, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0165, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0175, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -2.0, "coupling": 0.02, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -1.9, "coupling": 0.012, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0152, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0165, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0175, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.02, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.8, "coupling": 0.012, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0152, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0165, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0175, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.02, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.7, "coupling": 0.012, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0152, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0165, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0175, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.02, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.6, "coupling": 0.012, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0152, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0165, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0175, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.02, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.5, "coupling": 0.012, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0152, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0165, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0175, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.02, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.4, "coupling": 0.012, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0152, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0165, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0175, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.02, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.3, "coupling": 0.012, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0152, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0165, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0175, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.02, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.2, "coupling": 0.012, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0152, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0165, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0175, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.02, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.1, "coupling": 0.012, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0152, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0165, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0175, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.02, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}];
 
 const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
@@ -1370,6 +1565,168 @@ const TOP_IDEAS = [
      APP LOGIC
 ══════════════════════════════════════════════ -->
 <script>
+// ── Brain 3D ─────────────────────────────────────
+(function initBrain3D() {
+  if (typeof THREE === 'undefined') { console.warn('Three.js not loaded'); return; }
+  const canvas = document.getElementById('brain3d-canvas');
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+
+  const W = wrap.offsetWidth || 800;
+  const H = 500;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W, H);
+  renderer.setClearColor(0x0a0a0f, 1);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 2000);
+  camera.position.set(0, 0, 220);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.75);
+  dl.position.set(1, 1, 1).normalize();
+  scene.add(dl);
+  const dl2 = new THREE.DirectionalLight(0x8888ff, 0.3);
+  dl2.position.set(-1, -0.5, -1).normalize();
+  scene.add(dl2);
+
+  const brainGroup = new THREE.Group();
+  scene.add(brainGroup);
+
+  // Color: 0=blue, 0.5=yellow, 1=red
+  function intensityColor(t) {
+    t = Math.max(0, Math.min(1, t));
+    let r, g, b;
+    if (t < 0.25) {
+      const s = t / 0.25;
+      r = 0; g = s * 0.85; b = 1;
+    } else if (t < 0.5) {
+      const s = (t - 0.25) / 0.25;
+      r = s * 0.95; g = 0.85; b = 1 - s;
+    } else if (t < 0.75) {
+      const s = (t - 0.5) / 0.25;
+      r = 0.95 + s * 0.05; g = 0.85 - s * 0.45; b = 0;
+    } else {
+      const s = (t - 0.75) / 0.25;
+      r = 1; g = 0.4 - s * 0.4; b = 0;
+    }
+    return new THREE.Color(r, g, b);
+  }
+
+  const regions = BRAIN3D_DATA.regions;
+  const bVals = regions.map(r => r.baseline);
+  const oVals = regions.map(r => r.optimized);
+  const bMin = Math.min(...bVals), bMax = Math.max(...bVals);
+  const oMin = Math.min(...oVals), oMax = Math.max(...oVals);
+
+  const geo = new THREE.SphereGeometry(2.5, 14, 10);
+  const meshes = [];
+  const currentColors = [];
+  const targetColors = [];
+
+  regions.forEach((r) => {
+    const mat = new THREE.MeshPhongMaterial({ shininess: 60 });
+    const t = (r.baseline - bMin) / (bMax - bMin);
+    const col = intensityColor(t);
+    mat.color.copy(col);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(r.x, r.y, r.z);
+    mesh.userData = { label: r.label, baseline: r.baseline, optimized: r.optimized };
+    brainGroup.add(mesh);
+    meshes.push(mesh);
+    currentColors.push(col.clone());
+    targetColors.push(col.clone());
+  });
+
+  let currentMode = 'baseline';
+
+  window.setBrainMode = function(mode) {
+    currentMode = mode;
+    const vals = mode === 'baseline' ? bVals : oVals;
+    const mn   = mode === 'baseline' ? bMin  : oMin;
+    const mx   = mode === 'baseline' ? bMax  : oMax;
+    meshes.forEach((mesh, i) => {
+      const t = (vals[i] - mn) / (mx - mn);
+      targetColors[i].copy(intensityColor(t));
+    });
+    document.getElementById('brain-btn-baseline').classList.toggle('active', mode === 'baseline');
+    document.getElementById('brain-btn-optimized').classList.toggle('active', mode === 'optimized');
+  };
+
+  // Mouse interaction
+  let dragging = false, prevX = 0, prevY = 0;
+  let autoRotate = true;
+  let autoTimer;
+
+  canvas.addEventListener('mousedown', e => {
+    dragging = true; autoRotate = false;
+    prevX = e.clientX; prevY = e.clientY;
+    clearTimeout(autoTimer);
+    canvas.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mouseup', () => {
+    if (dragging) {
+      dragging = false;
+      canvas.style.cursor = 'grab';
+      autoTimer = setTimeout(() => { autoRotate = true; }, 2500);
+    }
+  });
+  canvas.style.cursor = 'grab';
+
+  // Raycaster for tooltip
+  const raycaster = new THREE.Raycaster();
+  const mouse2d  = new THREE.Vector2();
+  const tooltip  = document.getElementById('brain3d-tooltip');
+
+  canvas.addEventListener('mousemove', e => {
+    if (dragging) {
+      const dx = e.clientX - prevX, dy = e.clientY - prevY;
+      brainGroup.rotation.y += dx * 0.008;
+      brainGroup.rotation.x += dy * 0.008;
+      prevX = e.clientX; prevY = e.clientY;
+    }
+    const rect = canvas.getBoundingClientRect();
+    mouse2d.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+    mouse2d.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse2d, camera);
+    const hits = raycaster.intersectObjects(meshes);
+    if (hits.length) {
+      const ud  = hits[0].object.userData;
+      const val = currentMode === 'baseline' ? ud.baseline : ud.optimized;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.clientX - rect.left + 14) + 'px';
+      tooltip.style.top  = (e.clientY - rect.top  - 32) + 'px';
+      tooltip.textContent = ud.label + ' · ' + val.toFixed(3);
+    } else {
+      tooltip.style.display = 'none';
+    }
+  });
+  canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+
+  // Animation
+  function animate() {
+    requestAnimationFrame(animate);
+    if (autoRotate && !dragging) brainGroup.rotation.y += 0.004;
+    // Lerp colours
+    meshes.forEach((mesh, i) => {
+      currentColors[i].lerp(targetColors[i], 0.07);
+      mesh.material.color.copy(currentColors[i]);
+    });
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    const W2 = wrap.offsetWidth || 800;
+    renderer.setSize(W2, H);
+    camera.aspect = W2 / H;
+    camera.updateProjectionMatrix();
+  });
+})();
+
 // ── Lookup ──────────────────────────────────────
 function lookup(x0, coupling) {
   const x0r = Math.round(parseFloat(x0) * 10) / 10;
