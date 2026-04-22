@@ -97,6 +97,132 @@
   }
   .metric-label { font-size: 0.8rem; color: #c7d2fe; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
 
+  /* ── MECHANISTIC INSIGHTS ── */
+  .mech-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .mech-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .mech-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .mech-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 700;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+    background: #f8fafc;
+  }
+  .mech-table thead th:first-child { width: 28%; }
+  .mech-table tbody tr:nth-child(even) { background: #f8fafc; }
+  .mech-table tbody tr:nth-child(odd)  { background: #ffffff; }
+  .mech-table tbody td {
+    padding: 10px 14px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .mech-table tbody tr:last-child td { border-bottom: none; }
+  .mech-row-label {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  .mech-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .mech-badge-indigo { background: #eef2ff; color: #4338ca; }
+  .mech-badge-teal   { background: #f0fdfa; color: #0d9488; }
+  .mech-insight-box {
+    border-left: 4px solid var(--accent);
+    background: #f5f3ff;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+  }
+  .mech-insight-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #3730a3;
+    margin-bottom: 10px;
+  }
+  .mech-insight-text {
+    font-size: 0.9rem;
+    color: #3730a3;
+    line-height: 1.75;
+    margin: 0;
+  }
+  .mech-insight-text strong { color: #312e81; }
+  .mech-result-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 680px) {
+    .mech-result-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .mech-result-item {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .mech-result-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mech-result-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .mech-result-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .mech-bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .mech-bullet-list li {
+    padding-left: 16px;
+    border-left: 3px solid #c7d2fe;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .mech-bullet-heading {
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 3px;
+  }
+
   /* ── MODALS ── */
   .metric-card[data-modal], .metric-card[data-scroll] {
     cursor: pointer;
@@ -1118,6 +1244,113 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <div class="traj-card">
     <canvas id="traj-chart" height="160"></canvas>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     MECHANISTIC INSIGHTS
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Mechanistic Insights</div>
+  <div class="section-sub">Comparing intrinsic parameter tuning against external stimulation — and what the gap reveals about seizure physics.</div>
+
+  <!-- PART 1: comparison table -->
+  <div class="mech-card" style="margin-bottom:28px;">
+    <div class="mech-card-title">A Tale of Two Optimizations</div>
+    <div style="overflow-x:auto;">
+      <table class="mech-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th><span class="mech-badge mech-badge-indigo">Intrinsic (x₀)</span></th>
+            <th><span class="mech-badge mech-badge-teal">External (I<sub>ext</sub>)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mech-row-label">Optimization target</td>
+            <td>x₀ (epileptogenicity, intrinsic)</td>
+            <td>I<sub>ext</sub> (external stimulation current)</td>
+          </tr>
+          <tr>
+            <td class="mech-row-label">Improvement over baseline</td>
+            <td><strong style="color:var(--green)">+40.1%</strong></td>
+            <td><strong style="color:var(--amber)">+1.7%</strong></td>
+          </tr>
+          <tr>
+            <td class="mech-row-label">Best parameters</td>
+            <td>x₀ = −2.1, K = 0.0165</td>
+            <td>rHC, boost = 0.6</td>
+          </tr>
+          <tr>
+            <td class="mech-row-label">Core mechanism</td>
+            <td>Shifts seizure bifurcation threshold</td>
+            <td>Superimposes external signal on ongoing seizure</td>
+          </tr>
+          <tr>
+            <td class="mech-row-label">Scientific role</td>
+            <td>Theoretical upper bound</td>
+            <td>Real-world clinical challenge</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PART 2: insight callout -->
+  <div class="mech-insight-box" style="margin-bottom:28px;">
+    <div class="mech-insight-title">&#10077; A failure of external intervention?</div>
+    <p class="mech-insight-text">Experiments reveal that direct tuning of epileptogenicity (x₀) yields a <strong>20× higher suppression rate</strong> than external periodic stimulation (I<sub>ext</sub>). This points to a critical insight: epilepsy in the Epileptor model is a <strong>state-level bifurcation phenomenon</strong>. Simply superimposing a periodic signal is like trying to stop a tidal wave with a fan — a truly effective treatment must fundamentally shift the underlying neural excitability, not just perturb it from outside.</p>
+  </div>
+
+  <!-- PART 3: clinical result card -->
+  <div class="mech-card" style="margin-bottom:28px;">
+    <div class="mech-card-title">Best External-Stimulation Protocol Found</div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:16px;">LLM-guided robust optimization within the constraints of external sinusoidal stimulation.</p>
+    <div class="mech-result-grid">
+      <div class="mech-result-item">
+        <div class="mech-result-label">Recommended site</div>
+        <div class="mech-result-value">rHC</div>
+        <div class="mech-result-sub">right hippocampus</div>
+      </div>
+      <div class="mech-result-item">
+        <div class="mech-result-label">Stimulation intensity</div>
+        <div class="mech-result-value">0.6</div>
+        <div class="mech-result-sub">I<sub>ext</sub> boost (low)</div>
+      </div>
+      <div class="mech-result-item">
+        <div class="mech-result-label">Worst-case reward</div>
+        <div class="mech-result-value" style="color:var(--amber)">−0.5194</div>
+        <div class="mech-result-sub">vs baseline −0.5285</div>
+      </div>
+      <div class="mech-result-item">
+        <div class="mech-result-label">Improvement</div>
+        <div class="mech-result-value" style="color:var(--green)">+1.7%</div>
+        <div class="mech-result-sub">over unoptimized</div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">This is the best robust protocol the optimizer found within the constraints of external sinusoidal stimulation.</p>
+  </div>
+
+  <!-- PART 4: limitations -->
+  <div class="mech-card">
+    <div class="mech-card-title">Why Is External Stimulation So Hard?</div>
+    <ul class="mech-bullet-list">
+      <li>
+        <span class="mech-bullet-heading">Limit cycle entrainment</span>
+        The Epileptor generates strong limit cycle oscillations. A simple sinusoidal I<sub>ext</sub> cannot break the attractor — it can only perturb it transiently.
+      </li>
+      <li>
+        <span class="mech-bullet-heading">Phase-resetting needed</span>
+        Effective closed-loop stimulation likely requires synchronizing pulses to seizure phase (phase-resetting control), not open-loop sinusoids.
+      </li>
+      <li>
+        <span class="mech-bullet-heading">Long-term plasticity</span>
+        Real DBS may work by gradually reshaping synaptic weights — indirectly shifting x₀ or K over weeks — not by acute signal superposition. This mechanism is absent from the current model.
+      </li>
+    </ul>
   </div>
 </section>
 
