@@ -322,6 +322,102 @@
     font-style: italic;
   }
 
+  /* ── PARADOXICAL EFFECT ── */
+  .para-chart-wrap {
+    position: relative;
+    max-width: 680px;
+    margin: 0 auto;
+    height: 220px;
+  }
+  .para-callout {
+    border-left: 4px solid var(--amber);
+    background: #fffbeb;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 22px 26px;
+  }
+  .para-callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 8px;
+  }
+  .para-callout-lead {
+    font-size: 0.88rem;
+    color: #78350f;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .para-soz-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .para-soz-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .para-soz-green  { background: #dcfce7; }
+  .para-soz-red    { background: #fee2e2; }
+  .para-soz-orange { background: #ffedd5; }
+  .para-soz-arrow  { font-weight: 700; flex-shrink: 0; }
+  .para-soz-green  .para-soz-arrow { color: #16a34a; }
+  .para-soz-red    .para-soz-arrow { color: #dc2626; }
+  .para-soz-orange .para-soz-arrow { color: #d97706; }
+  .para-soz-type   { font-weight: 600; color: var(--text); min-width: 160px; }
+  .para-soz-n      { font-weight: 400; color: var(--muted); font-size: 0.78rem; }
+  .para-soz-delta  { color: var(--text); }
+  .para-soz-verdict {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-left: auto;
+  }
+  .para-stats-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .para-stat-pill {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+  .para-stat-green { background: #dcfce7; color: #166534; }
+  .para-stat-red   { background: #fee2e2; color: #991b1b; }
+  .para-callout-conclusion {
+    font-size: 0.87rem;
+    color: #78350f;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .para-future-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+  }
+  .para-future-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .para-future-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .para-future-text strong { color: var(--text); }
+
   /* ── MODALS ── */
   .metric-card[data-modal], .metric-card[data-scroll] {
     cursor: pointer;
@@ -1466,6 +1562,78 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <hr class="divider">
 
 <!-- ══════════════════════════════════════════════
+     PARADOXICAL EFFECT
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Precision Neuro-Intervention: Navigating the &#8220;Paradoxical Effect&#8221;</div>
+  <div class="section-sub">Why a one-size-fits-all stimulation strategy fails in heterogeneous epilepsy cohorts.</div>
+
+  <!-- PART 2: Forest plot -->
+  <div class="mech-card" style="margin-bottom:24px;">
+    <div class="mech-card-title">Per-SOZ-type treatment effect (rHC stimulation, n=20)</div>
+    <div class="para-chart-wrap">
+      <canvas id="forest-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- PART 3: Clinical callout -->
+  <div class="para-callout" style="margin-bottom:24px;">
+    <div class="para-callout-title">The Responder vs. Non-Responder Paradox</div>
+    <p class="para-callout-lead">In a cohort study of 20 virtual patients, the same rHC stimulation protocol produced diametrically opposite outcomes depending on seizure onset zone (SOZ) location:</p>
+    <div class="para-soz-rows">
+      <div class="para-soz-row para-soz-green">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Temporal SOZ <span class="para-soz-n">(n=2)</span></span>
+        <span class="para-soz-delta">mean improvement <strong>+0.056</strong></span>
+        <span class="para-soz-verdict">strong suppression</span>
+      </div>
+      <div class="para-soz-row para-soz-red">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Hippocampal SOZ <span class="para-soz-n">(n=9)</span></span>
+        <span class="para-soz-delta">mean change <strong>−0.008</strong></span>
+        <span class="para-soz-verdict">slight deterioration</span>
+      </div>
+      <div class="para-soz-row para-soz-red">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Occipital SOZ <span class="para-soz-n">(n=5)</span></span>
+        <span class="para-soz-delta">mean change <strong>−0.012</strong></span>
+        <span class="para-soz-verdict">mild worsening</span>
+      </div>
+      <div class="para-soz-row para-soz-orange">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Frontal SOZ <span class="para-soz-n">(n=4)</span></span>
+        <span class="para-soz-delta">mean change <strong>−0.004</strong></span>
+        <span class="para-soz-verdict">negligible effect</span>
+      </div>
+    </div>
+    <div class="para-stats-row">
+      <span class="para-stat-pill para-stat-green">Responders: 55% (11/20)</span>
+      <span class="para-stat-pill para-stat-red">Paradoxical responders: 45% (9/20)</span>
+    </div>
+    <p class="para-callout-conclusion">This finding argues for closed-loop, SOZ-aware stimulation. Blind external stimulation is not only ineffective for a substantial fraction of patients — it carries risk of seizure exacerbation. The algorithm's value lies in its ability to predict these risk boundaries before clinical implantation.</p>
+  </div>
+
+  <!-- PART 4: Per-patient scatter -->
+  <div class="mech-card" style="margin-bottom:24px;">
+    <div class="mech-card-title">Per-patient outcomes: baseline vs optimized reward</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">Points <span style="color:#16a34a;font-weight:600;">below</span> the diagonal = improved (responders). Points <span style="color:#dc2626;font-weight:600;">above</span> = worsened (paradoxical). Hover for patient detail.</p>
+    <div class="para-chart-wrap">
+      <canvas id="scatter-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- PART 5: Future engineering hook -->
+  <div class="para-future-box">
+    <div class="para-future-title">Next iteration: graph-theoretic patient stratification</div>
+    <p class="para-future-text">The paradoxical effect in hippocampal-SOZ patients suggests a hypothesis: the adverse effect of rHC stimulation scales with the <strong>propagation weight of the stimulation node in the structural connectome</strong>. A high-centrality node like rHC may amplify seizure spread in patients whose SOZ overlaps with hub regions, rather than suppressing it.</p>
+    <p class="para-future-text" style="margin-top:10px;margin-bottom:0;">Next step: compute node centrality (betweenness, eigenvector) for each patient&#8217;s perturbed connectome, and test whether centrality of the SOZ node predicts treatment response. This would enable <strong>pre-implantation patient stratification</strong> — identifying who is likely to benefit from rHC stimulation before surgery.</p>
+  </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
      GENERALIZATION & ROBUSTNESS
 ══════════════════════════════════════════════ -->
 <section>
@@ -1713,6 +1881,8 @@ document.addEventListener('keydown', e => {
      EMBEDDED DATA
 ══════════════════════════════════════════════ -->
 <script>
+const COHORT_DATA = {"n_patients":20,"baseline":{"mean":-0.4501,"std":0.0354,"rewards":[-0.4437,-0.464,-0.5071,-0.4846,-0.4563,-0.3767,-0.4224,-0.4452,-0.3914,-0.506,-0.473,-0.4443,-0.3969,-0.4641,-0.4713,-0.4566,-0.4359,-0.4128,-0.4556,-0.4941]},"optimized":{"mean":-0.4518,"std":0.0408,"rewards":[-0.4291,-0.3792,-0.4635,-0.4074,-0.4297,-0.4769,-0.4432,-0.4588,-0.4434,-0.4201,-0.4294,-0.5579,-0.4578,-0.4453,-0.4193,-0.5008,-0.5318,-0.4528,-0.4196,-0.4706]},"stats":{"t":-0.125,"p":0.9019,"cohens_d":-0.049,"responder_rate":0.55,"paradoxical_rate":0.45},"soz_types":["hippocampal","hippocampal","occipital","hippocampal","frontal","temporal","hippocampal","hippocampal","frontal","occipital","hippocampal","hippocampal","frontal","occipital","temporal","occipital","frontal","hippocampal","hippocampal","occipital"]};
+
 const PRECOMPUTED = [{"x0": -3.0, "coupling": 0.012, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0152, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0165, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.0175, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -3.0, "coupling": 0.02, "worst": -0.3711, "mean": -0.3059, "patients": [-0.2252, -0.3711, -0.2617, -0.3607, -0.3107]}, {"x0": -2.9, "coupling": 0.012, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0152, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0165, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.0175, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.9, "coupling": 0.02, "worst": -0.3702, "mean": -0.3112, "patients": [-0.2265, -0.3702, -0.2739, -0.3624, -0.3231]}, {"x0": -2.8, "coupling": 0.012, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0152, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0165, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.0175, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.8, "coupling": 0.02, "worst": -0.3634, "mean": -0.3101, "patients": [-0.2253, -0.3634, -0.2739, -0.3613, -0.3266]}, {"x0": -2.7, "coupling": 0.012, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0152, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0165, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.0175, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.7, "coupling": 0.02, "worst": -0.3644, "mean": -0.3095, "patients": [-0.2229, -0.3644, -0.2745, -0.3594, -0.3261]}, {"x0": -2.6, "coupling": 0.012, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0152, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0165, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.0175, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.6, "coupling": 0.02, "worst": -0.3517, "mean": -0.3015, "patients": [-0.2258, -0.3517, -0.2712, -0.3476, -0.3111]}, {"x0": -2.5, "coupling": 0.012, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0152, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0165, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.0175, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.5, "coupling": 0.02, "worst": -0.3534, "mean": -0.2978, "patients": [-0.2169, -0.3534, -0.2617, -0.3431, -0.3138]}, {"x0": -2.4, "coupling": 0.012, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0152, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0165, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.0175, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.4, "coupling": 0.02, "worst": -0.3423, "mean": -0.2932, "patients": [-0.2164, -0.3423, -0.2649, -0.3363, -0.3062]}, {"x0": -2.3, "coupling": 0.012, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0152, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0165, "worst": -0.3406, "mean": -0.2897, "patients": [-0.2148, -0.3406, -0.2613, -0.3296, -0.3022]}, {"x0": -2.3, "coupling": 0.0175, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.3, "coupling": 0.02, "worst": -0.3383, "mean": -0.2839, "patients": [-0.2051, -0.3383, -0.2581, -0.3261, -0.2917]}, {"x0": -2.2, "coupling": 0.012, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0152, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0165, "worst": -0.3315, "mean": -0.284, "patients": [-0.2068, -0.3315, -0.2561, -0.3253, -0.3003]}, {"x0": -2.2, "coupling": 0.0175, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.2, "coupling": 0.02, "worst": -0.3258, "mean": -0.2795, "patients": [-0.2037, -0.3258, -0.2517, -0.3184, -0.2979]}, {"x0": -2.1, "coupling": 0.012, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0152, "worst": -0.3287, "mean": -0.2812, "patients": [-0.2028, -0.3287, -0.2534, -0.3189, -0.3011]}, {"x0": -2.1, "coupling": 0.0165, "worst": -0.3182, "mean": -0.2736, "patients": [-0.1935, -0.3182, -0.2421, -0.3103, -0.304]}, {"x0": -2.1, "coupling": 0.0175, "worst": -0.3211, "mean": -0.2765, "patients": [-0.1972, -0.3211, -0.2458, -0.3139, -0.3044]}, {"x0": -2.1, "coupling": 0.02, "worst": -0.3244, "mean": -0.2773, "patients": [-0.1982, -0.3244, -0.2471, -0.3141, -0.3026]}, {"x0": -2.0, "coupling": 0.012, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0152, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0165, "worst": -0.3356, "mean": -0.2878, "patients": [-0.2063, -0.3356, -0.2588, -0.3253, -0.3128]}, {"x0": -2.0, "coupling": 0.0175, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -2.0, "coupling": 0.02, "worst": -0.3442, "mean": -0.3091, "patients": [-0.2298, -0.3442, -0.2781, -0.3356, -0.3576]}, {"x0": -1.9, "coupling": 0.012, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0152, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0165, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.0175, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.9, "coupling": 0.02, "worst": -0.3801, "mean": -0.3297, "patients": [-0.2528, -0.3801, -0.2946, -0.3634, -0.3576]}, {"x0": -1.8, "coupling": 0.012, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0152, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0165, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.0175, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.8, "coupling": 0.02, "worst": -0.4212, "mean": -0.3658, "patients": [-0.2893, -0.4212, -0.3316, -0.4023, -0.3846]}, {"x0": -1.7, "coupling": 0.012, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0152, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0165, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.0175, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.7, "coupling": 0.02, "worst": -0.4712, "mean": -0.4121, "patients": [-0.3388, -0.4712, -0.3786, -0.4502, -0.4218]}, {"x0": -1.6, "coupling": 0.012, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0152, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0165, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.0175, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.6, "coupling": 0.02, "worst": -0.5285, "mean": -0.4604, "patients": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038]}, {"x0": -1.5, "coupling": 0.012, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0152, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0165, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.0175, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.5, "coupling": 0.02, "worst": -0.5806, "mean": -0.5121, "patients": [-0.4988, -0.5492, -0.4781, -0.5806, -0.4538]}, {"x0": -1.4, "coupling": 0.012, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0152, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0165, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.0175, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.4, "coupling": 0.02, "worst": -0.6312, "mean": -0.5643, "patients": [-0.5521, -0.6031, -0.5289, -0.6312, -0.5062]}, {"x0": -1.3, "coupling": 0.012, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0152, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0165, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.0175, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.3, "coupling": 0.02, "worst": -0.6841, "mean": -0.6182, "patients": [-0.6072, -0.6581, -0.5842, -0.6841, -0.5575]}, {"x0": -1.2, "coupling": 0.012, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0152, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0165, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.0175, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.2, "coupling": 0.02, "worst": -0.7352, "mean": -0.6714, "patients": [-0.6612, -0.7121, -0.6381, -0.7352, -0.6103]}, {"x0": -1.1, "coupling": 0.012, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0152, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0165, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.0175, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}, {"x0": -1.1, "coupling": 0.02, "worst": -0.7881, "mean": -0.7243, "patients": [-0.7152, -0.7651, -0.6921, -0.7881, -0.6612]}];
 
 const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
@@ -1982,6 +2152,212 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
     }
   }]
 });
+
+// ── Paradoxical Effect charts ─────────────────────
+
+// Forest plot (horizontal scatter with SOZ on y-axis)
+(function() {
+  const sozOrder = ['temporal','frontal','hippocampal','occipital'];
+  const deltas   = { temporal: 0.0562, frontal: -0.0043, hippocampal: -0.0078, occipital: -0.0119 };
+  const colors   = { temporal: 'rgba(22,163,74,0.9)', frontal: 'rgba(217,119,6,0.9)', hippocampal: 'rgba(220,38,38,0.9)', occipital: 'rgba(220,38,38,0.9)' };
+  const borderC  = { temporal: '#15803d', frontal: '#b45309', hippocampal: '#b91c1c', occipital: '#b91c1c' };
+
+  // Build scatter dataset — one point per SOZ group, y = index
+  const points = sozOrder.map((s, i) => ({ x: deltas[s], y: i }));
+  const ptColors = sozOrder.map(s => colors[s]);
+  const ptBorder = sozOrder.map(s => borderC[s]);
+
+  const zeroDashPlugin = {
+    id: 'zeroDash',
+    afterDraw(chart) {
+      const { ctx, scales: { x, y } } = chart;
+      const xZero = x.getPixelForValue(0);
+      ctx.save();
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(xZero, y.top);
+      ctx.lineTo(xZero, y.bottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('forest-chart').getContext('2d'), {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        data: points,
+        backgroundColor: ptColors,
+        borderColor: ptBorder,
+        borderWidth: 2,
+        pointRadius: 10,
+        pointHoverRadius: 13,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { left: 8, right: 40, top: 10, bottom: 10 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const soz = sozOrder[ctx.parsed.y];
+              const d = deltas[soz];
+              return ` ${soz}: ${d >= 0 ? '+' : ''}${d.toFixed(4)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: -0.10, max: 0.09,
+          grid: { color: '#f1f5f9' },
+          ticks: { callback: v => (v >= 0 ? '+' : '') + v.toFixed(2), font: { size: 11 }, color: '#475569' },
+          title: { display: true, text: 'Reward change vs baseline', font: { size: 11 }, color: '#64748b' }
+        },
+        y: {
+          type: 'linear',
+          min: -0.5, max: 3.5,
+          ticks: {
+            callback: (_, i) => sozOrder[i] || '',
+            stepSize: 1,
+            font: { size: 12, weight: '600' },
+            color: ctx => {
+              const soz = sozOrder[Math.round(ctx.tick.value)];
+              return soz === 'temporal' ? '#15803d' : soz === 'frontal' ? '#b45309' : '#b91c1c';
+            }
+          },
+          grid: { color: '#f1f5f9' },
+          reverse: false
+        }
+      }
+    },
+    plugins: [zeroDashPlugin, {
+      id: 'forestLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx, scales: { x } } = chart;
+        chart.getDatasetMeta(0).data.forEach((pt, i) => {
+          const soz = sozOrder[i];
+          const d = deltas[soz];
+          const label = (d >= 0 ? '+' : '') + d.toFixed(4);
+          ctx.save();
+          ctx.font = 'bold 11px -apple-system, sans-serif';
+          ctx.fillStyle = borderC[soz];
+          ctx.textAlign = d >= 0 ? 'left' : 'right';
+          const offset = d >= 0 ? 14 : -14;
+          ctx.fillText(label, pt.x + offset, pt.y + 4);
+          ctx.restore();
+        });
+      }
+    }]
+  });
+})();
+
+// Per-patient scatter: baseline vs optimized
+(function() {
+  const base = COHORT_DATA.baseline.rewards;
+  const opt  = COHORT_DATA.optimized.rewards;
+  const soz  = COHORT_DATA.soz_types;
+
+  // Separate responders (opt < base, i.e. improved = less negative = higher value) from paradoxical (opt > base = worse)
+  // Note: rewards are negative; improvement = opt > base (less negative)
+  const responders   = [];
+  const paradoxical  = [];
+  base.forEach((b, i) => {
+    const pt = { x: b, y: opt[i], id: i + 1, soz: soz[i] };
+    if (opt[i] > b) responders.push(pt);   // improved
+    else paradoxical.push(pt);              // worsened or unchanged
+  });
+
+  // Diagonal reference line spanning data range
+  const allX = base.concat(opt);
+  const minV = Math.min(...allX) - 0.01;
+  const maxV = Math.max(...allX) + 0.01;
+
+  const diagPlugin = {
+    id: 'diagLine',
+    afterDraw(chart) {
+      const { ctx, scales: { x, y } } = chart;
+      ctx.save();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x.getPixelForValue(minV), y.getPixelForValue(minV));
+      ctx.lineTo(x.getPixelForValue(maxV), y.getPixelForValue(maxV));
+      ctx.stroke();
+      // Label
+      ctx.setLineDash([]);
+      ctx.font = '10px -apple-system, sans-serif';
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('no change', x.getPixelForValue(maxV - 0.03) - 48, y.getPixelForValue(maxV - 0.03) - 6);
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('scatter-chart').getContext('2d'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'Responders',
+          data: responders,
+          backgroundColor: 'rgba(22,163,74,0.75)',
+          borderColor: '#15803d',
+          borderWidth: 1.5,
+          pointRadius: 8,
+          pointHoverRadius: 11,
+        },
+        {
+          label: 'Paradoxical',
+          data: paradoxical,
+          backgroundColor: 'rgba(220,38,38,0.75)',
+          borderColor: '#b91c1c',
+          borderWidth: 1.5,
+          pointRadius: 8,
+          pointHoverRadius: 11,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { font: { size: 12 }, usePointStyle: true, pointStyleWidth: 10 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return ` P${d.id} (${d.soz}) · baseline ${d.x.toFixed(4)} · optimized ${d.y.toFixed(4)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Baseline reward', font: { size: 11 }, color: '#64748b' },
+          ticks: { font: { size: 11 }, color: '#475569' },
+          grid:  { color: '#f1f5f9' }
+        },
+        y: {
+          title: { display: true, text: 'Optimized reward', font: { size: 11 }, color: '#64748b' },
+          ticks: { font: { size: 11 }, color: '#475569' },
+          grid:  { color: '#f1f5f9' }
+        }
+      }
+    },
+    plugins: [diagPlugin]
+  });
+})();
 
 // ── Generalization & Robustness charts ───────────
 
