@@ -1,0 +1,78 @@
+{
+  "baseline_worst": -0.5285,
+  "best_worst": -0.5193648162562773,
+  "improvement_pct": 1.7,
+  "recommendation": {
+    "iext_boost": 0.6,
+    "site_index": 9,
+    "site": "rHC",
+    "intensity": "low",
+    "description": "Low-intensity stimulation at rHC (Iext boost = 0.6)"
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "iext_boost": 2.0,
+      "site_index": 7,
+      "site_name": "rFEF",
+      "worst_case_reward": -0.5225,
+      "mean_reward": -0.4585
+    },
+    {
+      "iteration": 1,
+      "iext_boost": 2.0,
+      "site_index": 9,
+      "site_name": "rHC",
+      "worst_case_reward": -0.5213,
+      "mean_reward": -0.4602
+    },
+    {
+      "iteration": 2,
+      "iext_boost": 2.5,
+      "site_index": 47,
+      "site_name": "lHC",
+      "worst_case_reward": -0.5367,
+      "mean_reward": -0.4641
+    },
+    {
+      "iteration": 3,
+      "iext_boost": 1.5,
+      "site_index": 9,
+      "site_name": "rHC",
+      "worst_case_reward": -0.5206,
+      "mean_reward": -0.4601
+    },
+    {
+      "iteration": 4,
+      "iext_boost": 1.2,
+      "site_index": 9,
+      "site_name": "rHC",
+      "worst_case_reward": -0.5202,
+      "mean_reward": -0.4603
+    },
+    {
+      "iteration": 5,
+      "iext_boost": 0.9,
+      "site_index": 9,
+      "site_name": "rHC",
+      "worst_case_reward": -0.5197,
+      "mean_reward": -0.461
+    },
+    {
+      "iteration": 6,
+      "iext_boost": 0.6,
+      "site_index": 9,
+      "site_name": "rHC",
+      "worst_case_reward": -0.5194,
+      "mean_reward": -0.4609
+    },
+    {
+      "iteration": 7,
+      "iext_boost": 0.3,
+      "site_index": 9,
+      "site_name": "rHC",
+      "worst_case_reward": -0.5235,
+      "mean_reward": -0.4604
+    }
+  ]
+}
