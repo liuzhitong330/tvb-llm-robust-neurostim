@@ -1,0 +1,82 @@
+{
+  "baseline": [
+    {
+      "id": "PATIENT_001",
+      "soz_node": 9,
+      "soz_type": "hippocampal",
+      "reward": -0.4002,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_000",
+      "soz_node": 47,
+      "soz_type": "hippocampal",
+      "reward": -0.4929,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_002",
+      "soz_node": 73,
+      "soz_type": "occipital",
+      "reward": -0.4936,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_003",
+      "soz_node": 7,
+      "soz_type": "frontal",
+      "reward": -0.4256,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_004",
+      "soz_node": 71,
+      "soz_type": "temporal",
+      "reward": -0.5083,
+      "status": "success"
+    }
+  ],
+  "optimized": [
+    {
+      "id": "PATIENT_001",
+      "soz_node": 9,
+      "soz_type": "hippocampal",
+      "reward": -0.4292,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_000",
+      "soz_node": 47,
+      "soz_type": "hippocampal",
+      "reward": -0.4547,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_002",
+      "soz_node": 73,
+      "soz_type": "occipital",
+      "reward": -0.4834,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_003",
+      "soz_node": 7,
+      "soz_type": "frontal",
+      "reward": -0.4474,
+      "status": "success"
+    },
+    {
+      "id": "PATIENT_004",
+      "soz_node": 71,
+      "soz_type": "temporal",
+      "reward": -0.4847,
+      "status": "success"
+    }
+  ],
+  "stats": {
+    "t": 0.328,
+    "p": 0.7595,
+    "cohens_d": 0.099,
+    "responder_rate": 0.6
+  }
+}
