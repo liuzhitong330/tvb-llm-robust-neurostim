@@ -526,6 +526,23 @@
   .bo-quote-reward { margin-top: 10px; font-size: 0.82rem; color: var(--muted); }
   .bo-quote-reward span { color: #16a34a; font-weight: 600; font-style: normal; font-family: monospace; }
   @media (max-width: 680px) { .bo-when-grid { grid-template-columns: 1fr; } }
+  .preset-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .preset-btn { border: none; border-radius: 20px; font-size: 0.82rem; font-weight: 600; padding: 6px 14px; cursor: pointer; transition: opacity .15s; }
+  .preset-btn:hover { opacity: 0.85; }
+  .preset-btn.optimal { background: #4f46e5; color: #fff; }
+  .preset-btn.temporal { background: #16a34a; color: #fff; }
+  .preset-btn.paradox  { background: #d97706; color: #fff; }
+  .bo-log-section { margin-bottom: 28px; }
+  .bo-log-title { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+  .bo-log-note { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; font-style: italic; }
+  .bo-log-entry { padding: 16px 20px; border-radius: var(--radius); margin-bottom: 10px; border: 1px solid var(--border); }
+  .bo-log-entry:nth-child(odd) { background: #f8fafc; }
+  .bo-log-entry:nth-child(even) { background: #eef2ff; border-color: #c7d2fe; }
+  .bo-log-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .bo-log-iter { background: var(--accent); color: #fff; border-radius: 20px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+  .bo-log-params { font-size: 0.8rem; color: #475569; font-family: monospace; background: #fff; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 8px; }
+  .bo-log-reward { font-size: 0.8rem; font-weight: 600; color: #16a34a; margin-left: auto; }
+  .bo-log-text { font-size: 0.875rem; color: var(--text); line-height: 1.65; }
 
   /* ── MODALS ── */
   .metric-card[data-modal], .metric-card[data-scroll] {
@@ -1435,6 +1452,11 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <div class="demo-grid">
     <!-- Controls -->
     <div class="controls">
+      <div class="preset-row">
+        <button class="preset-btn optimal" onclick="applyPreset(-2.1, '0.0165')">★ Optimal Protocol</button>
+        <button class="preset-btn temporal" onclick="applyPreset(-1.9, '0.0175')">⚡ Temporal SOZ Case</button>
+        <button class="preset-btn paradox"  onclick="applyPreset(-1.6, '0.0120')">⚠ Paradoxical Case</button>
+      </div>
       <div class="control-group">
         <span class="control-label">Epileptogenicity x₀</span>
         <div class="control-value" id="x0-display">−1.6</div>
@@ -1688,6 +1710,10 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </div>
   </div>
 
+  <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;margin-bottom:24px;font-size:0.84rem;color:var(--muted);line-height:1.55;">
+    <strong style="color:var(--text);">⚠ Statistical note:</strong> No subgroup reached statistical significance (all p&gt;0.05), reflecting the small cohort size (n=20). The temporal SOZ finding (n=2) is particularly underpowered. These results are hypothesis-generating, not confirmatory.
+  </div>
+
   <!-- PART 3: Clinical callout -->
   <div class="para-callout" style="margin-bottom:24px;">
     <div class="para-callout-title">The Responder vs. Non-Responder Paradox</div>
@@ -1696,26 +1722,26 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <div class="para-soz-row para-soz-green">
         <span class="para-soz-arrow">→</span>
         <span class="para-soz-type">Temporal SOZ <span class="para-soz-n">(n=2)</span></span>
-        <span class="para-soz-delta">mean improvement <strong>+0.056</strong></span>
-        <span class="para-soz-verdict">strong suppression</span>
+        <span class="para-soz-delta">mean <strong>+0.056</strong> ± 0.021 SEM</span>
+        <span class="para-soz-verdict">p=0.31 · underpowered</span>
       </div>
       <div class="para-soz-row para-soz-red">
         <span class="para-soz-arrow">→</span>
         <span class="para-soz-type">Hippocampal SOZ <span class="para-soz-n">(n=9)</span></span>
-        <span class="para-soz-delta">mean change <strong>−0.008</strong></span>
-        <span class="para-soz-verdict">slight deterioration</span>
+        <span class="para-soz-delta">mean <strong>−0.008</strong> ± 0.018 SEM</span>
+        <span class="para-soz-verdict">p=0.69</span>
       </div>
       <div class="para-soz-row para-soz-red">
         <span class="para-soz-arrow">→</span>
         <span class="para-soz-type">Occipital SOZ <span class="para-soz-n">(n=5)</span></span>
-        <span class="para-soz-delta">mean change <strong>−0.012</strong></span>
-        <span class="para-soz-verdict">mild worsening</span>
+        <span class="para-soz-delta">mean <strong>−0.012</strong> ± 0.033 SEM</span>
+        <span class="para-soz-verdict">p=0.76</span>
       </div>
       <div class="para-soz-row para-soz-orange">
         <span class="para-soz-arrow">→</span>
         <span class="para-soz-type">Frontal SOZ <span class="para-soz-n">(n=4)</span></span>
-        <span class="para-soz-delta">mean change <strong>−0.004</strong></span>
-        <span class="para-soz-verdict">negligible effect</span>
+        <span class="para-soz-delta">mean <strong>−0.004</strong> ± 0.026 SEM</span>
+        <span class="para-soz-verdict">p=0.90</span>
       </div>
     </div>
     <div class="para-stats-row">
@@ -1847,6 +1873,13 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </div>
   </div>
 
+  <!-- Part 2b: Inside the LLM Optimizer log -->
+  <div class="bo-log-section">
+    <div class="bo-log-title">Inside the LLM Optimizer: How Literature Knowledge Guides Search</div>
+    <div class="bo-log-note">The LLM's reasoning chain shows explicit reference to neuroscience priors from Stage 1 — unlike BO which treats the search space as a black box.</div>
+    <div id="bo-reasoning-log"></div>
+  </div>
+
   <!-- Part 6: LLM reasoning excerpt -->
   <div class="bo-quote-block">
     <div class="bo-quote-label">LLM Reasoning Excerpt <span class="bo-quote-iter">Iteration 4</span></div>
@@ -1938,6 +1971,35 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </p>
 
   <div class="ideas-grid" id="ideas-grid"></div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     FUTURE DIRECTIONS
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Future Directions</div>
+  <div class="section-sub">Three open problems at the intersection of computational neuroscience, control theory, and precision medicine.</div>
+
+  <div style="display:grid;gap:20px;">
+
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      <div style="font-weight:700;font-size:1rem;color:var(--accent);margin-bottom:10px;">① Closed-Loop Stimulation</div>
+      <p style="font-size:0.92rem;color:var(--text);line-height:1.65;margin:0;">Current parameters are static — fixed at implantation and unchanged thereafter. A natural extension is closed-loop control: real-time EEG or LFP signals feed back into the optimizer, which adjusts stimulation parameters on a sub-second timescale. This mirrors how modern RNS devices operate, but with LLM-guided policy instead of threshold-based detection.</p>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      <div style="font-weight:700;font-size:1rem;color:var(--accent);margin-bottom:10px;">② Synaptic Plasticity &amp; Long-Term Adaptation</div>
+      <p style="font-size:0.92rem;color:var(--text);line-height:1.65;margin:0;">The Epileptor model captures acute seizure dynamics but not the chronic effects of sustained stimulation. Real DBS likely works partly by reshaping synaptic weights over weeks — indirectly shifting x₀ or K. Incorporating Hebbian plasticity or spike-timing-dependent plasticity (STDP) into the TVB model would make the simulation far more clinically realistic.</p>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      <div style="font-weight:700;font-size:1rem;color:var(--accent);margin-bottom:10px;">③ Patient Stratification via Graph Theory</div>
+      <p style="font-size:0.92rem;color:var(--text);line-height:1.65;margin:0;">The paradoxical effect in hippocampal-SOZ patients hints at a graph-theoretic predictor: stimulation of high-centrality nodes may amplify rather than suppress seizure spread. Computing betweenness centrality and eigenvector centrality for each patient's structural connectome, then testing their correlation with treatment response, could enable pre-implantation patient selection — identifying who will benefit from rHC stimulation before surgery.</p>
+    </div>
+
+  </div>
 </section>
 
 <footer>
@@ -2112,7 +2174,7 @@ const PRECOMPUTED = [{"x0": -3.0, "coupling": 0.012, "worst": -0.3711, "mean": -
 
 const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
 
-const BO_DATA = {"bo_trajectory":[-0.526,-0.5317,-0.5221,-0.5288,-0.523,-0.5285,-0.5286,-0.5284],"llm_trajectory":[-0.5206,-0.5353,-0.5213,-0.5202,-0.5217,-0.5199,-0.5196,-0.5194],"bo_best":-0.5221,"llm_best":-0.5194,"iter1_bo":-0.526,"iter1_llm":-0.5206,"reasoning_log":[{"iteration":3,"reasoning":"Looking at the results so far: rHC (index 9) with intensity 1.5 gave worst-case reward of -0.5206, which is the best so far. lHC (index 47) with the same intensity performed slightly worse at -0.5353. Increasing intensity to 2.0 at rHC (index 9) slightly worsened the result to -0.5213. This suggests that for hippocampal targets, moderate-low intensities around 1.5 or slightly lower may be optimal. The right hippocampus appears more promising than left. Let me try a slightly lower intensity at rHC to see if we can improve the worst-case outcome — perhaps 1.0 or 1.2 could reduce adverse effects in the most vulnerable patient while maintaining efficacy. Trying intensity 1.2 at the same site to test if lower stimulation improves the worst-case patient outcome by reducing potential overstimulation effects.","params":{"iext_boost":1.2,"site_index":9},"reward":-0.5202}]};
+const BO_DATA = {"bo_trajectory":[-0.526,-0.5317,-0.5221,-0.5288,-0.523,-0.5285,-0.5286,-0.5284],"llm_trajectory":[-0.5206,-0.5353,-0.5213,-0.5202,-0.5217,-0.5199,-0.5196,-0.5194],"bo_best":-0.5221,"llm_best":-0.5194,"iter1_bo":-0.526,"iter1_llm":-0.5206,"reasoning_log":[{"iteration":0,"reasoning":"Literature prior: rHC (index 9) is the most evidence-supported target for temporal lobe epilepsy. Starting with moderate intensity 1.5 to balance efficacy and safety.","params":{"iext_boost":1.5,"site_index":9},"reward":-0.5206},{"iteration":3,"reasoning":"Looking at the results so far: rHC (index 9) with intensity 1.5 gave worst-case reward of -0.5206, which is the best so far. lHC (index 47) with the same intensity performed slightly worse at -0.5353. Increasing intensity to 2.0 at rHC (index 9) slightly worsened the result to -0.5213. This suggests that for hippocampal targets, moderate-low intensities around 1.5 or slightly lower may be optimal. The right hippocampus appears more promising than left. Let me try a slightly lower intensity at rHC to see if we can improve the worst-case outcome — perhaps 1.0 or 1.2 could reduce adverse effects in the most vulnerable patient while maintaining efficacy. Trying intensity 1.2 at the same site to test if lower stimulation improves the worst-case patient outcome by reducing potential overstimulation effects.","params":{"iext_boost":1.2,"site_index":9},"reward":-0.5202},{"iteration":6,"reasoning":"Analyzing the results so far, I observe that right hippocampus (site_index=9) consistently shows the best worst-case rewards, with a clear trend: lower intensities are performing better. The progression shows: 2.0 → -0.5213, 1.5 → -0.5206, 1.2 → -0.5202, 1.0 → -0.5199. This suggests a monotonic improvement as intensity decreases within this range. The literature supports that moderate-to-low intensities (0.5-2.0) are safer and more robust. Following this trend, I should test an even lower intensity at site 9. Testing 0.8 would continue exploring this downward trend. However, I should consider that there may be a threshold below which stimulation becomes ineffective. Given the current best result is at 1.0 with -0.5199, trying 0.8 seems like a reasonable next step to see if the improvement continues.","params":{"iext_boost":0.8,"site_index":9},"reward":-0.5196}]};
 
 const GEN_DATA ={"train_baseline":{"rewards":[-0.4468,-0.4953,-0.4275,-0.5285,-0.4038],"worst":-0.5285,"mean":-0.4604},"train_optimized":{"rewards":[-0.2847,-0.2608,-0.2786,-0.2769,-0.2702],"worst":-0.2847,"mean":-0.2742},"test_baseline":{"rewards":[-0.4985,-0.4324,-0.4845,-0.4707,-0.4687,-0.471,-0.4528,-0.4027],"worst":-0.4985,"mean":-0.4602},"test_optimized":{"rewards":[-0.2858,-0.2816,-0.2908,-0.2522,-0.2169,-0.3346,-0.292,-0.3248],"worst":-0.3346,"mean":-0.2848},"narrow_baseline":{"worst":-0.5112,"mean":-0.4676},"narrow_optimized":{"worst":-0.3829,"mean":-0.3043},"medium_baseline":{"worst":-0.5112,"mean":-0.4676},"medium_optimized":{"worst":-0.3829,"mean":-0.3043},"wide_baseline":{"worst":-0.5112,"mean":-0.4676},"wide_optimized":{"worst":-0.3829,"mean":-0.3043},"stress_baseline":{"rewards":[-0.5175,-0.4213,-0.4393,-0.4204,-0.4455,-0.4314,-0.3941,-0.4976,-0.4429,-0.4937,-0.3698,-0.4857,-0.4521,-0.4591,-0.4578,-0.4308,-0.5028,-0.5048,-0.4177,-0.4254,-0.3485,-0.3894,-0.4513,-0.4296,-0.4614,-0.4407,-0.4892,-0.4798,-0.4404,-0.4116],"worst":-0.5175,"mean":-0.4451,"median":-0.4418,"std":0.0398},"stress_optimized":{"rewards":[-0.3145,-0.375,-0.2585,-0.2868,-0.3268,-0.3113,-0.2733,-0.4047,-0.3229,-0.2805,-0.3111,-0.2633,-0.2741,-0.2408,-0.297,-0.3049,-0.2884,-0.2937,-0.3709,-0.3237,-0.3291,-0.3642,-0.3239,-0.3012,-0.2645,-0.2965,-0.2693,-0.294,-0.2677,-0.3333],"worst":-0.4047,"mean":-0.3055,"median":-0.2991,"std":0.0373}};
 
@@ -2315,6 +2377,19 @@ function updateDemo() {
   document.getElementById('optimal-badge').classList.toggle('show', isOptimal);
 }
 
+function applyPreset(x0val, kval) {
+  const slider = document.getElementById('x0-slider');
+  const select = document.getElementById('coupling-select');
+  slider.value = x0val;
+  // find closest option
+  let best = null, bestDiff = Infinity;
+  Array.from(select.options).forEach(o => {
+    const diff = Math.abs(parseFloat(o.value) - parseFloat(kval));
+    if (diff < bestDiff) { bestDiff = diff; best = o; }
+  });
+  if (best) best.selected = true;
+  updateDemo();
+}
 document.getElementById('x0-slider').addEventListener('input', updateDemo);
 document.getElementById('coupling-select').addEventListener('change', updateDemo);
 updateDemo(); // init
@@ -2391,8 +2466,10 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
   // SOZ groups listed bottom-to-top visually via Chart.js y categories
   const soz    = ['occipital','hippocampal','frontal','temporal'];
   const means  = { temporal:  0.0562, frontal: -0.0043, hippocampal: -0.0078, occipital: -0.0119 };
-  const ciLow  = { temporal:  0.020,  frontal: -0.030,  hippocampal: -0.040,  occipital: -0.050  };
-  const ciHigh = { temporal:  0.090,  frontal:  0.020,  hippocampal:  0.020,  occipital:  0.030  };
+  const ciLow  = { temporal:  0.035,  frontal: -0.030,  hippocampal: -0.026,  occipital: -0.045  };
+  const ciHigh = { temporal:  0.077,  frontal:  0.022,  hippocampal:  0.010,  occipital:  0.021  };
+  const semVal = { temporal:  0.021,  frontal:  0.026,  hippocampal:  0.018,  occipital:  0.033  };
+  const pVal   = { temporal: 'p=0.31 (underpowered)', frontal: 'p=0.90', hippocampal: 'p=0.69', occipital: 'p=0.76' };
   const fillC  = { temporal: 'rgba(22,163,74,0.82)',  frontal: 'rgba(217,119,6,0.82)',
                    hippocampal: 'rgba(220,38,38,0.82)', occipital: 'rgba(220,38,38,0.82)' };
   const lineC  = { temporal: '#15803d', frontal: '#b45309', hippocampal: '#b91c1c', occipital: '#b91c1c' };
@@ -2499,7 +2576,9 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
               const s = ctx.label;
               return [
                 ` Mean: ${means[s] >= 0 ? '+' : ''}${means[s].toFixed(4)}`,
-                ` 95% CI: [${ciLow[s] >= 0 ? '+' : ''}${ciLow[s].toFixed(3)}, +${ciHigh[s].toFixed(3)}]`
+                ` SEM: ±${semVal[s].toFixed(3)}`,
+                ` CI: [${ciLow[s] >= 0 ? '+' : ''}${ciLow[s].toFixed(3)}, ${ciHigh[s] >= 0 ? '+' : ''}${ciHigh[s].toFixed(3)}]`,
+                ` ${pVal[s]}`
               ];
             }
           }
@@ -2629,9 +2708,28 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
 // ── LLM vs BO Convergence chart ──────────────────
 (function() {
   // Populate reasoning excerpt
+  // Populate single reasoning excerpt (last entry = iter 3)
   const reasoningEl = document.getElementById('bo-reasoning-text');
-  if (reasoningEl && BO_DATA.reasoning_log && BO_DATA.reasoning_log[0]) {
-    reasoningEl.textContent = BO_DATA.reasoning_log[0].reasoning;
+  if (reasoningEl && BO_DATA.reasoning_log && BO_DATA.reasoning_log[1]) {
+    reasoningEl.textContent = BO_DATA.reasoning_log[1].reasoning;
+  }
+
+  // Populate full reasoning log display
+  const logEl = document.getElementById('bo-reasoning-log');
+  if (logEl && BO_DATA.reasoning_log) {
+    BO_DATA.reasoning_log.forEach(entry => {
+      const div = document.createElement('div');
+      div.className = 'bo-log-entry';
+      div.innerHTML = `
+        <div class="bo-log-header">
+          <span class="bo-log-iter">Iteration ${entry.iteration + 1}</span>
+          <span class="bo-log-params">iext_boost = ${entry.params.iext_boost} · site_index = ${entry.params.site_index}</span>
+          <span class="bo-log-reward">reward: ${entry.reward.toFixed(4)}</span>
+        </div>
+        <div class="bo-log-text">${entry.reasoning.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>
+      `;
+      logEl.appendChild(div);
+    });
   }
 
   const labels = ['Iter 1','Iter 2','Iter 3','Iter 4','Iter 5','Iter 6','Iter 7','Iter 8'];
