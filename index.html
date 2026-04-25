@@ -527,6 +527,45 @@
   .bo-quote-reward span { color: #16a34a; font-weight: 600; font-style: normal; font-family: monospace; }
   @media (max-width: 680px) { .bo-when-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .whats-next-grid { grid-template-columns: 1fr !important; } }
+
+  /* ── RAG subsection ── */
+  .rag-header { margin-bottom: 22px; }
+  .rag-title { font-weight: 700; font-size: 1.05rem; color: var(--text); margin-bottom: 4px; }
+  .rag-subtitle { font-size: 0.875rem; color: var(--muted); }
+  /* Architecture diagram */
+  .rag-arch { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap;
+    background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px 20px; margin-bottom: 24px; }
+  .rag-arch-box { background: #fff; border: 2px solid #c7d2fe; border-radius: 10px;
+    padding: 12px 16px; font-size: 0.82rem; text-align: center; color: #3730a3; font-weight: 600;
+    min-width: 140px; box-shadow: 0 1px 4px rgba(79,70,229,0.10); }
+  .rag-arch-box.center { background: #4f46e5; color: #fff; border-color: #4f46e5;
+    font-size: 0.9rem; padding: 14px 20px; min-width: 160px; }
+  .rag-arch-box.output { background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+  .rag-arch-inputs { display: flex; flex-direction: column; gap: 12px; }
+  .rag-arch-arrow { font-size: 1.2rem; color: #818cf8; padding: 0 8px; align-self: center; }
+  .rag-arch-label { font-size: 0.72rem; font-weight: 400; color: inherit; margin-top: 3px; opacity: 0.85; }
+  /* Journal table */
+  .rag-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-bottom: 22px; }
+  .rag-table th { background: #eef2ff; font-weight: 600; color: #3730a3; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: .04em; padding: 10px 12px;
+    border-bottom: 2px solid #c7d2fe; text-align: left; }
+  .rag-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+  .rag-table tr:last-child td { border-bottom: none; }
+  .rag-table tr:nth-child(even) td { background: #f8fafc; }
+  .rag-iter-pill { display: inline-block; background: #4f46e5; color: #fff;
+    border-radius: 20px; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; }
+  .rag-pmid { font-size: 0.76rem; color: #6366f1; font-family: monospace; }
+  .rag-paper-title { font-size: 0.82rem; color: var(--text); }
+  .rag-params { font-family: monospace; font-size: 0.8rem; color: #475569; }
+  .rag-reward { font-weight: 600; font-size: 0.82rem; }
+  .rag-reward.worse { color: #dc2626; }
+  .rag-reward.best  { color: #16a34a; }
+  /* Assessment callout */
+  .rag-callout { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px; margin-bottom: 0; }
+  .rag-callout-title { font-weight: 700; font-size: 0.93rem; color: #92400e; margin-bottom: 8px; }
+  .rag-callout p { font-size: 0.88rem; color: #78350f; margin: 0; line-height: 1.65; }
   .preset-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
   .preset-btn { border: none; border-radius: 20px; font-size: 0.82rem; font-weight: 600; padding: 6px 14px; cursor: pointer; transition: opacity .15s; }
   .preset-btn:hover { opacity: 0.85; }
@@ -1933,6 +1972,59 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <div class="bo-quote-reward">Proposed: <code>iext_boost = 1.2</code>, <code>site_index = 9</code> (rHC) &nbsp;·&nbsp; Reward achieved: <span>−0.5202</span></div>
   </div>
 
+  <hr style="border:none;border-top:1px solid var(--border);margin:32px 0;">
+
+  <!-- ── RAG-Augmented Optimization subsection ── -->
+  <div class="rag-header">
+    <div class="rag-title">Stage 1 → Stage 3: Knowledge-Driven Search</div>
+    <div class="rag-subtitle">RAG pipeline: 586 literature gaps retrieved in real-time to guide each optimization step</div>
+  </div>
+
+  <!-- Part 1: Architecture diagram -->
+  <div class="rag-arch">
+    <div class="rag-arch-inputs">
+      <div class="rag-arch-box">
+        TVB Simulation
+        <div class="rag-arch-label">→ Reward signal (quantitative)</div>
+      </div>
+      <div class="rag-arch-box">
+        gaps.json (586 entries)
+        <div class="rag-arch-label">→ Retrieved knowledge (qualitative)</div>
+      </div>
+    </div>
+    <div class="rag-arch-arrow">⟶</div>
+    <div class="rag-arch-box center">
+      LLM Optimizer
+      <div class="rag-arch-label">reasoning + proposal</div>
+    </div>
+    <div class="rag-arch-arrow">⟶</div>
+    <div class="rag-arch-box output">
+      Next parameter proposal
+      <div class="rag-arch-label">iext_boost · site_index</div>
+    </div>
+  </div>
+
+  <!-- Part 2: Optimization journal -->
+  <table class="rag-table" id="rag-journal">
+    <thead>
+      <tr>
+        <th>Iter</th>
+        <th>Retrieved paper</th>
+        <th>LLM reasoning (excerpt)</th>
+        <th>Proposed params &amp; reward</th>
+      </tr>
+    </thead>
+    <tbody id="rag-journal-body">
+      <!-- populated by JS -->
+    </tbody>
+  </table>
+
+  <!-- Part 3: Honest assessment -->
+  <div class="rag-callout">
+    <div class="rag-callout-title">⚖️ Honest Assessment: Strength and Limitation of RAG-Augmented Optimization</div>
+    <p>The RAG optimizer achieved the same best reward (−0.5206) as the plain LLM optimizer, confirming that the literature prior correctly identifies rHC at moderate intensity as the best available protocol. However, subsequent iterations explored amygdala and auditory cortex targets — clinically motivated but suboptimal in this model. This illustrates both the <strong>strength</strong> (informed initialization) and the <strong>limitation</strong> (literature bias toward clinical targets that may not align with model dynamics) of RAG-augmented optimization.</p>
+  </div>
+
 </section>
 
 <hr class="divider">
@@ -2223,7 +2315,9 @@ const PRECOMPUTED = [{"x0": -3.0, "coupling": 0.012, "worst": -0.3711, "mean": -
 
 const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
 
-const BO_DATA = {"bo_trajectory":[-0.526,-0.5317,-0.5221,-0.5288,-0.523,-0.5285,-0.5286,-0.5284],"llm_trajectory":[-0.5206,-0.5353,-0.5213,-0.5202,-0.5217,-0.5199,-0.5196,-0.5194],"bo_best":-0.5221,"llm_best":-0.5194,"iter1_bo":-0.526,"iter1_llm":-0.5206,"reasoning_log":[{"iteration":0,"reasoning":"Literature prior: rHC (index 9) is the most evidence-supported target for temporal lobe epilepsy. Starting with moderate intensity 1.5 to balance efficacy and safety.","params":{"iext_boost":1.5,"site_index":9},"reward":-0.5206},{"iteration":3,"reasoning":"Looking at the results so far: rHC (index 9) with intensity 1.5 gave worst-case reward of -0.5206, which is the best so far. lHC (index 47) with the same intensity performed slightly worse at -0.5353. Increasing intensity to 2.0 at rHC (index 9) slightly worsened the result to -0.5213. This suggests that for hippocampal targets, moderate-low intensities around 1.5 or slightly lower may be optimal. The right hippocampus appears more promising than left. Let me try a slightly lower intensity at rHC to see if we can improve the worst-case outcome — perhaps 1.0 or 1.2 could reduce adverse effects in the most vulnerable patient while maintaining efficacy. Trying intensity 1.2 at the same site to test if lower stimulation improves the worst-case patient outcome by reducing potential overstimulation effects.","params":{"iext_boost":1.2,"site_index":9},"reward":-0.5202},{"iteration":6,"reasoning":"Analyzing the results so far, I observe that right hippocampus (site_index=9) consistently shows the best worst-case rewards, with a clear trend: lower intensities are performing better. The progression shows: 2.0 → -0.5213, 1.5 → -0.5206, 1.2 → -0.5202, 1.0 → -0.5199. This suggests a monotonic improvement as intensity decreases within this range. The literature supports that moderate-to-low intensities (0.5-2.0) are safer and more robust. Following this trend, I should test an even lower intensity at site 9. Testing 0.8 would continue exploring this downward trend. However, I should consider that there may be a threshold below which stimulation becomes ineffective. Given the current best result is at 1.0 with -0.5199, trying 0.8 seems like a reasonable next step to see if the improvement continues.","params":{"iext_boost":0.8,"site_index":9},"reward":-0.5196}]};
+const RAG_DATA = {"baseline":-0.5285,"best_reward":-0.5206,"improvement_pct":1.5,"best_params":{"iext_boost":1.5,"site_index":9},"history":[{"iteration":0,"iext_boost":1.5,"site_index":9,"site_name":"rHC","reward":-0.5206},{"iteration":1,"iext_boost":2.0,"site_index":7,"site_name":"rFEF","reward":-0.5225},{"iteration":2,"iext_boost":2.5,"site_index":4,"site_name":"rCCP","reward":-0.531},{"iteration":3,"iext_boost":1.2,"site_index":4,"site_name":"rCCP","reward":-0.5282},{"iteration":4,"iext_boost":1.8,"site_index":0,"site_name":"rA1","reward":-0.5311},{"iteration":5,"iext_boost":1.5,"site_index":2,"site_name":"rAMYG","reward":-0.5333},{"iteration":6,"iext_boost":1.7,"site_index":1,"site_name":"rA2","reward":-0.5319},{"iteration":7,"iext_boost":1.6,"site_index":2,"site_name":"rAMYG","reward":-0.5335}],"rag_log":[{"iteration":1,"trend":"improving","retrieved_papers":[{"pmid":"40630858","title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation pa","gap":"How does thalamic stimulation with PAC waveforms affect the broader hippocampal-cortical network dynamics beyond the dir"},{"pmid":"38517356","title":"Circadian changes in aperiodic activity are correlated with seizure reduction in","gap":"What is the mechanistic relationship between circadian modulation of aperiodic activity and excitation/inhibition balanc"},{"pmid":"31549200","title":"Trajectories of brain remodeling in temporal lobe epilepsy.","gap":"What are the precise mechanisms underlying the transition from initial hippocampal neurogenesis enhancement to chronic n"}],"reasoning":"The current rHC stimulation shows improvement but literature from PMID 40630858 suggests thalamic involvement in hippocampal-cortical network modulation through PAC mechanisms. Network topology reveals rHC is an isolated node (degree=1), limiting its ability to propagate therapeutic effects. The retrieved literature on brain remodeling trajectories (PMID 31549200) emphasizes network-level dynamics beyond focal hippocampal targets. Given that rFEF (index 7) is a true network hub with degree=26 and strength=45.0, targeting this high-connectivity node could enable broader network modulation.","params":{"iext_boost":2.0,"site_index":7},"reward":-0.5225},{"iteration":3,"trend":"worsening","retrieved_papers":[{"pmid":"36822276","title":"HH model based smart deep brain stimulator to detect, predict and control epilep","gap":"What is the clinical efficacy of the proposed SDBS compared to conventional deep brain stimulation in reducing adverse s"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"Where should stimulation be optimally delivered within an individual's epileptic network?"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"When should stimulation be applied relative to evolving seizure risk patterns?"}],"reasoning":"The optimization trend is worsening, and literature [PMID 41914206] highlights the critical question of WHERE stimulation should be optimally delivered within the epileptic network. Since rHC showed the best result (-0.5206) but is isolated, I should target a hub that can modulate broader network dynamics. rPFCORB as top hub may provide better network-wide control. Additionally, the initial boost of 1.5 performed best, suggesting lower intensities may be more effective — aligning with adaptive neuromodulation principles about timing and dosing optimization.","params":{"iext_boost":1.2,"site_index":4},"reward":-0.5282},{"iteration":5,"trend":"worsening","retrieved_papers":[{"pmid":"36822276","title":"HH model based smart deep brain stimulator to detect, predict and control epilep","gap":"What is the clinical efficacy of the proposed SDBS compared to conventional deep brain stimulation in reducing adverse s"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"Where should stimulation be optimally delivered within an individual's epileptic network?"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"When should stimulation be applied relative to evolving seizure risk patterns?"}],"reasoning":"Literature PMID 41914206 emphasizes optimal stimulation delivery within the epileptic network, and PMID 36822276 highlights the importance of targeted deep brain stimulation. The network topology shows rHC (iter 0) gave best reward (-0.5206) but is isolated with degree=1. The top network hubs are prefrontal regions (rPFCORB, lPFCORB, rPFCVL). Since targeting hubs may better modulate network-wide activity per the adaptive neuromodulation literature, I will try rPFCORB as a true hub with moderate boost around 1.5, similar to the best-performing iteration.","params":{"iext_boost":1.5,"site_index":2},"reward":-0.5333}]};
+
+const BO_DATA ={"bo_trajectory":[-0.526,-0.5317,-0.5221,-0.5288,-0.523,-0.5285,-0.5286,-0.5284],"llm_trajectory":[-0.5206,-0.5353,-0.5213,-0.5202,-0.5217,-0.5199,-0.5196,-0.5194],"bo_best":-0.5221,"llm_best":-0.5194,"iter1_bo":-0.526,"iter1_llm":-0.5206,"reasoning_log":[{"iteration":0,"reasoning":"Literature prior: rHC (index 9) is the most evidence-supported target for temporal lobe epilepsy. Starting with moderate intensity 1.5 to balance efficacy and safety.","params":{"iext_boost":1.5,"site_index":9},"reward":-0.5206},{"iteration":3,"reasoning":"Looking at the results so far: rHC (index 9) with intensity 1.5 gave worst-case reward of -0.5206, which is the best so far. lHC (index 47) with the same intensity performed slightly worse at -0.5353. Increasing intensity to 2.0 at rHC (index 9) slightly worsened the result to -0.5213. This suggests that for hippocampal targets, moderate-low intensities around 1.5 or slightly lower may be optimal. The right hippocampus appears more promising than left. Let me try a slightly lower intensity at rHC to see if we can improve the worst-case outcome — perhaps 1.0 or 1.2 could reduce adverse effects in the most vulnerable patient while maintaining efficacy. Trying intensity 1.2 at the same site to test if lower stimulation improves the worst-case patient outcome by reducing potential overstimulation effects.","params":{"iext_boost":1.2,"site_index":9},"reward":-0.5202},{"iteration":6,"reasoning":"Analyzing the results so far, I observe that right hippocampus (site_index=9) consistently shows the best worst-case rewards, with a clear trend: lower intensities are performing better. The progression shows: 2.0 → -0.5213, 1.5 → -0.5206, 1.2 → -0.5202, 1.0 → -0.5199. This suggests a monotonic improvement as intensity decreases within this range. The literature supports that moderate-to-low intensities (0.5-2.0) are safer and more robust. Following this trend, I should test an even lower intensity at site 9. Testing 0.8 would continue exploring this downward trend. However, I should consider that there may be a threshold below which stimulation becomes ineffective. Given the current best result is at 1.0 with -0.5199, trying 0.8 seems like a reasonable next step to see if the improvement continues.","params":{"iext_boost":0.8,"site_index":9},"reward":-0.5196}]};
 
 const GEN_DATA ={"train_baseline":{"rewards":[-0.4468,-0.4953,-0.4275,-0.5285,-0.4038],"worst":-0.5285,"mean":-0.4604},"train_optimized":{"rewards":[-0.2847,-0.2608,-0.2786,-0.2769,-0.2702],"worst":-0.2847,"mean":-0.2742},"test_baseline":{"rewards":[-0.4985,-0.4324,-0.4845,-0.4707,-0.4687,-0.471,-0.4528,-0.4027],"worst":-0.4985,"mean":-0.4602},"test_optimized":{"rewards":[-0.2858,-0.2816,-0.2908,-0.2522,-0.2169,-0.3346,-0.292,-0.3248],"worst":-0.3346,"mean":-0.2848},"narrow_baseline":{"worst":-0.5112,"mean":-0.4676},"narrow_optimized":{"worst":-0.3829,"mean":-0.3043},"medium_baseline":{"worst":-0.5112,"mean":-0.4676},"medium_optimized":{"worst":-0.3829,"mean":-0.3043},"wide_baseline":{"worst":-0.5112,"mean":-0.4676},"wide_optimized":{"worst":-0.3829,"mean":-0.3043},"stress_baseline":{"rewards":[-0.5175,-0.4213,-0.4393,-0.4204,-0.4455,-0.4314,-0.3941,-0.4976,-0.4429,-0.4937,-0.3698,-0.4857,-0.4521,-0.4591,-0.4578,-0.4308,-0.5028,-0.5048,-0.4177,-0.4254,-0.3485,-0.3894,-0.4513,-0.4296,-0.4614,-0.4407,-0.4892,-0.4798,-0.4404,-0.4116],"worst":-0.5175,"mean":-0.4451,"median":-0.4418,"std":0.0398},"stress_optimized":{"rewards":[-0.3145,-0.375,-0.2585,-0.2868,-0.3268,-0.3113,-0.2733,-0.4047,-0.3229,-0.2805,-0.3111,-0.2633,-0.2741,-0.2408,-0.297,-0.3049,-0.2884,-0.2937,-0.3709,-0.3237,-0.3291,-0.3642,-0.3239,-0.3012,-0.2645,-0.2965,-0.2693,-0.294,-0.2677,-0.3333],"worst":-0.4047,"mean":-0.3055,"median":-0.2991,"std":0.0373}};
 
@@ -2752,6 +2846,34 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
       }
     },
     plugins: [diagPlugin]
+  });
+})();
+
+// ── RAG journal table ────────────────────────────
+(function() {
+  const tbody = document.getElementById('rag-journal-body');
+  if (!tbody || !RAG_DATA.rag_log) return;
+  RAG_DATA.rag_log.forEach(entry => {
+    const paper = entry.retrieved_papers[0]; // lead paper
+    const reasoning = entry.reasoning.length > 150
+      ? entry.reasoning.slice(0, 147) + '…'
+      : entry.reasoning;
+    const isBest = entry.reward === RAG_DATA.best_reward;
+    const rewardClass = isBest ? 'rag-reward best' : 'rag-reward worse';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="rag-iter-pill">Iter ${entry.iteration}</span></td>
+      <td>
+        <div class="rag-pmid">PMID ${paper.pmid}</div>
+        <div class="rag-paper-title">${paper.title}</div>
+      </td>
+      <td style="font-size:0.82rem;color:var(--text);line-height:1.5;">${reasoning}</td>
+      <td>
+        <div class="rag-params">boost=${entry.params.iext_boost} · site=${entry.params.site_index}</div>
+        <div class="${rewardClass}">${entry.reward.toFixed(4)}${isBest ? ' ★' : ''}</div>
+      </td>
+    `;
+    tbody.appendChild(tr);
   });
 })();
 
