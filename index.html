@@ -1233,32 +1233,36 @@
       <div class="metric-label">Open Questions</div>
     </div>
     <div class="metric-card" data-scroll="section-generalization" role="button" tabindex="0" aria-label="Scroll to Generalization section">
-      <span class="metric-value" style="color:#22c55e">+40%</span>
-      <div class="metric-label">Worst-Case Reward Improvement</div>
+      <span class="metric-value" style="color:#22c55e">+40.1%</span>
+      <div class="metric-label">Worst-Case Improvement (x₀ opt)</div>
     </div>
   </div>
 </div>
 
 <!-- Key Findings summary card -->
-<div class="key-findings-bar">
-  <a class="kf-card kf-indigo" href="#mechanistic-insights">
-    <div class="kf-stat">20×</div>
-    <div class="kf-label">improvement gap</div>
-    <div class="kf-body">Direct epileptogenicity tuning (x₀) outperforms external stimulation (I<sub>ext</sub>) by 20×, revealing epilepsy as a bifurcation phenomenon.</div>
-    <div class="kf-link">→ Mechanistic Insights</div>
-  </a>
-  <a class="kf-card kf-amber" href="#precision-intervention">
-    <div class="kf-stat">9/20</div>
-    <div class="kf-label">PARADOXICAL RESPONDERS</div>
-    <div class="kf-body">The same rHC protocol that helps temporal-SOZ patients worsens outcomes in hippocampal-SOZ patients. Site-to-lesion matching is a safety requirement, not an optimization goal.</div>
-    <div class="kf-link">→ Precision Neuro-Intervention</div>
-  </a>
-  <a class="kf-card kf-green" href="#llm-vs-bo">
-    <div class="kf-stat">iter 1</div>
-    <div class="kf-label">LEADS FROM ITERATION 1</div>
-    <div class="kf-body">LLM scores −0.5206 at iteration 1 vs BO's −0.5260 — a meaningful lead from the very first evaluation, with no random exploration needed.</div>
-    <div class="kf-link">→ LLM vs BO</div>
-  </a>
+<div style="border:1px solid var(--border);border-radius:12px;display:grid;grid-template-columns:1fr 1fr 1fr;margin:2rem 0;background:#fff;">
+
+  <div style="padding:1.5rem 2rem;border-right:1px solid var(--border);">
+    <div style="font-size:2rem;font-weight:600;margin-bottom:4px;">20×</div>
+    <div style="font-size:11px;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Improvement gap</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;">Epileptogenicity tuning (x₀) outperforms external stimulation (I<sub>ext</sub>) by 20×. Epilepsy is a bifurcation phenomenon.</div>
+    <a href="#mechanistic-insights" style="font-size:12px;display:block;margin-top:12px;color:var(--accent);text-decoration:none;">→ Mechanistic Insights</a>
+  </div>
+
+  <div style="padding:1.5rem 2rem;border-right:1px solid var(--border);">
+    <div style="font-size:2rem;font-weight:600;margin-bottom:4px;">9 / 20</div>
+    <div style="font-size:11px;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Paradoxical responders</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;">Same rHC protocol helps temporal-SOZ patients but worsens hippocampal-SOZ outcomes. Site-to-lesion matching is a safety requirement.</div>
+    <a href="#precision-intervention" style="font-size:12px;display:block;margin-top:12px;color:var(--accent);text-decoration:none;">→ Precision Neuro-Intervention</a>
+  </div>
+
+  <div style="padding:1.5rem 2rem;">
+    <div style="font-size:2rem;font-weight:600;margin-bottom:4px;">−0.0054</div>
+    <div style="font-size:11px;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">LLM cold-start edge</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;">LLM scores −0.5206 at iteration 1 vs BO's −0.5260. Literature prior eliminates random exploration entirely.</div>
+    <a href="#llm-vs-bo" style="font-size:12px;display:block;margin-top:12px;color:var(--accent);text-decoration:none;">→ LLM vs BO</a>
+  </div>
+
 </div>
 
 <hr class="divider">
