@@ -526,6 +526,7 @@
   .bo-quote-reward { margin-top: 10px; font-size: 0.82rem; color: var(--muted); }
   .bo-quote-reward span { color: #16a34a; font-weight: 600; font-style: normal; font-family: monospace; }
   @media (max-width: 680px) { .bo-when-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { .trace-compare-grid { grid-template-columns: 1fr !important; } }
   @media (max-width: 720px) { .whats-next-grid { grid-template-columns: 1fr !important; } }
 
   /* ── RAG subsection ── */
@@ -1850,6 +1851,67 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </div>
   </div>
 
+  <!-- Network topology SVG visualization -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:16px;">Stimulating an Outlier: rHC in Network Context</div>
+    <div style="display:flex;justify-content:center;">
+      <svg viewBox="0 0 500 240" width="100%" style="max-width:520px;font-family:-apple-system,sans-serif;">
+        <!-- Hub node rFEF spokes -->
+        <line x1="170" y1="120" x2="90"  y2="55"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="80"  y2="120" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="90"  y2="185" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="140" y2="55"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="140" y2="185" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="200" y2="50"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="200" y2="190" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="240" y2="75"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <!-- Spoke endpoint nodes -->
+        <circle cx="90"  cy="55"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="80"  cy="120" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="90"  cy="185" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="140" cy="55"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="140" cy="185" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="200" cy="50"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="200" cy="190" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="240" cy="75"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <!-- Hub center node rFEF -->
+        <circle cx="170" cy="120" r="28" fill="#4f46e5" stroke="#3730a3" stroke-width="2"/>
+        <text x="170" y="116" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">rFEF</text>
+        <text x="170" y="129" text-anchor="middle" fill="#c7d2fe" font-size="8">hub</text>
+        <!-- Hub label -->
+        <text x="170" y="162" text-anchor="middle" fill="#4338ca" font-size="10" font-weight="600">Hub node</text>
+        <text x="170" y="173" text-anchor="middle" fill="#6366f1" font-size="9">degree 26 · strength 45.0</text>
+
+        <!-- Divider -->
+        <line x1="300" y1="30" x2="300" y2="210" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+        <!-- rHC isolated: single thin connection -->
+        <line x1="390" y1="120" x2="440" y2="85" stroke="#d97706" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+        <circle cx="440" cy="85" r="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+        <!-- rHC node -->
+        <circle cx="390" cy="120" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+        <text x="390" y="116" text-anchor="middle" fill="#78350f" font-size="11" font-weight="700">rHC</text>
+        <text x="390" y="127" text-anchor="middle" fill="#92400e" font-size="8">outlier</text>
+        <!-- rHC label -->
+        <text x="390" y="155" text-anchor="middle" fill="#b45309" font-size="10" font-weight="600">Outlier node</text>
+        <text x="390" y="166" text-anchor="middle" fill="#d97706" font-size="9">degree 1 · strength 2.0</text>
+
+        <!-- Section labels top -->
+        <text x="170" y="22" text-anchor="middle" fill="#6366f1" font-size="10" font-weight="600">NETWORK HUB</text>
+        <text x="390" y="22" text-anchor="middle" fill="#d97706" font-size="10" font-weight="600">STIMULATION TARGET</text>
+      </svg>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);text-align:center;margin:8px 0 0;font-style:italic;">rHC stimulation propagates via global coupling (diffuse), not direct white matter fibers. Effect magnitude is patient-topology-dependent.</p>
+  </div>
+
+  <!-- Graph Theory Post-mortem -->
+  <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;">
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">🔎 Graph Theory Post-mortem</div>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Initial hypothesis:</strong> rHC, as a limbic structure central to seizure generation, would act as a network hub whose stimulation would propagate suppression widely. Structural connectome analysis refuted this: rHC has degree=1 and zero direct fiber connections to any tested SOZ region.</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Revised interpretation:</strong> stimulating rHC modulates a global background excitability via diffuse coupling — not targeted pathway suppression. This explains the high patient-to-patient variability: outcomes depend on how each individual's network topology translates global I<sub>ext</sub> perturbation into local seizure dynamics.</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin:0;"><strong>Prediction:</strong> selecting rFEF (degree=26, strength=45.0) as the stimulation target would produce more consistent network-wide effects — but carries higher risk of global adverse events. The <em>hub-outlier trade-off</em> is a fundamental tension in neuromodulation target selection.</p>
+  </div>
+
   <!-- PART 4: Per-patient scatter -->
   <div class="mech-card" style="margin-bottom:24px;">
     <div class="mech-card-title">Per-patient outcomes: baseline vs optimized reward</div>
@@ -1934,6 +1996,45 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <p>BO begins blind — its first sample is drawn from the prior over parameter space, yielding a relatively poor reward of −0.526. The LLM, by contrast, opens at −0.5206 by citing rHC as the most evidence-supported target in temporal lobe epilepsy, effectively encoding decades of clinical literature into the initial proposal. Over 8 iterations this head-start compounds: the LLM converges to a best reward of <strong>−0.5194</strong> vs BO's <strong>−0.5221</strong> — a gap of 0.0027 that, in a minimax setting over heterogeneous patients, translates to meaningfully better worst-case protection for the most vulnerable patient phenotype.</p>
   </div>
 
+  <!-- Reasoning trace comparison -->
+  <div style="margin-bottom:28px;">
+    <div style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:14px;">Reasoning Trace: Black Box vs Knowledge-Guided Search</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+      <!-- LEFT: BO blind -->
+      <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:var(--radius);padding:18px 20px;">
+        <div style="font-weight:700;font-size:0.88rem;color:#475569;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">🎲 Bayesian Optimization (blind)</div>
+        <div style="font-family:monospace;font-size:0.81rem;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:12px 14px;margin-bottom:12px;line-height:2;">
+          <div><span style="color:#94a3b8;">Iter 1:</span> [3.19, 14] → reward: <strong>−0.5260</strong></div>
+          <div><span style="color:#94a3b8;">Iter 2:</span> [3.12, 45] → reward: <strong>−0.5317</strong></div>
+          <div><span style="color:#94a3b8;">Iter 3:</span> [1.78,  7] → reward: <strong>−0.5221</strong></div>
+        </div>
+        <div style="font-size:0.8rem;color:#94a3b8;font-style:italic;">No explanation. No context. Pure mathematical sampling.</div>
+      </div>
+
+      <!-- RIGHT: LLM knowledge-guided -->
+      <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:var(--radius);padding:18px 20px;">
+        <div style="font-weight:700;font-size:0.88rem;color:#4338ca;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">🧠 LLM Optimizer (knowledge-guided)</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
+          <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
+            <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 0: boost=1.5, site=rHC → <strong>−0.5206</strong></div>
+            <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Literature prior: rHC is the most evidence-supported target for temporal lobe epilepsy. Starting with moderate intensity to balance efficacy and safety."</div>
+          </div>
+          <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
+            <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 3: boost=1.2, site=rHC → <strong>−0.5202</strong></div>
+            <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Simulation confirms rHC at moderate intensity outperforms higher-intensity trials. Literature on minimax robustness suggests conservative intensity reduces worst-case variance across patients."</div>
+          </div>
+          <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
+            <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 6: boost=0.8, site=rHC → <strong>−0.5196</strong></div>
+            <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Converging on low-moderate intensity at rHC. Retrieved gap from amygdala connectivity paper suggests isolated nodes like rHC may respond better to lower stimulation to avoid local over-excitation."</div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:#6366f1;font-style:italic;">Each proposal cites a clinical rationale.</div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Part 5: When to use which -->
   <div class="bo-when-grid">
     <div class="bo-when-card bo">
@@ -2001,6 +2102,34 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <div class="rag-arch-box output">
       Next parameter proposal
       <div class="rag-arch-label">iext_boost · site_index</div>
+    </div>
+  </div>
+
+  <!-- Literature-derived constraints -->
+  <div style="margin-bottom:24px;">
+    <div style="font-weight:700;font-size:0.93rem;color:var(--text);margin-bottom:10px;">Research Gaps → Safety Constraints</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
+        <span style="font-size:1rem;flex-shrink:0;">⚠</span>
+        <div>
+          <span style="font-weight:700;font-size:0.85rem;color:#92400e;">I<sub>ext</sub> boost ≤ 3.5</span>
+          <span style="font-size:0.83rem;color:#78350f;"> — safety boundary: high-intensity stimulation risk identified in isolated node topology literature</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
+        <span style="font-size:1rem;flex-shrink:0;">⚠</span>
+        <div>
+          <span style="font-weight:700;font-size:0.85rem;color:#92400e;">Avoid simultaneous multi-site</span>
+          <span style="font-size:0.83rem;color:#78350f;"> — gap: interaction effects of multi-focal stimulation uncharacterized in 136-paper corpus</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
+        <span style="font-size:1rem;flex-shrink:0;">⚠</span>
+        <div>
+          <span style="font-weight:700;font-size:0.85rem;color:#92400e;">Site-SOZ matching required</span>
+          <span style="font-size:0.83rem;color:#78350f;"> — gap: blind stimulation contraindicated in hippocampal-SOZ patients (cohort study, n=9)</span>
+        </div>
+      </div>
     </div>
   </div>
 
