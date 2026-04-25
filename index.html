@@ -72,15 +72,15 @@
   .key-findings-bar {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 0 0 0;
-    padding: 24px 0 28px;
+    gap: 12px;
+    margin: 0;
+    padding: 16px 0;
   }
   .kf-card {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 20px 22px;
+    gap: 2px;
+    padding: 12px 16px;
     border-radius: var(--radius);
     text-decoration: none;
     transition: transform .15s, box-shadow .15s;
@@ -91,36 +91,35 @@
   .kf-amber  { background: #fffbeb; border: 1px solid #fcd34d; }
   .kf-green  { background: #f0fdf4; border: 1px solid #86efac; }
   .kf-stat {
-    font-size: 2rem;
+    font-size: 1.4rem;
     font-weight: 800;
     line-height: 1;
-    margin-bottom: 2px;
   }
   .kf-indigo .kf-stat { color: #4338ca; }
   .kf-amber  .kf-stat { color: #b45309; }
   .kf-green  .kf-stat { color: #15803d; }
   .kf-label {
-    font-size: 0.78rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .06em;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .kf-indigo .kf-label { color: #4338ca; }
   .kf-amber  .kf-label { color: #b45309; }
   .kf-green  .kf-label { color: #15803d; }
   .kf-body {
-    font-size: 0.855rem;
-    line-height: 1.6;
+    font-size: 12px;
+    line-height: 1.5;
     flex: 1;
   }
   .kf-indigo .kf-body { color: #312e81; }
   .kf-amber  .kf-body { color: #78350f; }
   .kf-green  .kf-body { color: #14532d; }
   .kf-link {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    margin-top: 10px;
+    margin-top: 6px;
   }
   .kf-indigo .kf-link { color: #6366f1; }
   .kf-amber  .kf-link { color: #d97706; }
@@ -1255,7 +1254,7 @@
     <div class="kf-link">→ Precision Neuro-Intervention</div>
   </a>
   <a class="kf-card kf-green" href="#llm-vs-bo">
-    <div class="kf-stat" style="font-size:1.5rem;">iter 1</div>
+    <div class="kf-stat">iter 1</div>
     <div class="kf-label">LEADS FROM ITERATION 1</div>
     <div class="kf-body">LLM scores −0.5206 at iteration 1 vs BO's −0.5260 — a meaningful lead from the very first evaluation, with no random exploration needed.</div>
     <div class="kf-link">→ LLM vs BO</div>
