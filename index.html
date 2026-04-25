@@ -68,6 +68,67 @@
     margin: 0 auto 48px;
   }
 
+  /* ── Key Findings bar ── */
+  .key-findings-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 0 0 0;
+    padding: 24px 0 28px;
+  }
+  .kf-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px 22px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: transform .15s, box-shadow .15s;
+    cursor: pointer;
+  }
+  .kf-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+  .kf-indigo { background: #eef2ff; border: 1px solid #c7d2fe; }
+  .kf-amber  { background: #fffbeb; border: 1px solid #fcd34d; }
+  .kf-green  { background: #f0fdf4; border: 1px solid #86efac; }
+  .kf-stat {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .kf-indigo .kf-stat { color: #4338ca; }
+  .kf-amber  .kf-stat { color: #b45309; }
+  .kf-green  .kf-stat { color: #15803d; }
+  .kf-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  .kf-indigo .kf-label { color: #4338ca; }
+  .kf-amber  .kf-label { color: #b45309; }
+  .kf-green  .kf-label { color: #15803d; }
+  .kf-body {
+    font-size: 0.855rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .kf-indigo .kf-body { color: #312e81; }
+  .kf-amber  .kf-body { color: #78350f; }
+  .kf-green  .kf-body { color: #14532d; }
+  .kf-link {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .kf-indigo .kf-link { color: #6366f1; }
+  .kf-amber  .kf-link { color: #d97706; }
+  .kf-green  .kf-link { color: #16a34a; }
+  @media (max-width: 720px) {
+    .key-findings-bar { grid-template-columns: 1fr; }
+  }
+
   .metrics {
     display: flex;
     justify-content: center;
@@ -1179,6 +1240,28 @@
   </div>
 </div>
 
+<!-- Key Findings summary card -->
+<div class="key-findings-bar">
+  <a class="kf-card kf-indigo" href="#mechanistic-insights">
+    <div class="kf-stat">40×</div>
+    <div class="kf-label">improvement gap</div>
+    <div class="kf-body">Direct epileptogenicity tuning (x₀) outperforms external stimulation (I<sub>ext</sub>) by 20×, revealing epilepsy as a bifurcation phenomenon.</div>
+    <div class="kf-link">→ Mechanistic Insights</div>
+  </a>
+  <a class="kf-card kf-amber" href="#precision-intervention">
+    <div class="kf-stat">45%</div>
+    <div class="kf-label">paradoxical responders</div>
+    <div class="kf-body">The same rHC protocol that helps temporal-SOZ patients worsens outcomes in hippocampal-SOZ patients. Site-to-lesion matching is a safety requirement, not an optimization goal.</div>
+    <div class="kf-link">→ Precision Neuro-Intervention</div>
+  </a>
+  <a class="kf-card kf-green" href="#llm-vs-bo">
+    <div class="kf-stat">+1</div>
+    <div class="kf-label">LLM cold-start advantage</div>
+    <div class="kf-body">Literature-informed initialization outperforms Bayesian Optimization from iteration 1, without any random exploration phase.</div>
+    <div class="kf-link">→ LLM vs BO</div>
+  </a>
+</div>
+
 <hr class="divider">
 
 <!-- ══════════════════════════════════════════════
@@ -1644,7 +1727,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <!-- ══════════════════════════════════════════════
      MECHANISTIC INSIGHTS
 ══════════════════════════════════════════════ -->
-<section>
+<section id="mechanistic-insights">
   <div class="section-title">Mechanistic Insights: Theoretical Bound vs Clinical Reality</div>
   <div class="section-sub">Two optimization experiments reveal why epilepsy treatment is hard.</div>
 
@@ -1761,7 +1844,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <!-- ══════════════════════════════════════════════
      PARADOXICAL EFFECT
 ══════════════════════════════════════════════ -->
-<section>
+<section id="precision-intervention">
   <div class="section-title">Precision Neuro-Intervention: Navigating the &#8220;Paradoxical Effect&#8221;</div>
   <div class="section-sub">Why a one-size-fits-all stimulation strategy fails in heterogeneous epilepsy cohorts.</div>
 
@@ -1935,7 +2018,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <!-- ══════════════════════════════════════════════
      LLM vs BAYESIAN OPTIMIZATION
 ══════════════════════════════════════════════ -->
-<section>
+<section id="llm-vs-bo">
   <div class="section-title">LLM vs Bayesian Optimization: The Knowledge Advantage</div>
   <div class="bo-section-sub">Comparing literature-guided LLM search against Gaussian Process Bayesian Optimization on the same 8-iteration budget.</div>
 
