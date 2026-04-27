@@ -1786,16 +1786,16 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <div class="section-sub">Why a one-size-fits-all stimulation strategy fails in heterogeneous epilepsy cohorts.</div>
 
   <!-- PART 2: Forest plot -->
-  <div class="mech-card" style="margin-bottom:24px;">
+  <div class="mech-card" style="margin-bottom:8px;">
     <div class="mech-card-title">Per-SOZ-type treatment effect (rHC stimulation, n=20)</div>
     <div class="para-chart-wrap">
       <canvas id="forest-chart"></canvas>
     </div>
   </div>
 
-  <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius);padding:12px 18px;margin-bottom:24px;font-size:0.875rem;color:#14532d;line-height:1.6;">
-    <strong style="color:#15803d;">Statistical note:</strong> Though the temporal SOZ subgroup (n=2) is underpowered (p=0.31), its effect size (<strong>+0.056 ± 0.021 SEM</strong>) is <strong>3.3× higher</strong> than the cohort mean improvement. This identifies a high-priority signal zone for future large-scale validation — consistent with the pilot study logic common in clinical trial design, where initial signals in small subgroups motivate targeted recruitment.
-  </div>
+  <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;margin-bottom:24px;">
+    Error bars represent ±1 SEM. No subgroup reached statistical significance (all p &gt; 0.05), consistent with the small cohort size (n=20). Results are hypothesis-generating. The temporal SOZ effect size (+0.056 ± 0.021) is 3.3× the cohort mean — a high-priority signal for future targeted recruitment.
+  </p>
 
   <!-- PART 3: Clinical callout -->
   <div class="para-callout" style="margin-bottom:24px;">
@@ -2834,10 +2834,35 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
         ctx.fill();
         ctx.restore();
 
-        // value label
-        const lbl = (means[s] >= 0 ? '+' : '') + means[s].toFixed(4);
+        // ±1 SEM error bars (darker, narrower than CI whiskers)
+        const semPx = semVal[s] ? (x.getPixelForValue(means[s] + semVal[s]) - x.getPixelForValue(means[s])) : 0;
+        if (semPx) {
+          const xSemLo = xMid - semPx;
+          const xSemHi = xMid + semPx;
+          ctx.save();
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 2;
+          ctx.setLineDash([]);
+          // horizontal SEM line
+          ctx.beginPath();
+          ctx.moveTo(xSemLo, yPx);
+          ctx.lineTo(xSemHi, yPx);
+          ctx.stroke();
+          // SEM end caps (shorter than CI caps)
+          [xSemLo, xSemHi].forEach(px => {
+            ctx.beginPath();
+            ctx.moveTo(px, yPx - 4);
+            ctx.lineTo(px, yPx + 4);
+            ctx.stroke();
+          });
+          ctx.restore();
+        }
+
+        // value label (± SEM)
+        const lbl = (means[s] >= 0 ? '+' : '') + means[s].toFixed(4) +
+                    (semVal[s] ? ' ±' + semVal[s].toFixed(3) : '');
         ctx.save();
-        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.font = '11px -apple-system, sans-serif';
         ctx.fillStyle = col;
         ctx.textBaseline = 'middle';
         ctx.textAlign = means[s] >= 0 ? 'left' : 'right';
