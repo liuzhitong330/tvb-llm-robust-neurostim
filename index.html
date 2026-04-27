@@ -587,7 +587,6 @@
   .bo-quote-reward span { color: #16a34a; font-weight: 600; font-style: normal; font-family: monospace; }
   @media (max-width: 680px) { .bo-when-grid { grid-template-columns: 1fr; } }
   @media (max-width: 700px) { .trace-compare-grid { grid-template-columns: 1fr !important; } }
-  @media (max-width: 720px) { .whats-next-grid { grid-template-columns: 1fr !important; } }
 
   /* ── RAG subsection ── */
   .rag-header { margin-bottom: 22px; }
@@ -628,11 +627,8 @@
   .rag-callout-title { font-weight: 700; font-size: 0.93rem; color: #92400e; margin-bottom: 8px; }
   .rag-callout p { font-size: 0.88rem; color: #78350f; margin: 0; line-height: 1.65; }
   .preset-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-  .preset-btn { border: none; border-radius: 20px; font-size: 0.82rem; font-weight: 600; padding: 6px 14px; cursor: pointer; transition: opacity .15s; }
-  .preset-btn:hover { opacity: 0.85; }
-  .preset-btn.optimal { background: #4f46e5; color: #fff; }
-  .preset-btn.temporal { background: #16a34a; color: #fff; }
-  .preset-btn.paradox  { background: #d97706; color: #fff; }
+  .preset-btn { background: #fff; border: 1px solid var(--border); border-radius: 20px; font-size: 0.82rem; font-weight: 500; padding: 5px 14px; cursor: pointer; color: var(--text); transition: background .15s; }
+  .preset-btn:hover { background: #f8fafc; }
   .bo-log-section { margin-bottom: 28px; }
   .bo-log-title { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
   .bo-log-note { font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; font-style: italic; background:#f8fafc; border-left:3px solid var(--accent); padding:8px 14px; border-radius:0 6px 6px 0; }
@@ -864,7 +860,7 @@
   section { max-width: 1000px; margin: 0 auto; padding: 64px 24px; }
   .section-title {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 8px;
     color: var(--text);
   }
@@ -1426,16 +1422,19 @@
           specifically to capture the essential dynamics of epileptic seizures. It consists of
           <strong>six coupled ODEs operating across two timescales</strong>:
         </p>
-        <div class="stage2-eq-label">Fast subsystem — ictal oscillations</div>
-        <div class="stage2-eq">dx₁/dt = y₁ − f₁(x₁, x₂) − z + I₁
+        <details>
+          <summary style="cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0;">Show mathematical details (Epileptor ODE system)</summary>
+          <div class="stage2-eq-label">Fast subsystem — ictal oscillations</div>
+          <div class="stage2-eq">dx₁/dt = y₁ − f₁(x₁, x₂) − z + I₁
 dy₁/dt = 1 − 5x₁² − y₁</div>
-        <div class="stage2-eq-label">Slow permittivity variable</div>
-        <div class="stage2-eq">dz/dt = (1/τ₀)(4(x₁ − x₀) − z)</div>
-        <div class="stage2-eq-label">Fast subsystem 2 — interictal spikes</div>
-        <div class="stage2-eq">dx₂/dt = −y₂ + x₂ − x₂³ + I₂ + 2u − 0.3(z − 3.5)
+          <div class="stage2-eq-label">Slow permittivity variable</div>
+          <div class="stage2-eq">dz/dt = (1/τ₀)(4(x₁ − x₀) − z)</div>
+          <div class="stage2-eq-label">Fast subsystem 2 — interictal spikes</div>
+          <div class="stage2-eq">dx₂/dt = −y₂ + x₂ − x₂³ + I₂ + 2u − 0.3(z − 3.5)
 dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
-        <div class="stage2-eq-label">Coupling variable</div>
-        <div class="stage2-eq">du/dt = −γ(u − 0.1x₁)</div>
+          <div class="stage2-eq-label">Coupling variable</div>
+          <div class="stage2-eq">du/dt = −γ(u − 0.1x₁)</div>
+        </details>
         <p>
           The parameter <strong>x₀</strong> (epileptogenicity) sits at the heart of the model.
           Mathematically, x₀ shifts the slow nullcline and determines whether a brain region
@@ -1531,7 +1530,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
       <div style="border-top:1px solid var(--border);padding-top:14px;">
         <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#d97706;margin-bottom:6px;">
-          v2 · AlphaEvolve-Inspired Evolution ✦ upgraded
+          v2 · AlphaEvolve-Inspired Evolution — upgraded
         </div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
           Maintains a <strong>population of 10</strong> candidate parameter sets. Each generation: evaluate all 10 on 5 virtual patients, select the top-5 elites, then the LLM reasons jointly over the elite set and proposes 5 diverse mutations — fine-tune near an elite, recombine two elites, execute a bold jump, or explicitly escape a local optimum. 5 generations = 50 TVB simulations. Population diversity pays dividends in higher-dimensional search: by Generation 3 the best candidate had already surpassed the v1 optimum.
@@ -1594,20 +1593,15 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <!-- Controls -->
     <div class="controls">
       <div class="preset-row">
-        <button class="preset-btn optimal" onclick="applyPreset(-2.1, '0.0165')">★ Optimal Protocol</button>
-        <button class="preset-btn temporal" onclick="applyPreset(-1.9, '0.0175')">⚡ Temporal SOZ Case</button>
-        <button class="preset-btn paradox"  onclick="applyPreset(-1.6, '0.0120', true)">⚠ Paradoxical Case</button>
-      </div>
-      <div id="paradox-insight" style="display:none;background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:0.85rem;color:#78350f;line-height:1.55;">
-        💡 <strong>Notice the reward drop?</strong> This mirrors the paradoxical worsening observed in hippocampal-SOZ patients in our cohort study (n=9, mean Δreward = −0.008). High epileptogenicity (x₀ > −1.8) combined with low coupling amplifies worst-case patient outcomes instead of suppressing them.
+        <button class="preset-btn" onclick="applyPreset(-2.1, '0.0165', false)">Optimal Protocol</button>
+        <button class="preset-btn" onclick="applyPreset(-1.9, '0.0175', false)">Temporal SOZ</button>
+        <button class="preset-btn" onclick="applyPreset(-1.6, '0.0120', true)">Paradoxical Case</button>
       </div>
       <div class="control-group">
         <span class="control-label">Epileptogenicity x₀</span>
         <div class="control-value" id="x0-display">−1.6</div>
         <input type="range" id="x0-slider" min="-3.0" max="-1.1" step="0.1" value="-1.6">
-        <div id="soz-warning" style="display:none;background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#92400e;line-height:1.5;">
-          ⚠ <strong>High epileptogenicity detected (x₀ &gt; −1.8).</strong> Based on the 20-patient cohort study, rHC stimulation parameters may induce paradoxical effects in patients with hippocampal seizure onset zones (observed worsening in 78% of hippocampal-SOZ virtual patients). Consider alternative stimulation targets or closed-loop protocols.
-        </div>
+        <div id="explorer-warning" style="display:none;background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#92400e;line-height:1.5;"></div>
       </div>
 
       <div class="control-group">
@@ -1637,7 +1631,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       </div>
 
       <div class="optimal-badge" id="optimal-badge">
-        ✦ Optimal point — x₀ = −2.1, K = 0.0165<br>
+        Optimal point — x₀ = −2.1, K = 0.0165<br>
         <small style="font-weight:400;opacity:0.8">Best worst-case reward found by LLM optimizer</small>
       </div>
     </div>
@@ -1662,6 +1656,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <div class="traj-card">
     <canvas id="traj-chart" height="160"></canvas>
   </div>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The optimizer begins at a worst-case reward of −0.5285 (baseline, no stimulation). A sharp improvement at iteration 1 reflects the LLM's literature-informed cold start — rHC at moderate intensity is proposed immediately rather than after random exploration. The best reward of −0.3182 is reached at iteration 4 (x₀ = −2.1, K = 0.0165), representing a 40.1% improvement over baseline. Subsequent iterations explore nearby parameter space, confirming this as a robust optimum.</p>
 </section>
 
 <hr class="divider">
@@ -1799,7 +1794,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </div>
 
   <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius);padding:12px 18px;margin-bottom:24px;font-size:0.875rem;color:#14532d;line-height:1.6;">
-    <strong style="color:#15803d;">📊 Statistical note:</strong> Though the temporal SOZ subgroup (n=2) is underpowered (p=0.31), its effect size (<strong>+0.056 ± 0.021 SEM</strong>) is <strong>3.3× higher</strong> than the cohort mean improvement. This identifies a high-priority signal zone for future large-scale validation — consistent with the pilot study logic common in clinical trial design, where initial signals in small subgroups motivate targeted recruitment.
+    <strong style="color:#15803d;">Statistical note:</strong> Though the temporal SOZ subgroup (n=2) is underpowered (p=0.31), its effect size (<strong>+0.056 ± 0.021 SEM</strong>) is <strong>3.3× higher</strong> than the cohort mean improvement. This identifies a high-priority signal zone for future large-scale validation — consistent with the pilot study logic common in clinical trial design, where initial signals in small subgroups motivate targeted recruitment.
   </div>
 
   <!-- PART 3: Clinical callout -->
@@ -1855,7 +1850,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- Structural Connectome Analysis subsection -->
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
-    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">🔬 Structural Connectome Analysis: Why rHC?</div>
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">Structural Connectome Analysis: Why rHC?</div>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:14px;">Analyzing the TVB structural connectome (76×76 weight matrix) reveals a counterintuitive finding: <strong>rHC is one of the most isolated nodes in the network</strong> (degree = 1, strength = 2.0), with zero direct white-matter connections to any SOZ region tested. The true network hubs are prefrontal regions (rPFCORB strength = 45.0, degree = 26).</p>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:16px;">This reframes the paradoxical effect hypothesis: rHC stimulation <em>cannot</em> deliver targeted suppression via direct fiber tracts — its influence propagates only through <strong>diffuse global coupling</strong>. The outcome therefore depends heavily on each patient's individual network topology. In temporal SOZ patients, this diffuse signal appears sufficient; in hippocampal SOZ patients, stimulating an already-epileptogenic isolated node may locally lower the bifurcation threshold without sufficient network-level compensation.</p>
     <!-- Inline stats grid -->
@@ -1863,12 +1858,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px 16px;">
         <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b91c1c;margin-bottom:6px;">rHC (stimulation target)</div>
         <div style="font-size:0.85rem;color:#7f1d1d;font-family:monospace;">degree = 1 &nbsp;·&nbsp; strength = 2.0</div>
-        <div style="font-size:0.78rem;color:#b91c1c;margin-top:4px;">⚠ low connectivity node</div>
+        <div style="font-size:0.78rem;color:#b91c1c;margin-top:4px;">low connectivity node</div>
       </div>
       <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;">
         <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#15803d;margin-bottom:6px;">rFEF (true hub, comparison)</div>
         <div style="font-size:0.85rem;color:#14532d;font-family:monospace;">degree = 26 &nbsp;·&nbsp; strength = 45.0</div>
-        <div style="font-size:0.78rem;color:#15803d;margin-top:4px;">✓ high-centrality hub</div>
+        <div style="font-size:0.78rem;color:#15803d;margin-top:4px;">high-centrality hub</div>
       </div>
     </div>
     <div style="background:#f8fafc;border-radius:6px;padding:10px 14px;font-size:0.82rem;color:var(--muted);">
@@ -1931,7 +1926,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- Graph Theory Post-mortem -->
   <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;">
-    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">🔎 Graph Theory Post-mortem</div>
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">Graph Theory Post-mortem</div>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Initial hypothesis:</strong> rHC, as a limbic structure central to seizure generation, would act as a network hub whose stimulation would propagate suppression widely. Structural connectome analysis refuted this: rHC has degree=1 and zero direct fiber connections to any tested SOZ region.</p>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Revised interpretation:</strong> stimulating rHC modulates a global background excitability via diffuse coupling — not targeted pathway suppression. This explains the high patient-to-patient variability: outcomes depend on how each individual's network topology translates global I<sub>ext</sub> perturbation into local seizure dynamics.</p>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin:0;"><strong>Prediction:</strong> selecting rFEF (degree=26, strength=45.0) as the stimulation target would produce more consistent network-wide effects — but carries higher risk of global adverse events. The <em>hub-outlier trade-off</em> is a fundamental tension in neuromodulation target selection.</p>
@@ -1985,12 +1980,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <tr>
         <td><strong>Cold-start (Iter 1)</strong></td>
         <td>−0.5260 <em>(random acquisition)</em></td>
-        <td class="win">−0.5206 ✓ <em>(literature prior)</em></td>
+        <td class="win">−0.5206 <em>(literature prior)</em></td>
       </tr>
       <tr>
         <td><strong>Best reward achieved</strong></td>
         <td>−0.5221 <em>(iter 3)</em></td>
-        <td class="win">−0.5194 ✓ <em>(iter 8)</em></td>
+        <td class="win">−0.5194 <em>(iter 8)</em></td>
       </tr>
       <tr>
         <td><strong>Improvement over iter 1</strong></td>
@@ -2017,7 +2012,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- Part 4: Insight callout -->
   <div class="bo-callout">
-    <div class="bo-callout-title">&#128161; Cold-Start Advantage: Literature as a Prior</div>
+    <div class="bo-callout-title">Cold-Start Advantage: Literature as a Prior</div>
     <p>BO begins blind — its first sample is drawn from the prior over parameter space, yielding a relatively poor reward of −0.526. The LLM, by contrast, opens at −0.5206 by citing rHC as the most evidence-supported target in temporal lobe epilepsy, effectively encoding decades of clinical literature into the initial proposal. Over 8 iterations this head-start compounds: the LLM converges to a best reward of <strong>−0.5194</strong> vs BO's <strong>−0.5221</strong> — a gap of 0.0027 that, in a minimax setting over heterogeneous patients, translates to meaningfully better worst-case protection for the most vulnerable patient phenotype.</p>
   </div>
 
@@ -2028,7 +2023,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
       <!-- LEFT: BO blind -->
       <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:var(--radius);padding:18px 20px;">
-        <div style="font-weight:700;font-size:0.88rem;color:#475569;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">🎲 Bayesian Optimization (blind)</div>
+        <div style="font-weight:700;font-size:0.88rem;color:#475569;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">Bayesian Optimization (blind)</div>
         <div style="font-family:monospace;font-size:0.81rem;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:12px 14px;margin-bottom:12px;line-height:2;">
           <div><span style="color:#94a3b8;">Iter 1:</span> [3.19, 14] → reward: <strong>−0.5260</strong></div>
           <div><span style="color:#94a3b8;">Iter 2:</span> [3.12, 45] → reward: <strong>−0.5317</strong></div>
@@ -2039,7 +2034,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
       <!-- RIGHT: LLM knowledge-guided -->
       <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:var(--radius);padding:18px 20px;">
-        <div style="font-weight:700;font-size:0.88rem;color:#4338ca;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">🧠 LLM Optimizer (knowledge-guided)</div>
+        <div style="font-weight:700;font-size:0.88rem;color:#4338ca;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">LLM Optimizer (knowledge-guided)</div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
           <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
             <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 0: boost=1.5, site=rHC → <strong>−0.5206</strong></div>
@@ -2063,7 +2058,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <!-- Part 5: When to use which -->
   <div class="bo-when-grid">
     <div class="bo-when-card bo">
-      <div class="bo-when-title">&#129302; Use Bayesian Optimization when…</div>
+      <div class="bo-when-title">Use Bayesian Optimization when…</div>
       <ul class="bo-when-list">
         <li>Parameter space is large (&gt;10 continuous dims)</li>
         <li>No clinical literature exists for the target</li>
@@ -2073,7 +2068,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       </ul>
     </div>
     <div class="bo-when-card llm">
-      <div class="bo-when-title">&#129504; Use LLM-Guided Search when…</div>
+      <div class="bo-when-title">Use LLM-Guided Search when…</div>
       <ul class="bo-when-list">
         <li>Budget is tight (≤10–20 iterations)</li>
         <li>Strong clinical priors exist for parameter ranges</li>
@@ -2135,21 +2130,18 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <div style="font-weight:700;font-size:0.93rem;color:var(--text);margin-bottom:10px;">Research Gaps → Safety Constraints</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
-        <span style="font-size:1rem;flex-shrink:0;">⚠</span>
         <div>
           <span style="font-weight:700;font-size:0.85rem;color:#92400e;">I<sub>ext</sub> boost ≤ 3.5</span>
           <span style="font-size:0.83rem;color:#78350f;"> — safety boundary: high-intensity stimulation risk identified in isolated node topology literature</span>
         </div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
-        <span style="font-size:1rem;flex-shrink:0;">⚠</span>
         <div>
           <span style="font-weight:700;font-size:0.85rem;color:#92400e;">Avoid simultaneous multi-site</span>
           <span style="font-size:0.83rem;color:#78350f;"> — gap: interaction effects of multi-focal stimulation uncharacterized in 136-paper corpus</span>
         </div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
-        <span style="font-size:1rem;flex-shrink:0;">⚠</span>
         <div>
           <span style="font-weight:700;font-size:0.85rem;color:#92400e;">Site-SOZ matching required</span>
           <span style="font-size:0.83rem;color:#78350f;"> — gap: blind stimulation contraindicated in hippocampal-SOZ patients (cohort study, n=9)</span>
@@ -2175,7 +2167,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- Part 3: Honest assessment -->
   <div class="rag-callout">
-    <div class="rag-callout-title">⚖️ Honest Assessment: Strength and Limitation of RAG-Augmented Optimization</div>
+    <div class="rag-callout-title">Honest Assessment: Strength and Limitation of RAG-Augmented Optimization</div>
     <p>The RAG optimizer achieved the same best reward (−0.5206) as the plain LLM optimizer, confirming that the literature prior correctly identifies rHC at moderate intensity as the best available protocol. However, subsequent iterations explored amygdala and auditory cortex targets — clinically motivated but suboptimal in this model. This illustrates both the <strong>strength</strong> (informed initialization) and the <strong>limitation</strong> (literature bias toward clinical targets that may not align with model dynamics) of RAG-augmented optimization.</p>
   </div>
 
@@ -2274,24 +2266,21 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <div class="section-title">What's Next?</div>
   <div class="section-sub">Three open directions at the intersection of computational neuroscience, control theory, and precision medicine.</div>
 
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+  <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
 
-    <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:var(--radius);padding:24px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-      <div style="font-size:1.6rem;margin-bottom:10px;">🔄</div>
-      <div style="font-weight:700;font-size:0.97rem;color:#3730a3;margin-bottom:10px;">Closed-Loop Stimulation</div>
-      <p style="font-size:0.875rem;color:#312e81;line-height:1.65;margin:0;">Static parameters are fixed at implantation. The next iteration introduces closed-loop control: real-time LFP signals feed back into the optimizer, adjusting stimulation on a sub-second timescale — mirroring how RNS devices operate, but with LLM-guided policy.</p>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:0;padding:20px 24px;border-bottom:1px solid var(--border);">
+      <div style="font-weight:600;font-size:0.93rem;color:var(--text);padding-right:20px;">Closed-Loop Stimulation</div>
+      <div style="font-size:0.875rem;color:var(--muted);line-height:1.65;">Static parameters are fixed at implantation. The next iteration introduces closed-loop control: real-time LFP signals feed back into the optimizer, adjusting stimulation on a sub-second timescale — mirroring how RNS devices operate, but with LLM-guided policy.</div>
     </div>
 
-    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius);padding:24px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-      <div style="font-size:1.6rem;margin-bottom:10px;">🧬</div>
-      <div style="font-weight:700;font-size:0.97rem;color:#15803d;margin-bottom:10px;">Synaptic Plasticity &amp; Adaptation</div>
-      <p style="font-size:0.875rem;color:#14532d;line-height:1.65;margin:0;">The Epileptor model captures acute dynamics but not chronic adaptation. Real DBS reshapes synaptic weights over weeks (indirectly shifting x₀ or K). Incorporating STDP into the TVB model would make stimulation optimization far more clinically realistic.</p>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:0;padding:20px 24px;border-bottom:1px solid var(--border);">
+      <div style="font-weight:600;font-size:0.93rem;color:var(--text);padding-right:20px;">Synaptic Plasticity &amp; Adaptation</div>
+      <div style="font-size:0.875rem;color:var(--muted);line-height:1.65;">The Epileptor model captures acute dynamics but not chronic adaptation. Real DBS reshapes synaptic weights over weeks (indirectly shifting x₀ or K). Incorporating STDP into the TVB model would make stimulation optimization far more clinically realistic.</div>
     </div>
 
-    <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:var(--radius);padding:24px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-      <div style="font-size:1.6rem;margin-bottom:10px;">🕸️</div>
-      <div style="font-weight:700;font-size:0.97rem;color:#b45309;margin-bottom:10px;">Graph-Theoretic Stratification</div>
-      <p style="font-size:0.875rem;color:#78350f;line-height:1.65;margin:0;">The paradoxical effect suggests betweenness centrality of the SOZ node predicts treatment response. Pre-implantation centrality analysis could stratify patients — identifying who benefits from rHC stimulation before surgery.</p>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:0;padding:20px 24px;">
+      <div style="font-weight:600;font-size:0.93rem;color:var(--text);padding-right:20px;">Graph-Theoretic Stratification</div>
+      <div style="font-size:0.875rem;color:var(--muted);line-height:1.65;">The paradoxical effect suggests betweenness centrality of the SOZ node predicts treatment response. Pre-implantation centrality analysis could stratify patients — identifying who benefits from rHC stimulation before surgery.</div>
     </div>
 
   </div>
@@ -2607,7 +2596,7 @@ const trajChart = new Chart(trajCtx, {
             const i = items[0].dataIndex;
             const r = RESULTS[i];
             const extra = [`x₀: ${r.x0}`, `K: ${r.coupling_a}`];
-            if (i === 4) extra.push('★ Best found');
+            if (i === 4) extra.push('Best found');
             return extra;
           }
         }
@@ -2630,6 +2619,7 @@ const trajChart = new Chart(trajCtx, {
 
 // ── Demo updater ─────────────────────────────────
 const BASELINE_WORST = -0.5285;
+let paradoxPresetActive = false;
 
 function updateDemo() {
   const x0  = document.getElementById('x0-slider').value;
@@ -2638,9 +2628,20 @@ function updateDemo() {
 
   document.getElementById('x0-display').textContent = parseFloat(x0).toFixed(1);
 
-  // SOZ warning: show when x0 > -1.8
-  const sozWarn = document.getElementById('soz-warning');
-  if (sozWarn) sozWarn.style.display = parseFloat(x0) > -1.8 ? 'block' : 'none';
+  const warn = document.getElementById('explorer-warning');
+  if (warn) {
+    const x0num = parseFloat(x0);
+    if (x0num > -1.8) {
+      warn.style.display = 'block';
+      warn.textContent = 'High epileptogenicity detected (x\u2080 > \u22121.8). rHC stimulation may induce paradoxical effects in patients with hippocampal seizure onset zones. Consider alternative stimulation targets or closed-loop protocols.';
+    } else if (paradoxPresetActive) {
+      warn.style.display = 'block';
+      warn.textContent = 'Notice the reward drop? This mirrors the paradoxical worsening observed in hippocampal-SOZ patients in our cohort study (n=9, mean \u0394reward = \u22120.008).';
+    } else {
+      warn.style.display = 'none';
+      warn.textContent = '';
+    }
+  }
 
   if (!d) return;
 
@@ -2675,6 +2676,7 @@ function updateDemo() {
 }
 
 function applyPreset(x0val, kval, showParadox) {
+  paradoxPresetActive = showParadox;
   const slider = document.getElementById('x0-slider');
   const select = document.getElementById('coupling-select');
   slider.value = x0val;
@@ -2684,12 +2686,10 @@ function applyPreset(x0val, kval, showParadox) {
     if (diff < bestDiff) { bestDiff = diff; best = o; }
   });
   if (best) best.selected = true;
-  const insightEl = document.getElementById('paradox-insight');
-  if (insightEl) insightEl.style.display = showParadox ? 'block' : 'none';
   updateDemo();
 }
-document.getElementById('x0-slider').addEventListener('input', updateDemo);
-document.getElementById('coupling-select').addEventListener('change', updateDemo);
+document.getElementById('x0-slider').addEventListener('input', function() { paradoxPresetActive = false; updateDemo(); });
+document.getElementById('coupling-select').addEventListener('change', function() { paradoxPresetActive = false; updateDemo(); });
 updateDemo(); // init
 
 // ── Mechanistic Insights bar chart ───────────────
@@ -3024,7 +3024,7 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
       <td style="font-size:0.82rem;color:var(--text);line-height:1.5;">${reasoning}</td>
       <td>
         <div class="rag-params">boost=${entry.params.iext_boost} · site=${entry.params.site_index}</div>
-        <div class="${rewardClass}">${entry.reward.toFixed(4)}${isBest ? ' ★' : ''}</div>
+        <div class="${rewardClass}">${entry.reward.toFixed(4)}${isBest ? ' (best)' : ''}</div>
       </td>
     `;
     tbody.appendChild(tr);
