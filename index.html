@@ -126,7 +126,7 @@
   }
   .hero-brain {
     position: absolute;
-    top: -42px;
+    top: 18px;
     left: calc(50% + 390px);
     width: min(1180px, 82vw);
     height: clamp(430px, 54vw, 690px);
@@ -1061,6 +1061,27 @@
     line-height: 1.72;
     margin: 0;
   }
+  .result-explainer {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 4px solid #0d9488;
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    margin: 0 0 22px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .result-explainer h3 {
+    color: var(--text);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .result-explainer p {
+    color: #475569;
+    font-size: 0.92rem;
+    line-height: 1.72;
+    margin-bottom: 10px;
+  }
+  .result-explainer p:last-child { margin-bottom: 0; }
   .technical-details {
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -1590,20 +1611,20 @@
     <div class="hero-copy">
       <div class="hero-tag">Public research essay · GitHub Pages</div>
       <div class="hero-byline">By <strong>Cathy Liu</strong></div>
-      <h1>Can an LLM help tune a virtual brain before a real one?</h1>
-      <p>Cathy Liu built a research pipeline that reads epilepsy literature, runs seizure simulations in The Virtual Brain, and asks an LLM to search for settings that help the hardest virtual patient, not just the average one.</p>
+      <h1>Language-model-guided search for robust virtual neurostimulation</h1>
+      <p>We built a research pipeline that reads epilepsy literature, runs seizure simulations in The Virtual Brain, and searches for settings that improve the hardest virtual patient rather than only the average one.</p>
 
       <div class="hero-thesis">
         <div class="hero-thesis-item">
-          <div class="hero-thesis-label">The Setup</div>
+          <div class="hero-thesis-label">Approach</div>
           <div class="hero-thesis-text">Use digital twins as a sandbox for high-risk stimulation choices.</div>
         </div>
         <div class="hero-thesis-item">
-          <div class="hero-thesis-label">The Twist</div>
+          <div class="hero-thesis-label">Objective</div>
           <div class="hero-thesis-text">Optimize for the patient who responds worst, because averages hide failures.</div>
         </div>
         <div class="hero-thesis-item">
-          <div class="hero-thesis-label">The Result</div>
+          <div class="hero-thesis-label">Primary Finding</div>
           <div class="hero-thesis-text">The model-control experiment improved worst-case reward by 39.8%.</div>
         </div>
       </div>
@@ -1633,7 +1654,7 @@
 <div class="story-summary">
   <div class="story-summary-inner">
     <div class="story-summary-copy">
-      <h2>The headline is strong. The caveat is the story.</h2>
+      <h2>Main result and central caveat</h2>
       <p>The simulator found a robust disease-state intervention. Then the more clinical stimulation test showed why translation is hard.</p>
     </div>
     <div class="story-summary-stat">
@@ -1659,15 +1680,15 @@
     <div class="essay-eyebrow">Start here</div>
     <h2>The hard part of brain stimulation is not finding a setting that works once. It is finding one that still works when the patient changes.</h2>
     <p>Brain stimulation is already used for people whose seizures do not respond to medication. But tuning it is slow, expensive, and deeply personal. A clinician can move the target, change the intensity, change the timing, and change the waveform. The problem is that every patient brings a different seizure network.</p>
-    <p>That makes epilepsy a brutal optimization problem. A setting that looks good on the average patient can quietly fail the person at the edge of the distribution. Cathy Liu's project makes that failure mode explicit. Instead of asking, <strong>what works best on average?</strong>, the pipeline asks, <strong>what is the best choice for the patient who responds worst?</strong></p>
+    <p>That makes epilepsy a difficult optimization problem. A setting that looks good on the average patient can quietly fail the person at the edge of the distribution. We make that failure mode explicit. Instead of asking, <strong>what works best on average?</strong>, the pipeline asks, <strong>what is the best choice for the patient who responds worst?</strong></p>
     <div class="article-note">
       <p>This is the core idea behind the project: use an LLM to propose scientific experiments, use The Virtual Brain to score them, and make the optimization care about the worst case. The LLM is not trusted as a doctor. It is treated as a search engine with a memory for literature.</p>
     </div>
 
     <div class="takeaway-strip">
       <div class="takeaway-copy">
-        <h3>The one-sentence version</h3>
-        <p>Cathy connected literature mining, virtual epilepsy patients, and minimax optimization into one loop: propose a setting, simulate it, punish it if any patient fails, and try again.</p>
+        <h3>In brief</h3>
+        <p>We connect literature mining, virtual epilepsy patients, and minimax optimization into one loop: propose a setting, simulate it, penalize failures in any patient, and iterate.</p>
       </div>
       <div class="minimax-diagram" aria-label="Average optimization versus minimax optimization diagram">
         <div>
@@ -1954,7 +1975,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <div class="pipe-narrative" style="margin-bottom:14px;">
         <p>
           This is where the project becomes interesting. A normal optimizer might chase the best
-          average reward. Cathy instead optimized the minimum reward across the cohort. That forces
+          average reward. We instead optimize the minimum reward across the cohort. That forces
           every proposal to answer the question a clinician would care about: who does this fail?
         </p>
         <p style="margin-top:10px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;font-size:0.81rem;color:#0c4a6e;line-height:1.65;">
@@ -2038,8 +2059,14 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </div>
   </div>
 </section>
-  <div class="section-title">Try the knobs yourself</div>
-  <div class="section-sub">The explorer uses precomputed TVB results so you can see why the minimax objective cares about the worst patient.</div>
+  <div class="section-title">Parameter Sensitivity Explorer</div>
+  <div class="section-sub">A precomputed TVB grid showing how small parameter changes alter the distribution of patient rewards.</div>
+
+  <div class="result-explainer">
+    <h3>Interpretation</h3>
+    <p>The controls below are not running new simulations in the browser. They expose a precomputed grid of TVB results. The useful comparison is between mean reward and worst-case reward: a parameter setting can improve the average while leaving one virtual patient poorly controlled.</p>
+    <p>The minimax objective deliberately optimizes the lower bound. In this project, that means the preferred setting is the one that raises the worst patient response, even if another setting might look attractive by average reward alone.</p>
+  </div>
 
   <div class="demo-grid">
     <!-- Controls -->
@@ -2102,8 +2129,14 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      OPTIMIZATION TRAJECTORY
 ══════════════════════════════════════════════ -->
 <section id="result-worked">
-  <div class="section-title">The Result That Worked</div>
+  <div class="section-title">Primary Result: Robust Intrinsic Control</div>
   <div class="section-sub">When the optimizer could tune the simulated disease state, it found a robust regime quickly.</div>
+
+  <div class="result-explainer">
+    <h3>What this result is saying</h3>
+    <p>The chart below tracks the optimization loop. Each point is one parameter setting proposed by the LLM and evaluated by TVB across five virtual patients. The red line is the worst-case reward; the blue line is the mean reward.</p>
+    <p>The important observation is that the worst-case reward rises sharply, not merely the average. By iteration 4, the optimizer finds a setting that improves the least favorable virtual patient by 39.8% relative to baseline.</p>
+  </div>
 
   <div class="traj-card">
     <canvas id="traj-chart" height="160"></canvas>
@@ -2118,8 +2151,14 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      MECHANISTIC INSIGHTS
 ══════════════════════════════════════════════ -->
 <section id="mechanistic-insights">
-  <div class="section-title">The Caveat That Makes the Result Interesting</div>
+  <div class="section-title">Translational Constraint: Intrinsic Control vs External Stimulation</div>
   <div class="section-sub">The model-control result is large. The clinical-style stimulation result is small. That gap is the point.</div>
+
+  <div class="result-explainer">
+    <h3>What this comparison is saying</h3>
+    <p>The first experiment asks what happens if we can directly move the model away from a seizure-prone regime. The second asks what happens under a more constrained intervention: add external current to one brain region.</p>
+    <p>The large gap between 39.8% and 1.7% should not be read as a contradiction. It shows that the simulator can identify a favorable dynamical regime, while the simplified stimulation model only weakly reaches that regime. This is a useful translational constraint, not just a smaller result.</p>
+  </div>
 
   <!-- Bar chart + comparison table row -->
   <div class="mech-top-row">
@@ -2235,8 +2274,14 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      PARADOXICAL EFFECT
 ══════════════════════════════════════════════ -->
 <section id="precision-intervention">
-  <div class="section-title">The Most Important Failure Mode</div>
+  <div class="section-title">Cohort Result: Patient Heterogeneity</div>
   <div class="section-sub">A protocol can look plausible and still split the cohort into responders and patients who worsen.</div>
+
+  <div class="result-explainer">
+    <h3>What this result is saying</h3>
+    <p>The selected right-hippocampal stimulation protocol did not produce a meaningful aggregate improvement across the 20-patient virtual cohort. That is the first conclusion.</p>
+    <p>The second conclusion is more important: the same protocol improved 11 patients and worsened 9. This is exactly the kind of failure mode that average-case reporting can hide. The subgroup chart should therefore be read as a patient-selection signal, not as proof that one subgroup is clinically validated.</p>
+  </div>
 
   <!-- PART 2: Forest plot -->
   <div class="mech-card" style="margin-bottom:8px;">
@@ -2409,8 +2454,14 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      LLM vs BAYESIAN OPTIMIZATION
 ══════════════════════════════════════════════ -->
 <section id="llm-vs-bo">
-  <div class="section-title">What the LLM Actually Added</div>
-  <div class="bo-section-sub">The advantage was not magic optimization. It was a better first guess in a small, semantically meaningful search space.</div>
+  <div class="section-title">Search Behavior: The Role of the LLM Prior</div>
+  <div class="bo-section-sub">The advantage is not general-purpose optimization; it is informed proposal generation in a small, semantically meaningful search space.</div>
+
+  <div class="result-explainer">
+    <h3>What this comparison is saying</h3>
+    <p>Bayesian optimization treats the stimulation target as an abstract variable. The LLM can use domain language: hippocampus, temporal epilepsy, intensity, safety, and prior literature. In a very small eight-evaluation budget, that prior improves the starting point.</p>
+    <p>The final margin over Bayesian optimization is small. The more defensible claim is that language models are useful proposal generators when the parameter space is semantic and the evaluation budget is limited.</p>
+  </div>
 
   <!-- Part 2: Convergence chart -->
   <div class="bo-chart-card">
@@ -2632,7 +2683,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      GENERALIZATION & ROBUSTNESS
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="section-title" id="section-generalization">Did the Main Result Survive New Virtual Patients?</div>
+  <div class="section-title" id="section-generalization">Generalization Check</div>
   <div class="section-sub">A strong training curve is not enough. The optimized setting needs to hold up outside the five patients used in the loop.</div>
 
   <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
@@ -2656,6 +2707,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       optimization, rather than a definitive demonstration of cross-patient consistency.
       Performance is expected to degrade as patient variability increases beyond the sampled regime.
     </p>
+  </div>
+
+  <div class="result-explainer">
+    <h3>What these robustness plots are saying</h3>
+    <p>The first chart compares the optimized setting on the training virtual patients and on held-out virtual patients. The second and third charts test whether the same setting remains better than baseline under broader sampled variability.</p>
+    <p>The result is positive but bounded: the optimized setting remains better than baseline in these archived checks, but this is still a small simulated cohort. The correct interpretation is robustness within the sampled regime, not a guarantee of clinical generalization.</p>
   </div>
 
   <div class="viz-grid">
