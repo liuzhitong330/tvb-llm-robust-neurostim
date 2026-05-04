@@ -1310,10 +1310,10 @@
             <strong>Retrieval + deduplication</strong> — 136 papers after exact DOI and title matching across query results
           </li>
           <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
-            <strong>Gap extraction</strong> — 1,080 LLM-based extraction tasks (~8 extraction passes per abstract to capture multiple gap types) using a structured prompt (Claude Haiku). Each abstract was processed to extract: stated limitations, implicit methodological constraints, and unresolved clinical translation gaps
+            <strong>Gap extraction</strong> — 136 papers × ~8 extraction passes = 1,080 LLM-based extraction tasks (Claude Haiku), using a structured prompt to capture: stated limitations, implicit methodological constraints, and unresolved clinical translation gaps. After deduplication, 586 unique open questions were retained and stored in gaps.json — forming the knowledge base for the RAG module in Stage 3.
           </li>
           <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
-            <strong>Clustering + ranking</strong> — gaps were grouped into ~30 thematic clusters via embedding-based semantic similarity, then scored by Claude Opus on three axes: <em>Novelty</em> (how unlikely the gap is to be explicitly addressed in existing literature), <em>TVB Feasibility</em> (whether the question can be instantiated within TVB simulations), and <em>Clinical Impact</em> (relevance to real-world epilepsy treatment). Final score = equal-weighted sum (max 30) (each axis scored 1–10).
+            <strong>Clustering + ranking</strong> — gaps were grouped into ~30 thematic clusters via LLM-based semantic grouping (Claude Haiku), then scored by Claude Opus on three axes: <em>Novelty</em> (how unlikely the gap is to be explicitly addressed in existing literature), <em>TVB Feasibility</em> (whether the question can be instantiated within TVB simulations), and <em>Clinical Impact</em> (relevance to real-world epilepsy treatment). Final score = equal-weighted sum (max 30) (each axis scored 1–10).
           </li>
         </ol>
         <p>The top-ranked gap scored 25/30 under this rubric — aligned with the selected research direction. This score is an auxiliary consistency signal, not a proof of correctness.</p>
