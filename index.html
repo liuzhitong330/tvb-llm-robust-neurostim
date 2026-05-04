@@ -105,7 +105,7 @@
   .hero-byline strong { color: #ffffff; font-weight: 700; }
   .hero-copy {
     max-width: 760px;
-    padding-top: clamp(220px, 30vw, 330px);
+    padding-top: clamp(170px, 22vw, 260px);
   }
   .hero h1 {
     font-size: clamp(2.25rem, 6vw, 5.2rem);
@@ -126,10 +126,10 @@
   }
   .hero-brain {
     position: absolute;
-    top: -70px;
-    left: 50%;
-    width: min(1080px, 126vw);
-    height: clamp(330px, 45vw, 560px);
+    top: -88px;
+    left: calc(50% + 330px);
+    width: min(1180px, 82vw);
+    height: clamp(430px, 54vw, 690px);
     transform: translateX(-50%);
     opacity: 0.98;
     filter: drop-shadow(0 30px 70px rgba(45, 212, 191, 0.20));
@@ -279,7 +279,7 @@
   @media (max-width: 780px) {
     .hero { min-height: auto; padding-top: 48px; }
     .hero-copy { padding-top: 240px; }
-    .hero-brain { top: -18px; width: 150vw; height: 320px; }
+    .hero-brain { top: -18px; left: 50%; width: 150vw; height: 320px; }
     .hero-thesis { grid-template-columns: 1fr; }
   }
 
