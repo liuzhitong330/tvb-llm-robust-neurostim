@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+
+# Local rerun artifacts. Checked-in result JSON files are the canonical
+# published artifacts and should be updated intentionally.
+checkpoint*.json
+all_papers.csv
+gaps.json
+ranked_ideas.json
+
+# Local OS/editor files.
+.DS_Store
+.idea/
+.vscode/
