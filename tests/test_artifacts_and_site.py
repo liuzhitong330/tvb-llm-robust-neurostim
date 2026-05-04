@@ -38,9 +38,12 @@ def test_github_pages_site_contains_new_narrative_and_required_assets() -> None:
     html = (ROOT / "index.html").read_text(encoding="utf-8")
 
     assert "By <strong>Cathy Liu</strong>" in html
-    assert "A brain simulator found a robust stimulation strategy for epilepsy" in html
-    assert "What Cathy Built" in html
-    assert "hero-brain" in html
+    assert "Can an LLM help tune a virtual brain before a real one?" in html
+    assert "The headline is strong. The caveat is the story." in html
+    assert "The Pipeline, Without the Jargon" in html
+    assert "hero-brain-canvas" in html
+    assert "assets/human_brain.glb" in html
+    assert (ROOT / "assets" / "human_brain.glb").exists()
     assert "evolve.py" not in html
     assert "github.com/liuzhitong330/tvb-llm-robust-neurostim" in html
 

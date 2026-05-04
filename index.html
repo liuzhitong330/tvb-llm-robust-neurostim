@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LLM-Guided Minimax Optimization for Epilepsy Neurostimulation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -43,11 +51,11 @@
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    min-height: min(760px, 88vh);
+    min-height: min(780px, 90vh);
     background:
-      radial-gradient(circle at 52% 8%, rgba(125, 211, 252, 0.22), transparent 34%),
-      radial-gradient(circle at 80% 22%, rgba(99, 102, 241, 0.18), transparent 30%),
-      linear-gradient(180deg, #0b1020 0%, #111827 100%);
+      radial-gradient(circle at 50% 0%, rgba(20, 184, 166, 0.18), transparent 33%),
+      radial-gradient(circle at 80% 18%, rgba(99, 102, 241, 0.18), transparent 28%),
+      linear-gradient(180deg, #060b17 0%, #101827 78%, #111827 100%);
     padding: 72px 24px 34px;
     text-align: left;
     border-bottom: 1px solid var(--border);
@@ -62,6 +70,13 @@
     background-size: 40px 40px;
     mask-image: linear-gradient(to bottom, #000, transparent 88%);
     z-index: -2;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 46% 0 0;
+    background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.84));
+    z-index: -1;
   }
   .hero-inner {
     width: min(1100px, 100%);
@@ -90,7 +105,7 @@
   .hero-byline strong { color: #ffffff; font-weight: 700; }
   .hero-copy {
     max-width: 760px;
-    padding-top: clamp(150px, 24vw, 250px);
+    padding-top: clamp(220px, 30vw, 330px);
   }
   .hero h1 {
     font-size: clamp(2.25rem, 6vw, 5.2rem);
@@ -111,15 +126,33 @@
   }
   .hero-brain {
     position: absolute;
-    top: -42px;
+    top: -70px;
     left: 50%;
-    width: min(980px, 118vw);
+    width: min(1080px, 126vw);
+    height: clamp(330px, 45vw, 560px);
     transform: translateX(-50%);
     opacity: 0.98;
     filter: drop-shadow(0 30px 70px rgba(45, 212, 191, 0.20));
     z-index: -1;
+    pointer-events: none;
   }
-  .hero-brain svg { display: block; width: 100%; height: auto; }
+  .hero-brain canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-brain-fallback {
+    display: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 46%, rgba(103,232,249,0.23), transparent 40%),
+      radial-gradient(circle at 51% 50%, rgba(59,130,246,0.17), transparent 55%);
+    border: 1px solid rgba(147,197,253,0.2);
+  }
+  .hero-brain.is-fallback canvas { display: none; }
+  .hero-brain.is-fallback .hero-brain-fallback { display: block; }
   .brain-edge { stroke: rgba(147,197,253,0.48); stroke-width: 1.1; }
   .brain-edge.hot { stroke: rgba(45,212,191,0.8); stroke-width: 1.7; }
   .brain-node { fill: #93c5fd; opacity: 0.88; }
@@ -245,8 +278,8 @@
   .metric-label { font-size: 0.8rem; color: #c7d2fe; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
   @media (max-width: 780px) {
     .hero { min-height: auto; padding-top: 48px; }
-    .hero-copy { padding-top: 150px; }
-    .hero-brain { top: 0; width: 132vw; }
+    .hero-copy { padding-top: 240px; }
+    .hero-brain { top: -18px; width: 150vw; height: 320px; }
     .hero-thesis { grid-template-columns: 1fr; }
   }
 
@@ -959,6 +992,105 @@
   }
   .section-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
   hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+  .story-summary {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+  }
+  .story-summary-inner {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    display: grid;
+    grid-template-columns: 1.2fr repeat(3, 1fr);
+    overflow: hidden;
+  }
+  .story-summary-copy {
+    padding: 20px 22px;
+    background: #f8fafc;
+    border-right: 1px solid var(--border);
+  }
+  .story-summary-copy h2 {
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .story-summary-copy p {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.62;
+  }
+  .story-summary-stat {
+    padding: 20px 18px;
+    border-right: 1px solid var(--border);
+  }
+  .story-summary-stat:last-child { border-right: none; }
+  .story-summary-value {
+    display: block;
+    color: var(--text);
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .story-summary-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+  .story-summary-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .article-note {
+    border-left: 4px solid #4f46e5;
+    background: #eef2ff;
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    margin: 28px 0;
+  }
+  .article-note p {
+    color: #3730a3;
+    font-size: 0.96rem;
+    line-height: 1.72;
+    margin: 0;
+  }
+  .technical-details {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #f8fafc;
+    margin-top: 16px;
+    padding: 0;
+  }
+  .technical-details summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .technical-details-body {
+    border-top: 1px solid var(--border);
+    padding: 16px;
+  }
+  .technical-details-body p,
+  .technical-details-body li {
+    color: #475569;
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+  @media (max-width: 820px) {
+    .story-summary-inner { grid-template-columns: 1fr; }
+    .story-summary-copy,
+    .story-summary-stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .story-summary-stat:last-child { border-bottom: none; }
+  }
 
   .essay-lede {
     max-width: 820px;
@@ -1450,77 +1582,29 @@
      HERO
 ══════════════════════════════════════════════ -->
 <div class="hero">
-  <div class="hero-brain" aria-hidden="true">
-    <svg viewBox="0 0 900 420" role="img">
-      <defs>
-        <radialGradient id="brainGlow" cx="50%" cy="45%" r="65%">
-          <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.24"/>
-          <stop offset="55%" stop-color="#60a5fa" stop-opacity="0.08"/>
-          <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
-        </radialGradient>
-        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-      <path d="M167 215C132 155 169 79 246 65c33-48 111-50 151-9 44-38 123-25 149 28 70-8 132 45 130 113 61 26 78 108 32 158-39 43-110 40-145-4-43 33-113 26-146-18-45 45-131 31-157-27-48 7-90-24-93-91Z" fill="url(#brainGlow)" stroke="rgba(191,219,254,0.42)" stroke-width="1.4"/>
-      <g filter="url(#softGlow)">
-        <path class="brain-edge hot" d="M245 128L324 90L407 122L495 88L594 139L654 213L604 300L486 331L382 291L287 327L215 258L245 128Z"/>
-        <path class="brain-edge" d="M324 90L382 188L287 327M407 122L382 188L486 331M495 88L512 197L604 300M594 139L512 197L654 213"/>
-        <path class="brain-edge" d="M245 128L382 188L215 258M407 122L512 197L382 291M324 90L495 88M287 327L382 291L486 331"/>
-        <path class="brain-edge" d="M213 187L245 128L324 90M213 187L215 258L287 327M654 213L697 272L604 300M594 139L674 162L654 213"/>
-        <path class="brain-edge" d="M281 160L356 141L438 164L537 150L626 210"/>
-        <path class="brain-edge hot" d="M356 141L382 188L438 164L512 197L486 331"/>
-        <path class="brain-edge" d="M281 160L273 235L382 188L438 256L512 197L596 245"/>
-        <path class="brain-edge" d="M273 235L382 291L438 256L596 245"/>
-        <circle class="brain-node hot" cx="245" cy="128" r="5"/>
-        <circle class="brain-node" cx="324" cy="90" r="4.5"/>
-        <circle class="brain-node hot" cx="407" cy="122" r="5.5"/>
-        <circle class="brain-node" cx="495" cy="88" r="4.5"/>
-        <circle class="brain-node" cx="594" cy="139" r="5"/>
-        <circle class="brain-node hot" cx="654" cy="213" r="6"/>
-        <circle class="brain-node" cx="604" cy="300" r="4.5"/>
-        <circle class="brain-node hot" cx="486" cy="331" r="5.5"/>
-        <circle class="brain-node" cx="382" cy="291" r="5"/>
-        <circle class="brain-node" cx="287" cy="327" r="4.5"/>
-        <circle class="brain-node warn" cx="215" cy="258" r="7"/>
-        <circle class="brain-node" cx="382" cy="188" r="5"/>
-        <circle class="brain-node" cx="512" cy="197" r="5"/>
-        <circle class="brain-node" cx="213" cy="187" r="4"/>
-        <circle class="brain-node" cx="674" cy="162" r="4"/>
-        <circle class="brain-node" cx="281" cy="160" r="4"/>
-        <circle class="brain-node" cx="356" cy="141" r="4.5"/>
-        <circle class="brain-node" cx="438" cy="164" r="4"/>
-        <circle class="brain-node" cx="537" cy="150" r="4"/>
-        <circle class="brain-node" cx="626" cy="210" r="4.5"/>
-        <circle class="brain-node" cx="273" cy="235" r="4"/>
-        <circle class="brain-node" cx="438" cy="256" r="4"/>
-        <circle class="brain-node" cx="596" cy="245" r="4"/>
-      </g>
-    </svg>
+  <div class="hero-brain" id="hero-brain" aria-hidden="true">
+    <canvas id="hero-brain-canvas"></canvas>
+    <div class="hero-brain-fallback"></div>
   </div>
   <div class="hero-inner">
     <div class="hero-copy">
       <div class="hero-tag">Public research essay · GitHub Pages</div>
       <div class="hero-byline">By <strong>Cathy Liu</strong></div>
-      <h1>A brain simulator found a robust stimulation strategy for epilepsy</h1>
-      <p>Drug-resistant epilepsy is not one disease with one dial to turn. Cathy Liu built a pipeline that reads the literature, builds virtual brains, and asks an LLM to search for stimulation parameters that help the hardest patient in the cohort, not just the average one.</p>
+      <h1>Can an LLM help tune a virtual brain before a real one?</h1>
+      <p>Cathy Liu built a research pipeline that reads epilepsy literature, runs seizure simulations in The Virtual Brain, and asks an LLM to search for settings that help the hardest virtual patient, not just the average one.</p>
 
       <div class="hero-thesis">
         <div class="hero-thesis-item">
-          <div class="hero-thesis-label">Plain-English Idea</div>
-          <div class="hero-thesis-text">Use digital twins as a sandbox before testing risky stimulation choices in people.</div>
+          <div class="hero-thesis-label">The Setup</div>
+          <div class="hero-thesis-text">Use digital twins as a sandbox for high-risk stimulation choices.</div>
         </div>
         <div class="hero-thesis-item">
-          <div class="hero-thesis-label">Optimization Target</div>
-          <div class="hero-thesis-text">Maximize the worst-case response across virtual patients, because outliers matter clinically.</div>
+          <div class="hero-thesis-label">The Twist</div>
+          <div class="hero-thesis-text">Optimize for the patient who responds worst, because averages hide failures.</div>
         </div>
         <div class="hero-thesis-item">
-          <div class="hero-thesis-label">Headline Result</div>
-          <div class="hero-thesis-text">The best intrinsic-parameter protocol improved worst-case reward by 39.8% over baseline.</div>
+          <div class="hero-thesis-label">The Result</div>
+          <div class="hero-thesis-text">The model-control experiment improved worst-case reward by 39.8%.</div>
         </div>
       </div>
 
@@ -1546,38 +1630,44 @@
   </div>
 </div>
 
-<!-- Key Findings summary card -->
-<div style="background:var(--color-background-secondary);border-radius:8px;padding:1rem 2rem;margin:1.5rem 0 0.5rem;display:flex;align-items:center;gap:0;justify-content:space-between;flex-wrap:wrap;">
-  <div style="text-align:center;flex:1;min-width:180px;">
-    <span style="font-size:1.5rem;font-weight:600;">20×</span>
-    <div style="font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">x₀ vs I<sub>ext</sub> gap</div>
-    <a href="#mechanistic-insights" style="font-size:11px;display:block;margin-top:4px;">→ Mechanistic Insights</a>
-  </div>
-  <div style="width:1px;height:40px;background:var(--color-border-secondary);"></div>
-  <div style="text-align:center;flex:1;min-width:180px;">
-    <span style="font-size:1.5rem;font-weight:600;">9 / 20</span>
-    <div style="font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Paradoxical responders</div>
-    <a href="#precision-intervention" style="font-size:11px;display:block;margin-top:4px;">→ Precision Neuro-Intervention</a>
-  </div>
-  <div style="width:1px;height:40px;background:var(--color-border-secondary);"></div>
-  <div style="text-align:center;flex:1;min-width:180px;">
-    <span style="font-size:1.5rem;font-weight:600;">−0.0054</span>
-    <div style="font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">LLM cold-start edge</div>
-    <a href="#llm-vs-bo" style="font-size:11px;display:block;margin-top:4px;">→ LLM vs BO</a>
+<div class="story-summary">
+  <div class="story-summary-inner">
+    <div class="story-summary-copy">
+      <h2>The headline is strong. The caveat is the story.</h2>
+      <p>The simulator found a robust disease-state intervention. Then the more clinical stimulation test showed why translation is hard.</p>
+    </div>
+    <div class="story-summary-stat">
+      <span class="story-summary-value">39.8%</span>
+      <div class="story-summary-label">Worst-case improvement when the optimizer could tune intrinsic model parameters.</div>
+      <a class="story-summary-link" href="#result-worked">Read the main result</a>
+    </div>
+    <div class="story-summary-stat">
+      <span class="story-summary-value">1.7%</span>
+      <div class="story-summary-label">Worst-case improvement when constrained to a clinical-style stimulation proxy.</div>
+      <a class="story-summary-link" href="#mechanistic-insights">Why the gap matters</a>
+    </div>
+    <div class="story-summary-stat">
+      <span class="story-summary-value">11 / 20</span>
+      <div class="story-summary-label">Virtual patients improved under rHC stimulation; 9 worsened. Patient selection dominates.</div>
+      <a class="story-summary-link" href="#precision-intervention">See the cohort result</a>
+    </div>
   </div>
 </div>
 
 <section>
   <div class="essay-lede">
     <div class="essay-eyebrow">Start here</div>
-    <h2>The clinical problem is not finding a setting that works once. It is finding one that survives patient variability.</h2>
-    <p>Brain stimulation is already used for people whose seizures do not respond to medication. The hard part is tuning it. A clinician can change the stimulation target, intensity, timing, and waveform, but every patient’s seizure network is different. A setting that calms one brain can do very little in another, and in the worst case can make activity worse.</p>
-    <p>Cathy Liu’s project treats that as an optimization problem with a safety-shaped objective. Instead of asking, <strong>“what works best on average?”</strong>, the pipeline asks, <strong>“what is the best choice for the patient who responds worst?”</strong> That one shift makes the project feel much closer to a real clinical workflow.</p>
+    <h2>The hard part of brain stimulation is not finding a setting that works once. It is finding one that still works when the patient changes.</h2>
+    <p>Brain stimulation is already used for people whose seizures do not respond to medication. But tuning it is slow, expensive, and deeply personal. A clinician can move the target, change the intensity, change the timing, and change the waveform. The problem is that every patient brings a different seizure network.</p>
+    <p>That makes epilepsy a brutal optimization problem. A setting that looks good on the average patient can quietly fail the person at the edge of the distribution. Cathy Liu's project makes that failure mode explicit. Instead of asking, <strong>what works best on average?</strong>, the pipeline asks, <strong>what is the best choice for the patient who responds worst?</strong></p>
+    <div class="article-note">
+      <p>This is the core idea behind the project: use an LLM to propose scientific experiments, use The Virtual Brain to score them, and make the optimization care about the worst case. The LLM is not trusted as a doctor. It is treated as a search engine with a memory for literature.</p>
+    </div>
 
     <div class="takeaway-strip">
       <div class="takeaway-copy">
         <h3>The one-sentence version</h3>
-        <p>Use LLMs for scientific search and reasoning, use The Virtual Brain for physics-grounded feedback, and optimize for robust performance across a virtual patient cohort.</p>
+        <p>Cathy connected literature mining, virtual epilepsy patients, and minimax optimization into one loop: propose a setting, simulate it, punish it if any patient fails, and try again.</p>
       </div>
       <div class="minimax-diagram" aria-label="Average optimization versus minimax optimization diagram">
         <div>
@@ -1609,14 +1699,14 @@
 
 <div class="story-band">
   <section>
-    <div class="section-title">What Cathy Built</div>
-    <div class="section-sub">The full project links literature mining, simulation, optimization, and a public explainer.</div>
+    <div class="section-title">The Pipeline, Without the Jargon</div>
+    <div class="section-sub">The project is easiest to understand as a three-part research machine.</div>
     <div class="method-map">
       <div class="method-step">
         <div>
           <div class="method-step-number">Step 1</div>
           <div class="method-step-title">Read the field first</div>
-          <div class="method-step-text">The pipeline mined 136 PubMed papers and extracted 1,080 candidate research ideas, then ranked gaps by novelty, TVB feasibility, and clinical impact.</div>
+          <div class="method-step-text">Start from the epilepsy literature instead of a blank search space. Mine 136 PubMed papers, extract candidate research gaps, and rank the ones that can actually be tested in TVB.</div>
         </div>
         <div class="method-step-arrow">→</div>
       </div>
@@ -1624,7 +1714,7 @@
         <div>
           <div class="method-step-number">Step 2</div>
           <div class="method-step-title">Build virtual epileptic brains</div>
-          <div class="method-step-text">The Virtual Brain simulates seizure dynamics over a 76-region connectome, creating a digital test bench for stimulation choices.</div>
+          <div class="method-step-text">Run seizure dynamics over a 76-region brain network. Each candidate setting is tested against sampled virtual patients, not a single cherry-picked case.</div>
         </div>
         <div class="method-step-arrow">→</div>
       </div>
@@ -1632,7 +1722,7 @@
         <div>
           <div class="method-step-number">Step 3</div>
           <div class="method-step-title">Search for robust settings</div>
-          <div class="method-step-text">Claude proposes parameters, TVB scores them across virtual patients, and the loop keeps the setting that improves the worst-case reward.</div>
+          <div class="method-step-text">Claude proposes the next setting. TVB returns the score. The objective rewards settings that raise the floor for the worst patient.</div>
         </div>
         <div class="method-step-arrow">✓</div>
       </div>
@@ -1646,15 +1736,15 @@
      PIPELINE
 ══════════════════════════════════════════════ -->
 <section style="padding-top:24px;">
-  <div class="section-title">How the System Works</div>
-  <div class="section-sub">Now that the core idea is clear, the rest of the page gradually opens the black box.</div>
+  <div class="section-title">Why This Is More Than an LLM Demo</div>
+  <div class="section-sub">The LLM proposes. The simulator decides. The objective is deliberately unforgiving.</div>
 
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:2rem;margin:2rem 0 2.5rem;align-items:start;">
     <div>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">Drug-resistant epilepsy affects 15 million people worldwide. For many of them, the only remaining option is brain stimulation — surgically implanted devices that deliver electrical pulses to suppress seizures. But the problem is fundamental: <strong style="color:var(--color-text-primary);font-weight:500;">no one knows which parameters to use.</strong> Stimulation frequency, amplitude, and target location are currently tuned by trial and error, one patient at a time, over months of clinical follow-up.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">This project asks: <strong style="color:var(--color-text-primary);font-weight:500;">can we use AI to do better?</strong></p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The approach is a three-stage pipeline. First, we systematically read the scientific literature to find what the field says is missing — an automated pipeline that extracts research gaps from 136 papers and ranks them. The top finding: stimulation strategies optimized for one patient often fail when applied to another. Second, we build <strong style="color:var(--color-text-primary);font-weight:500;">digital twins of the epileptic brain</strong> using The Virtual Brain — a computational simulator that models how seizures propagate across 76 brain regions connected by real white matter pathways. Think of it as a flight simulator for the brain: test interventions virtually, before touching a real patient. Third, we use a <strong style="color:var(--color-text-primary);font-weight:500;">large language model as an optimization engine</strong> — not to generate text, but to reason over simulation results and propose better stimulation parameters, targeting the worst-case patient rather than the average.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The result is a proof-of-concept that goes from reading papers, to building a brain model, to finding stimulation parameters that work across a distribution of patients — not just one.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">A shallow version of this project would be: ask an LLM for a stimulation setting and plot the answer. This is not that. The language model never gets to grade its own homework. It can only propose the next experiment.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The scoring happens inside The Virtual Brain, a simulator that models seizure-like dynamics across a 76-region connectome. Each proposal is run across a small virtual cohort. The reward is higher when simulated seizure activity is lower. The final score is the worst patient, not the mean.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">That distinction matters. In medicine, the average can be a trap. A treatment that helps most patients but destabilizes a minority is not just a noisy win. It is a warning label. Minimax optimization turns that warning into the objective.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The rest of this essay follows the same arc as the experiment: first the literature, then the virtual patients, then the result that worked, then the result that made the project more honest.</p>
     </div>
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;">
       <div style="display:flex;flex-direction:column;gap:1rem;">
@@ -1683,26 +1773,23 @@
         <div class="pipe-num">1</div>
         <h3>Literature Mining</h3>
       </div>
-      <p>10 PubMed queries → 136 deduplicated papers. Claude Haiku extracts structured gaps from every abstract. Claude Opus scores 30 thematic clusters on novelty, TVB feasibility, and clinical impact.</p>
+      <p>The literature stage gives the optimizer a scientific prior. The point is not to claim the LLM has discovered truth from abstracts; it is to narrow the search toward questions the field already thinks are important.</p>
       <div class="pipe-narrative">
-        <p>We performed a structured four-step literature mining pipeline:</p>
-        <ol style="margin:10px 0 10px 18px;display:flex;flex-direction:column;gap:8px;">
-          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
-            <strong>Query generation</strong> — 10 targeted PubMed queries spanning virtual brain modeling, closed-loop stimulation, and patient-specific epilepsy treatment
-          </li>
-          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
-            <strong>Retrieval + deduplication</strong> — 136 papers after exact PMID matching across query results
-          </li>
-          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
-            <strong>Gap extraction</strong> — 136 papers × ~8 extraction passes = 1,080 LLM-based extraction tasks (Claude Haiku), using a structured prompt to capture: stated limitations, implicit methodological constraints, and unresolved clinical translation gaps. After deduplication, 586 unique open questions were retained and stored in gaps.json — forming the knowledge base for the RAG module in Stage 3.
-          </li>
-          <li style="font-size:0.82rem;color:#475569;line-height:1.6;">
-            <strong>Clustering + ranking</strong> — gaps were grouped into ~30 thematic clusters via LLM-based semantic grouping (Claude Haiku), then scored by Claude Opus on three axes: <em>Novelty</em> (how unlikely the gap is to be explicitly addressed in existing literature), <em>TVB Feasibility</em> (whether the question can be instantiated within TVB simulations), and <em>Clinical Impact</em> (relevance to real-world epilepsy treatment). Final score = equal-weighted sum (max 30) (each axis scored 1–10).
-          </li>
-        </ol>
-        <p>The top-ranked gap scored 25/30 under this rubric — aligned with the selected research direction. This score is an auxiliary consistency signal, not a proof of correctness.</p>
+        <p>The pipeline retrieved 136 papers, extracted 1,080 candidate ideas, and retained 586 unique open questions. The highest-value cluster pointed toward a very practical problem: stimulation settings that appear promising in one patient may not transfer to another.</p>
+        <details class="technical-details">
+          <summary>Show the literature-mining protocol</summary>
+          <div class="technical-details-body">
+            <ol style="margin:0 0 10px 18px;display:flex;flex-direction:column;gap:8px;">
+              <li><strong>Query generation:</strong> 10 targeted PubMed queries spanning virtual brain modeling, closed-loop stimulation, and patient-specific epilepsy treatment.</li>
+              <li><strong>Retrieval and deduplication:</strong> 136 papers after exact PMID matching across query results.</li>
+              <li><strong>Gap extraction:</strong> 136 papers x approximately 8 extraction passes, producing 1,080 LLM-based extraction tasks using Claude Haiku.</li>
+              <li><strong>Clustering and ranking:</strong> gaps were grouped into thematic clusters and scored by Claude Opus on novelty, TVB feasibility, and clinical impact.</li>
+            </ol>
+            <p>The top-ranked gap scored 25/30 under this rubric. This is an auxiliary consistency signal, not peer review.</p>
+          </div>
+        </details>
         <p style="margin-top:8px;padding:8px 12px;background:#fefce8;border:1px solid #fde68a;border-radius:6px;font-size:0.79rem;color:#92400e;">
-          This pipeline is fully automated and does not include domain-expert validation. Outputs should be treated as hypothesis generation rather than verified insights.
+          Important caveat: the literature pipeline is automated and does not include domain-expert validation. Treat it as structured hypothesis generation.
         </p>
         <p style="margin-top:12px;font-size:0.82rem;">
           <a href="METHODOLOGY.md" style="color:var(--accent);font-weight:600;text-decoration:none;" target="_blank">→ Full methodology, queries, prompts, and scoring rubric: METHODOLOGY.md on GitHub</a>
@@ -1769,27 +1856,17 @@
 
       <div class="pipe-narrative">
         <p>
-          The <strong>Epileptor</strong> model captures seizure dynamics through six coupled ODEs with a
-          dual-timescale structure: fast variables (x₁, y₁) represent rapid ictal oscillations, while
-          slow variable z governs the gradual buildup toward seizure onset and eventual self-termination.
-          The key clinical parameter is <strong>x₀</strong>, the epileptogenicity — values near −1.6 push
-          tissue toward the seizure bifurcation threshold, while −3.0 represents well-controlled tissue
-          far from seizure. Five virtual patients are generated by sampling inter-regional coupling K
-          ± 0.003 steps around a baseline, modelling the biological variability a clinician encounters
-          across a real cohort. Each simulation runs for 1,000 time steps at dt = 0.05 ms; reward is
-          defined as −var(x₁), a model-agnostic proxy for seizure intensity that requires no
-          hand-crafted features. TVB was chosen for its patient-specific whole-brain connectivity
-          framework, its rigorous validation against clinical EEG, and its clean Python API that
-          integrates directly into automated optimisation loops.
+          The simulator is the part that keeps the story grounded. Each virtual patient is a network
+          of 76 brain regions running an Epileptor seizure model. Change a candidate setting, run the
+          simulation, and measure whether seizure-like oscillations calm down or get worse.
         </p>
       </div>
 
       <p style="font-size:0.82rem;color:#475569;line-height:1.65;margin-top:14px;">
-        In practice, brain stimulation parameters (e.g., pulse amplitude, frequency, and target region)
-        perturb the effective excitability and coupling of neural populations. In this prototype, we
-        abstract this effect and operate directly on the resulting model parameters (x₀, K) — treating
-        them as a compact summary of stimulation-induced changes in network dynamics rather than
-        clinically prescribed values.
+        The first experiment tunes intrinsic model parameters, especially epileptogenicity x₀ and
+        coupling K. That is not a literal clinical stimulation prescription. It is a way to ask a
+        cleaner scientific question first: what would a robust seizure-suppressing dynamical regime
+        look like if we could reach it?
       </p>
 
       <!-- Seizure waveform chart -->
@@ -1798,72 +1875,65 @@
         <canvas id="waveform-chart" height="160"></canvas>
       </div>
 
-      <!-- Subsection 1: Epileptor Model -->
-      <div class="stage2-sub">
-        <div class="stage2-sub-title">The Epileptor Model</div>
-        <p>
-          The Epileptor is a phenomenological neural mass model developed by Jirsa et al. (2014)
-          specifically to capture the essential dynamics of epileptic seizures. It consists of
-          <strong>six coupled ODEs operating across two timescales</strong>:
-        </p>
-        <details>
-          <summary style="cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0;">Show mathematical details (Epileptor ODE system)</summary>
-          <div class="stage2-eq-label">Fast subsystem — ictal oscillations</div>
-          <div class="stage2-eq">dx₁/dt = y₁ − f₁(x₁, x₂) − z + I₁
+      <details class="technical-details">
+        <summary>Show the TVB and Epileptor details</summary>
+        <div class="technical-details-body">
+          <!-- Subsection 1: Epileptor Model -->
+          <div class="stage2-sub">
+            <div class="stage2-sub-title">The Epileptor Model</div>
+            <p>
+              The Epileptor is a phenomenological neural mass model developed by Jirsa et al. (2014)
+              specifically to capture the essential dynamics of epileptic seizures. It consists of
+              <strong>six coupled ODEs operating across two timescales</strong>:
+            </p>
+            <details>
+              <summary style="cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0;">Show mathematical details (Epileptor ODE system)</summary>
+              <div class="stage2-eq-label">Fast subsystem — ictal oscillations</div>
+              <div class="stage2-eq">dx₁/dt = y₁ − f₁(x₁, x₂) − z + I₁
 dy₁/dt = 1 − 5x₁² − y₁</div>
-          <div class="stage2-eq-label">Slow permittivity variable</div>
-          <div class="stage2-eq">dz/dt = (1/τ₀)(4(x₁ − x₀) − z)</div>
-          <div class="stage2-eq-label">Fast subsystem 2 — interictal spikes</div>
-          <div class="stage2-eq">dx₂/dt = −y₂ + x₂ − x₂³ + I₂ + 2u − 0.3(z − 3.5)
+              <div class="stage2-eq-label">Slow permittivity variable</div>
+              <div class="stage2-eq">dz/dt = (1/τ₀)(4(x₁ − x₀) − z)</div>
+              <div class="stage2-eq-label">Fast subsystem 2 — interictal spikes</div>
+              <div class="stage2-eq">dx₂/dt = −y₂ + x₂ − x₂³ + I₂ + 2u − 0.3(z − 3.5)
 dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
-          <div class="stage2-eq-label">Coupling variable</div>
-          <div class="stage2-eq">du/dt = −γ(u − 0.1x₁)</div>
-        </details>
-        <p>
-          The parameter <strong>x₀</strong> (epileptogenicity) sits at the heart of the model.
-          Mathematically, x₀ shifts the slow nullcline and determines whether a brain region
-          sits in a <em>stable fixed point</em> (healthy, x₀ &lt; −2.05) or undergoes
-          <em>limit-cycle oscillations</em> (seizing, x₀ &gt; −2.05). This bifurcation boundary
-          is the computational analog of the clinical concept of an epileptogenic zone.
-        </p>
-      </div>
+              <div class="stage2-eq-label">Coupling variable</div>
+              <div class="stage2-eq">du/dt = −γ(u − 0.1x₁)</div>
+            </details>
+            <p>
+              The parameter <strong>x₀</strong> (epileptogenicity) shifts the slow nullcline and
+              determines whether a brain region sits in a stable fixed point or undergoes seizure-like
+              oscillations. In this prototype, it acts as the compact control knob for disease state.
+            </p>
+          </div>
 
-      <!-- Subsection 2: 76-region connectome -->
-      <div class="stage2-sub">
-        <div class="stage2-sub-title">The 76-Region Connectome</div>
-        <p>
-          TVB uses a parcellated whole-brain structural connectome derived from
-          <strong>diffusion tensor imaging (DTI) tractography</strong> of healthy human subjects,
-          parcellated into 76 cortical and subcortical regions using the Desikan–Killiany atlas.
-          Each region runs its own Epileptor instance. Inter-regional coupling follows a linear scheme:
-        </p>
-        <div class="stage2-eq">region i receives:  K × C_ij × x₁_j</div>
-        <p>
-          where C<sub>ij</sub> is the normalized fiber tract density between regions i and j.
-          Seizure activity can therefore propagate across anatomical white matter pathways —
-          just as it does in real patients. The coupling strength <strong>K</strong> controls
-          how strongly connected regions influence each other, making it a proxy for
-          overall network excitability.
-        </p>
-      </div>
+          <!-- Subsection 2: 76-region connectome -->
+          <div class="stage2-sub">
+            <div class="stage2-sub-title">The 76-Region Connectome</div>
+            <p>
+              TVB uses a parcellated whole-brain structural connectome. Each region runs its own
+              Epileptor instance. Inter-regional coupling follows a linear scheme:
+            </p>
+            <div class="stage2-eq">region i receives:  K × C_ij × x₁_j</div>
+            <p>
+              where C<sub>ij</sub> is the normalized fiber tract density between regions i and j.
+              Seizure activity can therefore propagate across anatomical white matter pathways.
+            </p>
+          </div>
 
-      <!-- Subsection 3: From simulation to reward -->
-      <div class="stage2-sub">
-        <div class="stage2-sub-title">From Simulation to Reward</div>
-        <p>
-          Each simulation produces a <strong>(1000 × 76) matrix</strong> of x₁ values — the
-          primary seizure activity variable across all 76 brain regions over time.
-          The reward signal is defined as:
-        </p>
-        <div class="stage2-eq">reward = −mean( var(x₁, axis=time) )</div>
-        <p>
-          This takes the temporal variance of x₁ in each region (high during seizure, low during
-          quiescence), averages across all 76 regions, and negates so that
-          <strong>higher reward = less seizure activity</strong>. This is a model-agnostic
-          proxy that requires no hand-crafted seizure detection — the optimizer naturally learns
-          to suppress oscillations across the whole brain.
-        </p>
-      </div>
+          <!-- Subsection 3: From simulation to reward -->
+          <div class="stage2-sub">
+            <div class="stage2-sub-title">From Simulation to Reward</div>
+            <p>
+              Each simulation produces a matrix of x₁ values across time and regions. The reward signal is:
+            </p>
+            <div class="stage2-eq">reward = −mean( var(x₁, axis=time) )</div>
+            <p>
+              High temporal variance corresponds to seizure-like activity. Negating it means higher
+              reward corresponds to lower simulated seizure burden.
+            </p>
+          </div>
+        </div>
+      </details>
 
       <div class="pipe-files" style="margin-top:18px;">
         <span class="pipe-tag">simulate.py</span>
@@ -1883,11 +1953,9 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
       <div class="pipe-narrative" style="margin-bottom:14px;">
         <p>
-          A DBS or RNS device is implanted in <strong>one specific patient</strong> — parameters that achieve
-          excellent average reward but leave any individual in uncontrolled seizure activity are
-          clinically unacceptable. The optimisation objective is therefore the
-          <strong>minimax reward</strong>: the minimum across all five virtual patients, not the mean.
-          Two algorithmic approaches were evaluated and compared below.
+          This is where the project becomes interesting. A normal optimizer might chase the best
+          average reward. Cathy instead optimized the minimum reward across the cohort. That forces
+          every proposal to answer the question a clinician would care about: who does this fail?
         </p>
         <p style="margin-top:10px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;font-size:0.81rem;color:#0c4a6e;line-height:1.65;">
           We frame the problem as a minimax optimization under sampled patient variability —
@@ -1902,7 +1970,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
           v1 · LLM-Guided RL Loop
         </div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
-          Claude Opus acts as optimization oracle: proposes one (x₀, K) set per iteration, observes worst-case reward across all 5 virtual patients, then reasons over the full history to improve. 8 iterations total.
+          Claude proposes one (x₀, K) setting per iteration. TVB evaluates that setting across all five virtual patients. The next proposal sees the full history and tries to raise the worst-case score.
         </p>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
           <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">x₀ = −2.1</span>
@@ -1917,7 +1985,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
           v2 · Clinical stimulation search
         </div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
-          A more clinically realistic variant tunes external stimulation current (<em>I</em><sub>ext</sub>) and stimulation site. This is harder than directly changing x₀ because the model is already in a seizure-prone dynamical regime. The best protocol is therefore smaller but more translationally relevant: right hippocampus stimulation at a low boost of 0.6.
+          A more clinically realistic variant tunes external stimulation current (<em>I</em><sub>ext</sub>) and stimulation site. This version is much harder because it cannot directly move the disease-state parameter. The best archived protocol is right hippocampus stimulation at a low boost of 0.6.
         </p>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
           <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">site = rHC</span>
@@ -1943,8 +2011,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section>
 <section style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
-  <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">3D brain activity map</h2>
-  <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">76 cortical and subcortical regions from The Virtual Brain connectome. Color encodes seizure intensity — red = high activity, blue = low activity. Drag to rotate.</p>
+  <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">A map of the simulated brain</h2>
+  <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">Before getting into reward curves, it helps to see what is being simulated. Each sphere is one of 76 cortical or subcortical regions in The Virtual Brain connectome. Red means high seizure-like activity; blue means lower activity. Drag to rotate.</p>
   <div style="display:flex;gap:12px;margin-bottom:1rem;">
     <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'baseline'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Baseline</button>
     <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'optimized'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Optimized</button>
@@ -1970,8 +2038,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </div>
   </div>
 </section>
-  <div class="section-title">Interactive Parameter Explorer</div>
-  <div class="section-sub">Adjust stimulation parameters to see per-patient rewards from the precomputed TVB simulation grid.</div>
+  <div class="section-title">Try the knobs yourself</div>
+  <div class="section-sub">The explorer uses precomputed TVB results so you can see why the minimax objective cares about the worst patient.</div>
 
   <div class="demo-grid">
     <!-- Controls -->
@@ -2033,14 +2101,15 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <!-- ══════════════════════════════════════════════
      OPTIMIZATION TRAJECTORY
 ══════════════════════════════════════════════ -->
-<section>
-  <div class="section-title">Optimization Trajectory</div>
-  <div class="section-sub">Worst-case reward per LLM iteration. Each point is a proposed (x₀, K) pair evaluated across all 5 virtual patients.</div>
+<section id="result-worked">
+  <div class="section-title">The Result That Worked</div>
+  <div class="section-sub">When the optimizer could tune the simulated disease state, it found a robust regime quickly.</div>
 
   <div class="traj-card">
     <canvas id="traj-chart" height="160"></canvas>
   </div>
-  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The optimizer begins at a worst-case reward of −0.5285 (baseline, no stimulation). A sharp improvement at iteration 1 reflects the LLM's literature-informed cold start — rHC at moderate intensity is proposed immediately rather than after random exploration. The best reward of −0.3182 is reached at iteration 4 (x₀ = −2.1, K = 0.0165), representing a 39.8% improvement over baseline. Subsequent iterations explore nearby parameter space, confirming this as a robust optimum.</p>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The baseline worst-case reward was −0.5285. By iteration 4, the LLM-guided loop found x₀ = −2.1 and K = 0.0165, reaching −0.3182. That is the 39.8% worst-case improvement highlighted at the top of the essay. The important part is not just that the mean improved; the worst virtual patient improved too.</p>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:10px;">This is the clean proof of concept. If a future therapy could push the brain toward this lower-epileptogenicity regime, the model predicts a large robustness gain. The rest of the page asks the harder question: how much of that gain survives when the intervention is constrained to something closer to stimulation?</p>
 </section>
 
 <hr class="divider">
@@ -2049,8 +2118,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      MECHANISTIC INSIGHTS
 ══════════════════════════════════════════════ -->
 <section id="mechanistic-insights">
-  <div class="section-title">Mechanistic Insights: Theoretical Bound vs Clinical Reality</div>
-  <div class="section-sub">Two optimization experiments reveal why epilepsy treatment is hard.</div>
+  <div class="section-title">The Caveat That Makes the Result Interesting</div>
+  <div class="section-sub">The model-control result is large. The clinical-style stimulation result is small. That gap is the point.</div>
 
   <!-- Bar chart + comparison table row -->
   <div class="mech-top-row">
@@ -2110,29 +2179,29 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
     <div class="mech-version-card mech-version-indigo">
       <div class="mech-version-tag">Intrinsic parameter optimization</div>
-      <div class="mech-version-title">Version 1: Theoretical upper bound</div>
+      <div class="mech-version-title">Experiment 1: change the simulated disease state</div>
       <div class="mech-version-result">+39.8% worst-case improvement</div>
       <div class="mech-version-vars">x₀ = −2.1 &nbsp;·&nbsp; K = 0.0165</div>
-      <p class="mech-version-text">If neural excitability could be directly controlled — through long-term plasticity, gene therapy, or pharmacological targeting of ion channels — suppression of this magnitude is achievable. This sets the ceiling for what the system can achieve.</p>
+      <p class="mech-version-text">This asks what the simulator can achieve if it can move the intrinsic dynamics directly. It is the cleanest version of the problem and gives a useful upper bound.</p>
     </div>
 
     <div class="mech-version-card mech-version-teal">
       <div class="mech-version-tag">External stimulation (I<sub>ext</sub>)</div>
-      <div class="mech-version-title">Version 2: Clinical reality</div>
+      <div class="mech-version-title">Experiment 2: perturb one region from the outside</div>
       <div class="mech-version-result">+1.7% worst-case improvement</div>
       <div class="mech-version-vars">rHC (right hippocampus) &nbsp;·&nbsp; I<sub>ext</sub> boost = 0.6</div>
-      <p class="mech-version-text">Reflects the physical constraints of real DBS: an external periodic current cannot easily break the strong limit cycle that sustains a seizure. The optimizer still found the best robust protocol within these constraints.</p>
+      <p class="mech-version-text">This is closer to what an implanted device can do in the simplified model. The gain is much smaller, which is exactly what a translational stress test should reveal.</p>
     </div>
 
   </div><!-- /.mech-version-row -->
 
   <!-- Deep dive -->
   <div class="mech-card" style="margin-bottom:28px;">
-    <div class="mech-card-title">Deep Dive: Why only 1.7%?</div>
+    <div class="mech-card-title">Why only 1.7%?</div>
     <ul class="mech-bullet-list">
       <li>
         <span class="mech-bullet-heading">Bifurcation theory</span>
-        x₀ shifts the system's bifurcation point — the threshold between healthy and seizing states. Adjusting it is a first-order intervention. I<sub>ext</sub>, by contrast, perturbs a system already locked in a limit cycle. The energy required to escape a strong attractor vastly exceeds what a simple sinusoidal input can provide.
+        x₀ shifts the system's bifurcation point: the threshold between healthy and seizing states. Adjusting it is a first-order intervention. I<sub>ext</sub>, by contrast, perturbs a system that is already seizure-prone.
       </li>
       <li>
         <span class="mech-bullet-heading">Energy mismatch</span>
@@ -2156,7 +2225,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </div>
 
   <!-- Footer note -->
-  <p class="mech-footer-note">This update reflects a deliberate shift from ideal parameter tuning (x₀) to realistic clinical modeling (I<sub>ext</sub>), trading optimality for translational relevance. The 20× gap between the two is itself the finding.</p>
+  <p class="mech-footer-note">The 20x gap between intrinsic parameter control and external stimulation is not a bug in the story. It is the most useful scientific signal: the simulator can identify a robust target regime, but the currently tested stimulation proxy only weakly reaches it.</p>
 
 </section>
 
@@ -2166,8 +2235,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      PARADOXICAL EFFECT
 ══════════════════════════════════════════════ -->
 <section id="precision-intervention">
-  <div class="section-title">Precision Neuro-Intervention: Navigating the &#8220;Paradoxical Effect&#8221;</div>
-  <div class="section-sub">Why a one-size-fits-all stimulation strategy fails in heterogeneous epilepsy cohorts.</div>
+  <div class="section-title">The Most Important Failure Mode</div>
+  <div class="section-sub">A protocol can look plausible and still split the cohort into responders and patients who worsen.</div>
 
   <!-- PART 2: Forest plot -->
   <div class="mech-card" style="margin-bottom:8px;">
@@ -2183,8 +2252,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- PART 3: Clinical callout -->
   <div class="para-callout" style="margin-bottom:24px;">
-    <div class="para-callout-title">The Responder vs. Non-Responder Paradox</div>
-    <p class="para-callout-lead">In a cohort study of 20 virtual patients, the same rHC stimulation protocol produced diametrically opposite outcomes depending on seizure onset zone (SOZ) location:</p>
+    <div class="para-callout-title">Same protocol, different patients, opposite outcomes</div>
+    <p class="para-callout-lead">The 20-patient virtual cohort is the part of the project that makes the result feel clinically serious. The rHC protocol helped 11 patients and worsened 9. That means the mean result is not the whole story.</p>
     <div class="para-soz-rows">
       <div class="para-soz-row para-soz-green">
         <span class="para-soz-arrow">→</span>
@@ -2215,21 +2284,21 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <span class="para-stat-pill para-stat-green">Responders: 55% (11/20)</span>
       <span class="para-stat-pill para-stat-red">Paradoxical responders: 45% (9/20)</span>
     </div>
-    <p class="para-callout-conclusion">This finding argues for closed-loop, SOZ-aware stimulation. Blind external stimulation is not only ineffective for a substantial fraction of patients — it carries risk of seizure exacerbation. The algorithm's value lies in its ability to predict these risk boundaries before clinical implantation.</p>
+    <p class="para-callout-conclusion">This is why the minimax framing matters. The value is not only in finding a better parameter set; it is in exposing who might be harmed before anyone treats the result as a universal recommendation.</p>
   </div>
 
   <!-- Precision Medicine narrative -->
   <div class="para-precision-box" style="margin-bottom:24px;">
-    <div class="para-precision-title">Beyond Global Averages: The Precision Medicine Imperative</div>
-    <p class="para-precision-text">While the cohort study (<code class="para-code">n=20</code>) yielded a statistically non-significant global improvement (<code class="para-code">p=0.90</code>), a rigorous subgroup analysis unveiled a critical neurodynamic boundary. We identified a robust positive response (<code class="para-code">+0.056</code> reward boost) in patients with <strong>Temporal SOZ</strong>, confirming that the rHC stimulation site acts as a functional gatekeeper for temporal seizure propagation.</p>
-    <p class="para-precision-text">Conversely, a <em>paradoxical effect</em> was observed in <strong>Hippocampal</strong> and <strong>Occipital SOZ</strong> cohorts, where the same stimulation parameters led to a marginal decline in neural stability. This suggests that external <em>I</em><sub>ext</sub> may inadvertently lower the bifurcation threshold or interfere with endogenous seizure-termination mechanisms in these specific network topologies. These findings underscore that in neuromodulation, <strong>&#8220;site-to-lesion matching&#8221; is not just an optimization goal — it is a fundamental safety requirement.</strong></p>
+    <div class="para-precision-title">The clinical translation lesson</div>
+    <p class="para-precision-text">The cohort-level effect was not significant (<code class="para-code">p=0.90</code>). But the patient-level pattern is still informative. Temporal SOZ patients improved in this tiny sample, while hippocampal, frontal, and occipital groups did not show a reliable benefit.</p>
+    <p class="para-precision-text">That does not prove a clinical subgroup. It does suggest the right next experiment: larger virtual cohorts, patient-specific connectomes, and protocols that are selected based on seizure onset zone rather than applied uniformly.</p>
   </div>
 
   <!-- Network Antagonism hypothesis -->
   <div class="para-antagonism-box" style="margin-bottom:24px;">
-    <div class="para-antagonism-title">Mechanistic Hypothesis: Network Antagonism</div>
-    <p class="para-antagonism-text">Why does rHC stimulation worsen outcomes in hippocampal-SOZ patients? We propose a <strong>network antagonism hypothesis</strong>: when the seizure onset zone coincides with the stimulation target, external I<sub>ext</sub> injection may inadvertently lower the local bifurcation threshold — increasing, rather than decreasing, the propensity of the region to enter a seizure state. In Epileptor terms, a sustained excitatory input to an already-epileptogenic node pushes x₁ toward the limit cycle attractor rather than away from it.</p>
-    <p class="para-antagonism-text" style="margin-top:10px;margin-bottom:0;">This is distinct from the therapeutic mechanism of high-frequency DBS (&gt;100 Hz), which achieves <strong>depolarization block</strong> — a phenomenon not captured in the current phenomenological model.</p>
+    <div class="para-antagonism-title">A working hypothesis</div>
+    <p class="para-antagonism-text">One possible explanation is network antagonism. If stimulation is applied to a region that is already close to seizure onset, the external input may push the simulated node toward instability instead of suppressing it. That is a hypothesis generated by the model, not a clinical conclusion.</p>
+    <p class="para-antagonism-text" style="margin-top:10px;margin-bottom:0;">This is also where the simplified stimulation model matters. Real DBS and RNS involve pulse timing, frequency, waveform, electrode geometry, and adaptation over time. The current prototype intentionally abstracts those away.</p>
   </div>
 
   <!-- Structural Connectome Analysis subsection -->
@@ -2340,8 +2409,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      LLM vs BAYESIAN OPTIMIZATION
 ══════════════════════════════════════════════ -->
 <section id="llm-vs-bo">
-  <div class="section-title">LLM vs Bayesian Optimization: The Knowledge Advantage</div>
-  <div class="bo-section-sub">Comparing literature-guided LLM search against Gaussian Process Bayesian Optimization on the same 8-iteration budget.</div>
+  <div class="section-title">What the LLM Actually Added</div>
+  <div class="bo-section-sub">The advantage was not magic optimization. It was a better first guess in a small, semantically meaningful search space.</div>
 
   <!-- Part 2: Convergence chart -->
   <div class="bo-chart-card">
@@ -2384,7 +2453,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <tr>
         <td><strong>Interpretability</strong></td>
         <td>Black-box surrogate model</td>
-        <td class="win">Explicit chain-of-thought reasoning</td>
+        <td class="win">Explicit proposal rationales</td>
       </tr>
       <tr>
         <td><strong>Safety constraints</strong></td>
@@ -2396,8 +2465,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- Part 4: Insight callout -->
   <div class="bo-callout">
-    <div class="bo-callout-title">Cold-Start Advantage: Literature as a Prior</div>
-    <p>BO begins blind — its first sample is drawn from the prior over parameter space, yielding a relatively poor reward of −0.526. The LLM, by contrast, opens at −0.5206 by citing rHC as the most evidence-supported target in temporal lobe epilepsy, effectively encoding decades of clinical literature into the initial proposal. Over 8 iterations this head-start compounds: the LLM converges to a best reward of <strong>−0.5194</strong> vs BO's <strong>−0.5221</strong> — a gap of 0.0027 that, in a minimax setting over heterogeneous patients, translates to meaningfully better worst-case protection for the most vulnerable patient phenotype.</p>
+    <div class="bo-callout-title">Cold-start advantage: literature as a prior</div>
+    <p>Bayesian optimization begins with little domain context. The LLM starts with a clinically plausible target, rHC, because the search space contains named brain regions and stimulation intensities that have meaning in the literature. Over 8 evaluations the LLM reaches a best reward of <strong>−0.5194</strong> vs BO's <strong>−0.5221</strong>. That margin is small, but it shows why language-model priors can be useful when evaluation budgets are tiny.</p>
   </div>
 
   <!-- Reasoning trace comparison -->
@@ -2413,7 +2482,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
           <div><span style="color:#94a3b8;">Iter 2:</span> [3.12, 45] → reward: <strong>−0.5317</strong></div>
           <div><span style="color:#94a3b8;">Iter 3:</span> [1.78,  7] → reward: <strong>−0.5221</strong></div>
         </div>
-        <div style="font-size:0.8rem;color:#94a3b8;font-style:italic;">No explanation. No context. Pure mathematical sampling.</div>
+        <div style="font-size:0.8rem;color:#94a3b8;font-style:italic;">No clinical rationale is attached to the sampled points.</div>
       </div>
 
       <!-- RIGHT: LLM knowledge-guided -->
@@ -2433,7 +2502,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
             <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Converging on low-moderate intensity at rHC. Retrieved gap from amygdala connectivity paper suggests isolated nodes like rHC may respond better to lower stimulation to avoid local over-excitation."</div>
           </div>
         </div>
-        <div style="font-size:0.8rem;color:#6366f1;font-style:italic;">Each proposal cites a clinical rationale.</div>
+        <div style="font-size:0.8rem;color:#6366f1;font-style:italic;">Each proposal is paired with a human-readable rationale that can be inspected.</div>
       </div>
 
     </div>
@@ -2563,35 +2632,26 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      GENERALIZATION & ROBUSTNESS
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="section-title" id="section-generalization">Generalization &amp; Robustness</div>
-  <div class="section-sub">Evaluating whether optimized parameters hold up on unseen patients and under wider variability.</div>
+  <div class="section-title" id="section-generalization">Did the Main Result Survive New Virtual Patients?</div>
+  <div class="section-sub">A strong training curve is not enough. The optimized setting needs to hold up outside the five patients used in the loop.</div>
 
   <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      To assess whether the optimized parameters generalize beyond the training cohort, we evaluated
-      them on <strong>8 unseen virtual patients</strong> (different random seed, same variability regime).
-      We also tested robustness under wider patient variability and ran a stress test across
-      <strong>30 randomly sampled patients</strong>.
+      The archived checks are encouraging. The optimized intrinsic parameters were evaluated on
+      <strong>8 unseen virtual patients</strong> and a <strong>30-patient stress distribution</strong>.
+      The rewards remained better than baseline across these tests.
     </p>
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      Train worst-case: <strong>−0.2847</strong> → Test worst-case: <strong>−0.3346</strong>.
-      The direction is consistent, indicating the solution generalizes to newly sampled patients
-      from the same perturbation distribution — not just the 5 it was optimized on.
-      We also observe stable performance across sampled patients rather than improvements driven
-      by a single extreme case — the optimized parameters consistently outperform baseline across
-      all sampled individuals, not only at the worst-case boundary.
+      Train worst-case reward was <strong>−0.2847</strong>. Test worst-case reward was
+      <strong>−0.3346</strong>. The test score is lower, as expected, but still far above the
+      baseline test worst-case reward of <strong>−0.4985</strong>.
     </p>
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      Robustness degrades gracefully as variability increases: optimized worst-case remains
-      substantially better than baseline across narrow (±0.003), medium (±0.005), and wide (±0.010)
-      coupling perturbation regimes.
+      The stress test tells the same story: optimized median reward was <strong>−0.299</strong>
+      vs baseline <strong>−0.442</strong>, with a better worst case (<strong>−0.405</strong>
+      vs <strong>−0.518</strong>).
     </p>
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:0;">
-      Stress test across 30 patients confirms distributional advantage: optimized
-      median = <strong>−0.299</strong> (vs baseline −0.442), std = <strong>0.037</strong>
-      (vs 0.040), worst-case = <strong>−0.405</strong> (vs −0.518).
-    </p>
-    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-top:14px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
       These results should be interpreted as a proof-of-concept for robustness-oriented
       optimization, rather than a definitive demonstration of cross-patient consistency.
       Performance is expected to degrade as patient variability increases beyond the sampled regime.
@@ -2631,8 +2691,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      TOP IDEAS
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="section-title">Top Research Ideas</div>
-  <div class="section-sub">Ranked by combined score (Novelty + TVB Feasibility + Clinical Impact, max 30) using Claude Opus as judge.</div>
+  <div class="section-title">What the Literature Miner Surfaced</div>
+  <div class="section-sub">These are not conclusions. They are the research gaps that guided the project toward robust patient transfer.</div>
   <p style="font-size:0.82rem;color:var(--muted);margin-bottom:24px;">
     Scoring rubric definitions and full ranked list available in
     <a href="METHODOLOGY.md" style="color:var(--accent);text-decoration:none;font-weight:600;" target="_blank">METHODOLOGY.md</a>
@@ -2647,8 +2707,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      WHAT'S NEXT
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="section-title">What's Next?</div>
-  <div class="section-sub">Three open directions at the intersection of computational neuroscience, control theory, and precision medicine.</div>
+  <div class="section-title">Where This Should Go Next</div>
+  <div class="section-sub">The current project is a proof of concept. The next version needs better patient specificity and richer stimulation physics.</div>
 
   <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
 
@@ -2725,6 +2785,101 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <div class="modal-body" id="modal-gaps-body"></div>
   </div>
 </div>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const heroCanvas = document.getElementById('hero-brain-canvas');
+const heroBrain = document.getElementById('hero-brain');
+
+if (heroCanvas && heroBrain) {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  camera.position.set(0, 0.05, 4.4);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas: heroCanvas,
+    antialias: true,
+    alpha: true,
+    preserveDrawingBuffer: true,
+    powerPreference: 'high-performance',
+  });
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const ambient = new THREE.AmbientLight(0x8fbfff, 1.4);
+  const key = new THREE.DirectionalLight(0x67e8f9, 2.4);
+  key.position.set(2.5, 2.5, 3);
+  const rim = new THREE.PointLight(0x4f46e5, 3.2, 8);
+  rim.position.set(-2.4, -0.8, 2.8);
+  scene.add(ambient, key, rim);
+
+  const modelGroup = new THREE.Group();
+  scene.add(modelGroup);
+
+  const resizeHeroBrain = () => {
+    const rect = heroBrain.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(1, rect.height);
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(pixelRatio);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  };
+
+  const loader = new GLTFLoader();
+  loader.load(
+    'assets/human_brain.glb',
+    gltf => {
+      const model = gltf.scene;
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      model.position.sub(center);
+      model.scale.multiplyScalar(2.35 / maxDim);
+      model.rotation.set(-0.2, 0.38, 0.08);
+
+      model.traverse(child => {
+        if (!child.isMesh) return;
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x93e9ff,
+          emissive: 0x0e7490,
+          emissiveIntensity: 0.42,
+          metalness: 0.05,
+          roughness: 0.34,
+          transparent: true,
+          opacity: 0.88,
+          wireframe: true,
+        });
+      });
+
+      modelGroup.add(model);
+      resizeHeroBrain();
+    },
+    undefined,
+    () => {
+      heroBrain.classList.add('is-fallback');
+    }
+  );
+
+  let lastTime = 0;
+  const animate = time => {
+    const delta = Math.min((time - lastTime) / 1000, 0.04);
+    lastTime = time;
+    modelGroup.rotation.y += delta * 0.18;
+    modelGroup.rotation.x = Math.sin(time * 0.00045) * 0.035;
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(animate);
+  };
+
+  resizeHeroBrain();
+  window.addEventListener('resize', resizeHeroBrain);
+  window.requestAnimationFrame(animate);
+}
+</script>
 
 <script>
 const MODAL_DATA = {"papers":[{"pmid":"41923273","title":"Functional Segregation of Epileptogenicity within the Human Amygdala.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41923273/"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41914206/"},{"pmid":"41863185","title":"Responsive neurostimulation in children, adolescents, and young Adults-Longitudinal effectiveness and safety.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41863185/"},{"pmid":"41567348","title":"Large language models for neurology: a mini review.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41567348/"},{"pmid":"41758135","title":"SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-Derived Biomarkers.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41758135/"},{"pmid":"41460946","title":"Ion dynamics underlying the seizure delay effect of low-frequency electrical stimulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41460946/"},{"pmid":"41358301","title":"Individual-specific resting-state networks predict language dominance in drug-resistant epilepsy.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41358301/"},{"pmid":"41183383","title":"Deployable electrode arrays for brain interfaces: structural reconfiguration strategies for long-term stability and high-fidelity recording-a review.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41183383/"},{"pmid":"41251192","title":"sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multicenter retrospective study of the efficacy and safety of depth electrode-mediated neuromodulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41251192/"},{"pmid":"41282745","title":"Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41282745/"},{"pmid":"41105471","title":"Optimizing responsive neurostimulation targeting based on interictal high-frequency oscillations and phase-amplitude coupling.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41105471/"},{"pmid":"40967238","title":"Personalized whole-brain models of seizure propagation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40967238/"},{"pmid":"40993190","title":"Invasive neurophysiology and whole brain connectomics for neural decoding in patients with brain implants.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40993190/"},{"pmid":"40601969","title":"Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40601969/"},{"pmid":"40630858","title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation paradigm for seizure abolishment.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40630858/"},{"pmid":"40354815","title":"Memory optimized random forest classifier for EEG seizure detection in implantable monitoring and closed-loop neurostimulation devices.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40354815/"},{"pmid":"40423629","title":"Deep learning on brief interictal intracranial recordings can accurately characterize seizure onset zones.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40423629/"},{"pmid":"40294526","title":"Stereo-electroencephalography in the setting of a preexisting deep brain stimulation device: illustrative case.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40294526/"},{"pmid":"40215461","title":"Virtual epilepsy patient cohort: Generation and evaluation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40215461/"},{"pmid":"40185725","title":"Stimulation mapping and whole-brain modeling reveal gradients of excitability and recurrence in cortical networks.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40185725/"}],"sample_ideas":[{"pmid":"41923273","idea":"What are the specific neuronal and cytoarchitectural mechanisms underlying the differential epileptogenicity of amygdala nuclei?","paper_title":"Functional Segregation of Epileptogenicity within the Human Amygdala."},{"pmid":"41914206","idea":"Who is most likely to benefit from neuromodulation therapy in drug-resistant epilepsy?","paper_title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy."},{"pmid":"41863185","idea":"What are the mechanisms underlying the dynamic nature of seizure control trajectories in RNS-treated patients over time?","paper_title":"Responsive neurostimulation in children, adolescents, and young Adults-Longitudi"},{"pmid":"41567348","idea":"How can large language models be made more reliable and robust for clinical neurology applications?","paper_title":"Large language models for neurology: a mini review."},{"pmid":"41758135","idea":"How do SeizureFormer predictions generalize to larger patient populations beyond the five patients tested?","paper_title":"SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-D"},{"pmid":"41460946","idea":"What are the biological mechanisms underlying spontaneous and recurrent transition to seizures in the epileptic brain?","paper_title":"Ion dynamics underlying the seizure delay effect of low-frequency electrical sti"},{"pmid":"41358301","idea":"How does individual-specific network topography vary across different seizure onset zones and epilepsy types?","paper_title":"Individual-specific resting-state networks predict language dominance in drug-re"},{"pmid":"41183383","idea":"How can deployment mechanisms be optimized to achieve both maximal spatial coverage and minimal insertion trauma?","paper_title":"Deployable electrode arrays for brain interfaces: structural reconfiguration str"},{"pmid":"41251192","idea":"Why does the relationship between Euclidean distance to sEEG-EF and seizure reduction disappear at long-term follow-up despite being significant at 1-year in strong responders?","paper_title":"sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multice"},{"pmid":"41282745","idea":"How do thalamic stimulation effects translate to long-term seizure outcome reduction in individual patients?","paper_title":"Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulati"},{"pmid":"41105471","idea":"Can interictal HFOs and PAC serve as reliable spatial biomarkers for RNS targeting across diverse patient populations and epilepsy types?","paper_title":"Optimizing responsive neurostimulation targeting based on interictal high-freque"},{"pmid":"40967238","idea":"How can personalized whole-brain models be optimized to improve prediction accuracy of individual seizure propagation patterns?","paper_title":"Personalized whole-brain models of seizure propagation."},{"pmid":"40993190","idea":"How can brain signal decoding be optimized for reliable real-time clinical implementation across diverse patient populations and implant types?","paper_title":"Invasive neurophysiology and whole brain connectomics for neural decoding in pat"},{"pmid":"40601969","idea":"How can AI/ML models be effectively translated to clinical settings given interpatient variability?","paper_title":"Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy."},{"pmid":"40630858","idea":"How do different phase-amplitude coupling frequencies and parameters optimize seizure suppression across different patient populations?","paper_title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation pa"}],"top_ideas":[{"rank":"","title":"","score":"","novelty":7,"tvb":10,"clinical":8,"summary":"Integrating multi-omic data, neuroimaging, computational simulations, and AI systems to create patient-specific digital models for personalized diagno"},{"rank":"","title":"","score":"","novelty":7,"tvb":9,"clinical":9,"summary":"Identifying quantitative computational and electrophysiological biomarkers predicting surgical outcomes, RNS responses, and DBS efficacy using network"},{"rank":"","title":"","score":"","novelty":7,"tvb":9,"clinical":8,"summary":"Using connectivity metrics, network influence measures, and circuit-based approaches to identify optimal brain stimulation locations beyond seizure on"},{"rank":"","title":"","score":"","novelty":5,"tvb":10,"clinical":8,"summary":"Developing and validating patient-specific neural mass and network models to predict seizure propagation, optimize surgical targeting, and guide neuro"},{"rank":"","title":"","score":"","novelty":7,"tvb":7,"clinical":9,"summary":"Designing real-time systems that dynamically adjust stimulation parameters based on brain state estimation and physiological feedback, including reinf"},{"rank":"","title":"","score":"","novelty":7,"tvb":7,"clinical":8,"summary":"Developing methods to optimize stimulation parameters and complex waveforms at the individual level through computational modeling, artifact-free reco"},{"rank":"","title":"","score":"","novelty":5,"tvb":9,"clinical":8,"summary":"Identifying epileptogenic networks, analyzing seizure propagation pathways, characterizing secondary foci, and mapping multi-lobar involvement using f"},{"rank":"","title":"","score":"","novelty":6,"tvb":8,"clinical":8,"summary":"Characterizing anterior and centromedian thalamic stimulation mechanisms, optimizing parameters for absence and neocortical seizures, and investigatin"},{"rank":"","title":"","score":"","novelty":6,"tvb":6,"clinical":9,"summary":"Investigating mechanisms of RNS-induced seizure suppression, identifying biomarkers predicting long-term responder status, and characterizing network "},{"rank":"","title":"","score":"","novelty":6,"tvb":7,"clinical":8,"summary":"Developing continuous forecasting systems predicting seizure risk at short-term, circadian, and multidien timescales using biomarkers, machine learnin"},{"rank":"","title":"","score":"","novelty":6,"tvb":8,"clinical":7,"summary":"Using CCEP-derived transfer functions, in-degree connectivity, and amplitude responses to predict optimal stimulation parameters, map seizure zones, a"},{"rank":"","title":"","score":"","novelty":5,"tvb":10,"clinical":6,"summary":"Using bifurcation analysis and Epileptor model extensions to characterize seizure mechanisms, design parameter modifications, and develop closed-loop "},{"rank":"","title":"","score":"","novelty":5,"tvb":9,"clinical":7,"summary":"Incorporating structural connectivity heterogeneity, regional excitability variations, and white matter organization into random walk and network mode"},{"rank":"","title":"","score":"","novelty":6,"tvb":7,"clinical":8,"summary":"Investigating how DBS suppresses seizures through potassium accumulation, axonal depolarization block, desynchronization, and whole-brain network modu"},{"rank":"","title":"","score":"","novelty":7,"tvb":8,"clinical":6,"summary":"Examining stimulus-induced shifts from integrated to distributed connectivity patterns and relating network topology evolution to seizure zone propert"}]};
