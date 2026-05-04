@@ -1,0 +1,48 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{arxiv}[2026/05/04 Minimal arXiv-style article layout]
+
+\RequirePackage[letterpaper,margin=1in]{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{xcolor}
+
+\definecolor{arxivblue}{HTML}{0F172A}
+\definecolor{arxivgray}{HTML}{64748B}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textit{Literature-guided minimax neurostimulation}}
+\rhead{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}
+  {\large\bfseries\color{arxivblue}}
+  {\thesection}
+  {0.75em}
+  {}
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{arxivblue}}
+  {\thesubsection}
+  {0.75em}
+  {}
+
+\renewcommand{\maketitle}{%
+  \begin{center}
+    {\LARGE\bfseries\@title\par}
+    \vspace{0.75em}
+    {\large\@author\par}
+    \vspace{1em}
+  \end{center}
+}
+
+\renewenvironment{abstract}{%
+  \begin{center}
+  \begin{minipage}{0.92\linewidth}
+  \small
+  \textbf{Abstract.}
+}{%
+  \end{minipage}
+  \end{center}
+  \vspace{0.5em}
+}

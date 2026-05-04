@@ -1,0 +1,55 @@
+[project]
+name = "tvb-llm-robust-neurostim"
+version = "0.1.0"
+description = "LLM-guided robust optimization for epilepsy neurostimulation with TVB digital twins."
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "anthropic>=0.72.0",
+    "biopython>=1.86",
+    "matplotlib>=3.10.0",
+    "numpy>=2.0.0",
+    "pydantic>=2.12.0",
+]
+
+[project.optional-dependencies]
+analysis = [
+    "scikit-optimize>=0.10.2",
+    "scipy>=1.15.0",
+]
+tvb = [
+    "tvb-library>=2.9.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+    "ruff>=0.14.0",
+]
+
+[project.scripts]
+tvb-fetch-papers = "tvb_llm_neurostim.pubmed:main_fetch_papers"
+tvb-fetch-corpus = "tvb_llm_neurostim.pubmed:main_fetch_all_papers"
+tvb-extract-gaps = "tvb_llm_neurostim.literature:main_extract_gaps"
+tvb-rank-ideas = "tvb_llm_neurostim.ranking:main_rank_ideas"
+tvb-visualize = "tvb_llm_neurostim.visualization:main"
+
+[build-system]
+requires = ["setuptools>=80.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tvb_llm_neurostim*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
