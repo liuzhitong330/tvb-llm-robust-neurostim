@@ -1757,15 +1757,15 @@
      PIPELINE
 ══════════════════════════════════════════════ -->
 <section style="padding-top:24px;">
-  <div class="section-title">Why This Is More Than an LLM Demo</div>
-  <div class="section-sub">The LLM proposes. The simulator decides. The objective is deliberately unforgiving.</div>
+  <div class="section-title">Why This Matters for Translational Neurotechnology</div>
+  <div class="section-sub">The project treats stimulation design as a preclinical search problem: literature priors, virtual patients, and robustness before intervention.</div>
 
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:2rem;margin:2rem 0 2.5rem;align-items:start;">
     <div>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">A shallow version of this project would be: ask an LLM for a stimulation setting and plot the answer. This is not that. The language model never gets to grade its own homework. It can only propose the next experiment.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The scoring happens inside The Virtual Brain, a simulator that models seizure-like dynamics across a 76-region connectome. Each proposal is run across a small virtual cohort. The reward is higher when simulated seizure activity is lower. The final score is the worst patient, not the mean.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">That distinction matters. In medicine, the average can be a trap. A treatment that helps most patients but destabilizes a minority is not just a noisy win. It is a warning label. Minimax optimization turns that warning into the objective.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The rest of this essay follows the same arc as the experiment: first the literature, then the virtual patients, then the result that worked, then the result that made the project more honest.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">Modern neurotechnology has a translation problem. We can implant devices, record from the brain, and deliver stimulation with increasing precision, but choosing the right stimulation policy is still slow and patient-specific. In epilepsy, that difficulty is especially visible: the same intervention can suppress activity in one network and destabilize another.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">This project explores a preclinical version of a larger biotech workflow: before testing an intervention in people, can we use the literature and a mechanistic simulator to narrow the search space? The goal is not to replace clinical evidence. It is to make early-stage hypothesis generation more systematic, auditable, and explicitly robust to patient variability.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The language model fits into that workflow as a proposal engine. It can read the surrounding literature, suggest plausible stimulation targets or model parameters, and adapt based on prior simulation results. But the model does not score itself. The evaluation happens inside The Virtual Brain, where each proposal is tested across a virtual cohort.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The central design choice is the objective: optimize the worst virtual patient, not the average. For a therapeutic technology, that is the more relevant question. A treatment that improves the mean but harms a minority is not simply noisy; it is a candidate failure mode that should be surfaced early.</p>
     </div>
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;">
       <div style="display:flex;flex-direction:column;gap:1rem;">
