@@ -1587,6 +1587,49 @@
     position: relative;
   }
 
+  /* ── STICKY NAV ── */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .site-nav-inner {
+    width: min(1000px, 100%);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    white-space: nowrap;
+  }
+  .site-nav-inner::-webkit-scrollbar { display: none; }
+  .site-nav a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0 14px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .site-nav a:hover { color: var(--accent); }
+  .site-nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
   footer {
     text-align: center;
     padding: 32px 24px;
@@ -1651,6 +1694,20 @@
     </div>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════
+     STICKY NAV
+══════════════════════════════════════════════ -->
+<nav class="site-nav" id="site-nav" aria-label="Page sections">
+  <div class="site-nav-inner">
+    <a href="#result-worked"        data-nav="result-worked">Main Result</a>
+    <a href="#mechanistic-insights" data-nav="mechanistic-insights">Translational Gap</a>
+    <a href="#precision-intervention" data-nav="precision-intervention">Cohort Findings</a>
+    <a href="#llm-vs-bo"            data-nav="llm-vs-bo">LLM vs BO</a>
+    <a href="#section-generalization" data-nav="section-generalization">Generalization</a>
+    <a href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim/raw/main/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Paper ↗</a>
+  </div>
+</nav>
 
 <div class="story-summary">
   <div class="story-summary-inner">
@@ -4011,6 +4068,40 @@ TOP_IDEAS.forEach(idea => {
     </div>
   `);
 });
+</script>
+
+<script>
+/* ── Sticky nav: highlight active section via IntersectionObserver ── */
+(function () {
+  const navLinks = document.querySelectorAll('#site-nav a[data-nav]');
+  if (!navLinks.length) return;
+
+  const sectionIds = Array.from(navLinks).map(a => a.dataset.nav);
+  const sections   = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+  // Track which sections are currently intersecting
+  const visible = new Set();
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) visible.add(e.target.id);
+      else                  visible.delete(e.target.id);
+    });
+    // Highlight the topmost visible section
+    let active = null;
+    for (const id of sectionIds) {
+      if (visible.has(id)) { active = id; break; }
+    }
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.dataset.nav === active);
+    });
+  }, {
+    rootMargin: '-56px 0px -40% 0px', // account for nav height + give top bias
+    threshold: 0
+  });
+
+  sections.forEach(s => observer.observe(s));
+})();
 </script>
 </body>
 </html>
