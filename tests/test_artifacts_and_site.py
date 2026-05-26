@@ -42,7 +42,6 @@ def test_github_pages_site_contains_new_narrative_and_required_assets() -> None:
     assert "Main result and central caveat" in html
     assert "The Pipeline" in html
     assert "Discussion: What This Proof of Concept Suggests" in html
-    assert "Optional Explorer: Parameter Sensitivity" in html
     assert "Step 1: test the cleanest version of the problem" in html
     assert "Step 5: bound the claim" in html
     assert "hero-brain-canvas" in html
@@ -67,7 +66,6 @@ def test_site_chart_targets_are_present_once() -> None:
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     for chart_id in [
         "waveform-chart",
-        "patient-chart",
         "traj-chart",
         "forest-chart",
         "bo-convergence-chart",
