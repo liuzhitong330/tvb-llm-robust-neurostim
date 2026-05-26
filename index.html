@@ -2175,84 +2175,19 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section id="result-worked">
   <div class="section-title">Primary Result: Robust Intrinsic Control</div>
-  <div class="section-sub">When the optimizer could tune the simulated disease state, it found a robust regime quickly.</div>
+  <div class="section-sub">The first experiment asks whether the simulated seizure dynamics can be moved into a safer regime at all.</div>
 
   <div class="result-explainer">
-    <h3>What this result is saying</h3>
-    <p>The chart below tracks the optimization loop. Each point is one parameter setting proposed by the LLM and evaluated by TVB across five virtual patients. The red line is the worst-case reward; the blue line is the mean reward.</p>
-    <p>The important observation is that the worst-case reward rises sharply, not merely the average. By iteration 4, the optimizer finds a setting that improves the least favorable virtual patient by 39.8% relative to baseline.</p>
+    <h3>Step 1: test the cleanest version of the problem</h3>
+    <p>Before asking whether a real stimulation device could reproduce the effect, we first ask a simpler simulator question: if the optimizer is allowed to adjust intrinsic model parameters, can it find a less seizure-prone dynamical regime?</p>
+    <p>Each point in the chart is one candidate setting proposed by the LLM and evaluated by TVB across five virtual patients. The blue line tracks the mean reward. The red line tracks the worst virtual patient. If the red line improves, the optimizer is not merely making the average look better; it is improving the weakest simulated response.</p>
   </div>
 
   <div class="traj-card">
     <canvas id="traj-chart" height="160"></canvas>
   </div>
-  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The baseline worst-case reward was −0.5285. By iteration 4, the LLM-guided loop found x₀ = −2.1 and K = 0.0165, reaching −0.3182. That is the 39.8% worst-case improvement highlighted at the top of the essay. The important point is that improvement was visible in the weakest virtual-patient response, not only in the mean.</p>
-  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:10px;">This is the clean proof of concept. If a future therapy could push the brain toward this lower-epileptogenicity regime, the model predicts a large robustness gain. The rest of the page asks the harder question: how much of that gain survives when the intervention is constrained to something closer to stimulation?</p>
-</section>
-
-<section>
-  <div class="section-title">Optional Explorer: Parameter Sensitivity</div>
-  <div class="section-sub">A precomputed TVB grid showing how small parameter changes alter the distribution of patient rewards after the main model-control result.</div>
-
-  <div class="result-explainer">
-    <h3>Interpretation</h3>
-    <p>The controls below are not running new simulations in the browser. They expose a precomputed grid of TVB results. The useful comparison is between mean reward and worst-case reward: a parameter setting can improve the average while leaving one virtual patient poorly controlled.</p>
-    <p>The minimax objective deliberately optimizes the lower bound. In this project, that means the preferred setting is the one that raises the worst patient response, even if another setting might look attractive by average reward alone.</p>
-  </div>
-
-  <div class="demo-grid">
-    <!-- Controls -->
-    <div class="controls">
-      <div class="preset-row">
-        <button class="preset-btn" onclick="applyPreset(-2.1, '0.0165', false)">Optimal Protocol</button>
-        <button class="preset-btn" onclick="applyPreset(-1.9, '0.0175', false)">Temporal SOZ</button>
-        <button class="preset-btn" onclick="applyPreset(-1.6, '0.0120', true)">Paradoxical Case</button>
-      </div>
-      <div class="control-group">
-        <span class="control-label">Epileptogenicity x₀</span>
-        <div class="control-value" id="x0-display">−1.6</div>
-        <input type="range" id="x0-slider" min="-3.0" max="-1.1" step="0.1" value="-1.6">
-        <div id="explorer-warning" style="display:none;background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#92400e;line-height:1.5;"></div>
-      </div>
-
-      <div class="control-group">
-        <span class="control-label">Inter-Regional Coupling K</span>
-        <select id="coupling-select">
-          <option value="0.012">0.0120</option>
-          <option value="0.0152" selected>0.0152 (baseline)</option>
-          <option value="0.0165">0.0165 (optimal)</option>
-          <option value="0.0175">0.0175</option>
-          <option value="0.02">0.0200</option>
-        </select>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-box worst">
-          <div class="val" id="stat-worst">—</div>
-          <div class="lbl">Worst-Case</div>
-        </div>
-        <div class="stat-box mean">
-          <div class="val" id="stat-mean">—</div>
-          <div class="lbl">Mean Reward</div>
-        </div>
-        <div class="stat-box impr">
-          <div class="val" id="stat-impr">—</div>
-          <div class="lbl">vs Baseline (−0.5285)</div>
-        </div>
-      </div>
-
-      <div class="optimal-badge" id="optimal-badge">
-        Optimal point — x₀ = −2.1, K = 0.0165<br>
-        <small style="font-weight:400;opacity:0.8">Best worst-case reward found by LLM optimizer</small>
-      </div>
-    </div>
-
-    <!-- Chart -->
-    <div class="chart-card">
-      <div class="chart-title">Patient Reward Distribution</div>
-      <canvas id="patient-chart" height="220"></canvas>
-    </div>
-  </div>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The baseline worst-case reward was −0.5285. By iteration 4, the LLM-guided loop found x₀ = −2.1 and K = 0.0165, reaching −0.3182. That is a 39.8% worst-case improvement relative to baseline.</p>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:10px;">This is the strongest proof-of-concept result in the project. It shows that the LLM-plus-simulator loop can discover a robust region of the model’s parameter space. It does not yet show that an implantable stimulation protocol can reach that region. The next section makes that translation problem explicit.</p>
 </section>
 
 <hr class="divider">
@@ -2262,12 +2197,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section id="mechanistic-insights">
   <div class="section-title">Translational Constraint: Intrinsic Control vs External Stimulation</div>
-  <div class="section-sub">The model-control result is large. The clinical-style stimulation result is small. That gap is the point.</div>
+  <div class="section-sub">The next question is whether the strong simulator result survives when the intervention is constrained to something closer to a device.</div>
 
   <div class="result-explainer">
-    <h3>What this comparison is saying</h3>
-    <p>The first experiment asks what happens if we can directly move the model away from a seizure-prone regime. The second asks what happens under a more constrained intervention: add external current to one brain region.</p>
-    <p>The large gap between 39.8% and 1.7% should not be read as a contradiction. It shows that the simulator can identify a favorable dynamical regime, while the simplified stimulation model only weakly reaches that regime. This is a useful translational constraint, not merely a smaller result.</p>
+    <h3>Step 2: make the control problem more realistic</h3>
+    <p>The first experiment changed intrinsic simulator parameters. That is useful scientifically, but it is not what a clinical device directly controls. A stimulator cannot simply dial down epileptogenicity x₀. It can choose where to stimulate, how strongly to stimulate, and when to stimulate.</p>
+    <p>So the second experiment uses a narrower action space: choose one stimulation site and an external-current boost. The gain falls from 39.8% to 1.7%. That drop is not a failure of the story; it is the translational bottleneck the simulator exposes. The model can identify a better dynamical regime, but the simplified stimulation proxy only weakly reaches it.</p>
   </div>
 
   <!-- Bar chart + comparison table row -->
@@ -2385,12 +2320,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section id="precision-intervention">
   <div class="section-title">Cohort Result: Patient Heterogeneity</div>
-  <div class="section-sub">A protocol can look plausible and still split the cohort into responders and patients who worsen.</div>
+  <div class="section-sub">After the clinical-style search identifies rHC stimulation, the next question is whether that protocol helps the cohort consistently.</div>
 
   <div class="result-explainer">
-    <h3>What this result is saying</h3>
-    <p>The selected right-hippocampal stimulation protocol did not produce a meaningful aggregate improvement across the 20-patient virtual cohort. That is the first conclusion.</p>
-    <p>The second conclusion is more important: the same protocol improved 11 patients and worsened 9. This is exactly the kind of failure mode that average-case reporting can hide. The subgroup chart should therefore be read as a patient-selection signal, not as proof that one subgroup is clinically validated.</p>
+    <h3>Step 3: inspect who benefits and who does not</h3>
+    <p>The selected right-hippocampal stimulation protocol did not produce a meaningful aggregate improvement across the 20-patient virtual cohort. If we stopped at the mean, the result would look mostly uninteresting.</p>
+    <p>The patient-level split is more informative. The same protocol improved 11 virtual patients and worsened 9. That is exactly the failure mode a robustness objective is meant to surface: a treatment can look plausible while creating opposite effects in different network anatomies. The subgroup chart should be read as a patient-selection signal, not as proof that one subgroup is clinically validated.</p>
   </div>
 
   <!-- PART 2: Forest plot -->
@@ -2459,8 +2394,9 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <!-- Structural Connectome Analysis subsection -->
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
     <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">Structural Connectome Analysis: Why rHC?</div>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:14px;">The cohort split motivates a mechanistic post-mortem. Why would the same right-hippocampal protocol help some virtual patients and worsen others?</p>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:14px;">Analyzing the TVB structural connectome (76×76 weight matrix) reveals a counterintuitive finding: <strong>rHC is one of the most isolated nodes in the network</strong> (degree = 1, strength = 2.0), with zero direct white-matter connections to any SOZ region tested. The true network hubs are prefrontal regions (rPFCORB degree = 32, strength = 71.0).</p>
-    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:16px;">This reframes the paradoxical effect hypothesis: rHC stimulation <em>cannot</em> deliver targeted suppression via direct fiber tracts — its influence propagates only through <strong>diffuse global coupling</strong>. The outcome therefore depends heavily on each patient's individual network topology. In temporal SOZ patients, this diffuse signal appears sufficient; in hippocampal SOZ patients, stimulating an already-epileptogenic isolated node may locally lower the bifurcation threshold without sufficient network-level compensation.</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:16px;">This reframes the result. rHC stimulation is not acting like a broad network hub that directly suppresses seizure spread through white-matter pathways. Its influence propagates only through diffuse global coupling, so the effect depends heavily on each patient's topology. That gives a concrete hypothesis for the split cohort: the same input can be stabilizing in one simulated network and destabilizing in another.</p>
     <!-- Inline stats grid -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px 16px;">
@@ -2565,12 +2501,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section id="llm-vs-bo">
   <div class="section-title">Search Behavior: The Role of the LLM Prior</div>
-  <div class="bo-section-sub">The advantage is not general-purpose optimization; it is informed proposal generation in a small, semantically meaningful search space.</div>
+  <div class="bo-section-sub">After seeing what the simulator found, we ask what the LLM contributed to the search process.</div>
 
   <div class="result-explainer">
-    <h3>What this comparison is saying</h3>
-    <p>Bayesian optimization treats the stimulation target as an abstract variable. The LLM can use domain language: hippocampus, temporal epilepsy, intensity, safety, and prior literature. In a very small eight-evaluation budget, that prior improves the starting point.</p>
-    <p>The final margin over Bayesian optimization is small. The more defensible claim is that language models are useful proposal generators when the parameter space is semantic and the evaluation budget is limited.</p>
+    <h3>Step 4: separate optimization from scientific judgment</h3>
+    <p>This comparison is not meant to show that an LLM is a universally better optimizer. Bayesian optimization is a strong baseline for many continuous search problems. The difference here is that the search space is semantic: named brain regions, epilepsy mechanisms, stimulation intensity, and safety constraints.</p>
+    <p>The LLM can use that language to choose a plausible starting point and explain why it is testing a particular protocol. The final numerical margin over Bayesian optimization is small, so the careful claim is narrower: language models are useful proposal generators when the evaluation budget is small and the variables have scientific meaning. TVB still decides which proposal works.</p>
   </div>
 
   <!-- Part 2: Convergence chart -->
@@ -2808,9 +2744,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section>
   <div class="section-title" id="section-generalization">Generalization Check</div>
-  <div class="section-sub">A strong training curve is not enough. The optimized setting needs to hold up outside the five patients used in the loop.</div>
+  <div class="section-sub">The last result asks whether the strong intrinsic setting was only fit to the five virtual patients used during search.</div>
 
   <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
+      Up to this point, the main claim has been about the optimization loop. A separate question is whether the optimized intrinsic setting generalizes beyond the small cohort used during the loop.
+    </p>
     <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
       The archived checks are encouraging. The optimized intrinsic parameters were evaluated on
       <strong>8 unseen virtual patients</strong> and a <strong>30-patient stress distribution</strong>.
@@ -2835,7 +2774,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </div>
 
   <div class="result-explainer">
-    <h3>What these robustness plots are saying</h3>
+    <h3>Step 5: bound the claim</h3>
     <p>The first chart compares the optimized setting on the training virtual patients and on held-out virtual patients. The second and third charts test whether the same setting remains better than baseline under broader sampled variability.</p>
     <p>The result is positive but bounded: the optimized setting remains better than baseline in these archived checks, but this is still a small simulated cohort. The correct interpretation is robustness within the sampled regime, not a guarantee of clinical generalization.</p>
   </div>
@@ -2863,6 +2802,73 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <div class="viz-chart-wrap" style="height:240px">
         <canvas id="gen-stress"></canvas>
       </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <div class="section-title">Optional Explorer: Parameter Sensitivity</div>
+  <div class="section-sub">A precomputed TVB grid for readers who want to inspect how small parameter changes affect mean reward and worst-case reward.</div>
+
+  <div class="result-explainer">
+    <h3>How to read this tool</h3>
+    <p>This is not the next step in the argument; it is a side tool for inspecting the model. The controls do not run new simulations in the browser. They expose a precomputed grid of TVB results around the parameter settings discussed above.</p>
+    <p>The useful comparison is between mean reward and worst-case reward. A setting can improve the average while leaving one virtual patient poorly controlled. The minimax objective deliberately prefers settings that raise the lower bound, because the weakest simulated response is where a hidden failure first appears.</p>
+  </div>
+
+  <div class="demo-grid">
+    <!-- Controls -->
+    <div class="controls">
+      <div class="preset-row">
+        <button class="preset-btn" onclick="applyPreset(-2.1, '0.0165', false)">Optimal Protocol</button>
+        <button class="preset-btn" onclick="applyPreset(-1.9, '0.0175', false)">Temporal SOZ</button>
+        <button class="preset-btn" onclick="applyPreset(-1.6, '0.0120', true)">Paradoxical Case</button>
+      </div>
+      <div class="control-group">
+        <span class="control-label">Epileptogenicity x₀</span>
+        <div class="control-value" id="x0-display">−1.6</div>
+        <input type="range" id="x0-slider" min="-3.0" max="-1.1" step="0.1" value="-1.6">
+        <div id="explorer-warning" style="display:none;background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#92400e;line-height:1.5;"></div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Inter-Regional Coupling K</span>
+        <select id="coupling-select">
+          <option value="0.012">0.0120</option>
+          <option value="0.0152" selected>0.0152 (baseline)</option>
+          <option value="0.0165">0.0165 (optimal)</option>
+          <option value="0.0175">0.0175</option>
+          <option value="0.02">0.0200</option>
+        </select>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box worst">
+          <div class="val" id="stat-worst">—</div>
+          <div class="lbl">Worst-Case</div>
+        </div>
+        <div class="stat-box mean">
+          <div class="val" id="stat-mean">—</div>
+          <div class="lbl">Mean Reward</div>
+        </div>
+        <div class="stat-box impr">
+          <div class="val" id="stat-impr">—</div>
+          <div class="lbl">vs Baseline (−0.5285)</div>
+        </div>
+      </div>
+
+      <div class="optimal-badge" id="optimal-badge">
+        Optimal point — x₀ = −2.1, K = 0.0165<br>
+        <small style="font-weight:400;opacity:0.8">Best worst-case reward found by LLM optimizer</small>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-title">Patient Reward Distribution</div>
+      <canvas id="patient-chart" height="220"></canvas>
     </div>
   </div>
 </section>

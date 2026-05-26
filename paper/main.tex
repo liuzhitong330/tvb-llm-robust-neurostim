@@ -11,6 +11,7 @@
 \usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{array}
 \graphicspath{ {./images/} }
 
 \hypersetup{
@@ -66,8 +67,24 @@ Figure~\ref{fig:method} summarizes the pipeline. The study begins by mining epil
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{fig1_method_schematic.png}
-  \caption{\textbf{Research-to-simulation-to-optimization pipeline.} A PubMed corpus is converted into structured research gaps, the highest-priority robust-transfer question is instantiated in a TVB Epileptor virtual cohort, and an LLM proposes candidate parameters that are accepted only after simulation-based reward evaluation. The objective is minimax: improve the least favorable sampled virtual-patient response.}
+  \setlength{\tabcolsep}{4pt}
+  \newcommand{\pipelinebox}[2]{%
+    \fbox{\parbox[c][2.0cm][c]{0.23\textwidth}{%
+      \centering \textbf{#1}\\[0.35em]\footnotesize #2%
+    }}%
+  }
+  \begin{tabular}{ccccc}
+    \pipelinebox{1. Literature}{136 PubMed papers\\1,080 extracted ideas\\ranked research gaps}
+    &
+    $\Longrightarrow$
+    &
+    \pipelinebox{2. Simulation}{TVB Epileptor\\76-region connectome\\virtual-patient cohort}
+    &
+    $\Longrightarrow$
+    &
+    \pipelinebox{3. Minimax search}{LLM proposes\\TVB evaluates reward\\maximize worst case}
+  \end{tabular}
+  \caption{\textbf{Pipeline schematic.} A PubMed corpus is converted into structured research gaps, the highest-priority robust-transfer question is instantiated in a TVB Epileptor virtual cohort, and an LLM proposes candidate parameters that are accepted only after simulation-based reward evaluation. The objective is minimax: improve the least favorable sampled virtual-patient response.}
   \label{fig:method}
 \end{figure}
 
