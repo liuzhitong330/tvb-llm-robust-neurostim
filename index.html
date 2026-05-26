@@ -1256,6 +1256,36 @@
     color: #3730a3;
     font-weight: 800;
   }
+  .logic-list {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: grid;
+    gap: 10px;
+    margin: 0 0 20px;
+    padding: 18px 20px;
+  }
+  .logic-item {
+    color: #475569;
+    font-size: 0.9rem;
+    line-height: 1.58;
+    padding-left: 18px;
+    position: relative;
+  }
+  .logic-item::before {
+    background: #0d9488;
+    border-radius: 999px;
+    content: "";
+    height: 6px;
+    left: 0;
+    position: absolute;
+    top: 0.68em;
+    width: 6px;
+  }
+  .logic-item strong {
+    color: #0f172a;
+    font-weight: 700;
+  }
   .tvb-explainer-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1934,6 +1964,15 @@
 
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:2rem;margin:2rem 0 2.5rem;align-items:start;">
     <div>
+      <div class="logic-list" aria-label="Core project logic">
+        <div class="logic-item"><strong>Brain stimulation has a large design space:</strong> target, intensity, timing, and waveform can all matter.</div>
+        <div class="logic-item"><strong>Patients differ:</strong> seizure networks vary, so a setting that helps one virtual patient can fail another.</div>
+        <div class="logic-item"><strong>The literature is too broad to exhaust manually:</strong> many papers point to plausible targets, mechanisms, and biomarkers.</div>
+        <div class="logic-item"><strong>The LLM proposes:</strong> it organizes the literature and suggests candidate simulator experiments.</div>
+        <div class="logic-item"><strong>TVB evaluates:</strong> the simulator, not the LLM, decides whether a candidate reduces seizure-like dynamics.</div>
+        <div class="logic-item"><strong>The objective is robust performance:</strong> average improvement is not enough if the weakest virtual-patient response gets worse.</div>
+        <div class="logic-item"><strong>The result split is informative:</strong> direct model-control works strongly, clinical-style stimulation works weakly, and that gap shows what remains hard about translation.</div>
+      </div>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, ask it to propose the next candidate setting, and let The Virtual Brain evaluate that setting in simulation.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The simulator represents each virtual patient as a 76-region brain network. Each region has seizure-like dynamics governed by the Epileptor model, and regions interact through structural connectivity. When a candidate setting is applied, TVB runs the dynamics forward and produces activity traces across brain regions and time.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">We then convert those traces into a reward: lower temporal variance in the seizure variable means less seizure-like activity, so higher reward means better simulated control. The optimizer sees the reward history and proposes another setting. The loop is simple: propose, simulate, score, update.</p>
