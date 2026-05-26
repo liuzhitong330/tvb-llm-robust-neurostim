@@ -2126,12 +2126,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section id="precision-intervention">
   <div class="section-title">Cohort Result: Patient Heterogeneity</div>
-  <div class="section-sub">After the clinical-style search identifies rHC stimulation, the next question is whether that protocol helps the cohort consistently.</div>
+  <div class="section-sub">The clinical-style search does more than choose a protocol: it reveals which virtual patients respond and where personalization may matter most.</div>
 
   <div class="result-explainer">
-    <h3>Step 3: inspect who benefits and who does not</h3>
-    <p>The selected right-hippocampal stimulation protocol did not produce a meaningful aggregate improvement across the 20-patient virtual cohort. If we stopped at the mean, the result would look mostly uninteresting.</p>
-    <p>The patient-level split is more informative. The same protocol improved 11 virtual patients and worsened 9. That is exactly the failure mode a robustness objective is meant to surface: a treatment can look plausible while creating opposite effects in different network anatomies. The subgroup chart should be read as a patient-selection signal, not as proof that one subgroup is clinically validated.</p>
+    <h3>Step 3: turn an average result into a stratification signal</h3>
+    <p>Across the full 20-patient virtual cohort, the average effect of right-hippocampal stimulation was small. But the average hides the more useful result: the protocol improved 11 virtual patients and worsened 9.</p>
+    <p>That split is exactly what a simulator-based preclinical workflow is good for. Instead of treating the protocol as simply good or bad, it exposes a responder pattern that can guide the next experiment: which virtual patients benefit, which do not, and what network features might explain the difference. The subgroup chart should be read as an early patient-selection signal, not as a validated clinical subgroup.</p>
   </div>
 
   <!-- PART 2: Forest plot -->
@@ -2143,13 +2143,13 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </div>
 
   <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;margin-bottom:24px;">
-    Error bars represent ±1 SEM. No subgroup reached statistical significance (all p &gt; 0.05), consistent with the small cohort size (n=20). Results are hypothesis-generating. The temporal SOZ effect size (+0.056 ± 0.030) is the largest subgroup signal — a high-priority target for future stratified recruitment.
+    Error bars represent ±1 SEM. No subgroup reached statistical significance (all p &gt; 0.05), consistent with the small cohort size (n=20). The useful signal is directional: temporal SOZ shows the largest positive effect size (+0.056 ± 0.030), making it the clearest candidate subgroup to test in a larger virtual cohort.
   </p>
 
   <!-- PART 3: Clinical callout -->
   <div class="para-callout" style="margin-bottom:24px;">
-    <div class="para-callout-title">Same protocol, different patients, opposite outcomes</div>
-    <p class="para-callout-lead">The 20-patient virtual cohort clarifies the clinical constraint. The rHC protocol helped 11 patients and worsened 9, so the mean result does not fully describe the intervention's risk profile.</p>
+    <div class="para-callout-title">Same protocol, different patients, useful separation</div>
+    <p class="para-callout-lead">The 20-patient virtual cohort turns a small average effect into a more actionable finding. rHC stimulation helped 11 patients and worsened 9, suggesting the protocol may be useful when paired with patient selection rather than applied uniformly.</p>
     <div class="para-soz-rows">
       <div class="para-soz-row para-soz-green">
         <span class="para-soz-arrow">→</span>
@@ -2180,21 +2180,21 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <span class="para-stat-pill para-stat-green">Responders: 55% (11/20)</span>
       <span class="para-stat-pill para-stat-red">Paradoxical responders: 45% (9/20)</span>
     </div>
-    <p class="para-callout-conclusion">This is why the minimax framing matters. The value is not only in finding a better parameter set; it is in exposing who might be harmed before anyone treats the result as a universal recommendation.</p>
+    <p class="para-callout-conclusion">This is why the minimax framing matters. The workflow does not only search for a stronger setting; it identifies when a plausible setting needs stratification before it should be treated as broadly applicable.</p>
   </div>
 
   <!-- Precision Medicine narrative -->
   <div class="para-precision-box" style="margin-bottom:24px;">
     <div class="para-precision-title">The clinical translation lesson</div>
-    <p class="para-precision-text">The cohort-level effect was not significant (<code class="para-code">p=0.90</code>). But the patient-level pattern is still informative. Temporal SOZ patients improved in this tiny sample, while hippocampal, frontal, and occipital groups did not show a reliable benefit.</p>
-    <p class="para-precision-text">That does not prove a clinical subgroup. It does suggest the right next experiment: larger virtual cohorts, patient-specific connectomes, and protocols that are selected based on seizure onset zone rather than applied uniformly.</p>
+    <p class="para-precision-text">The cohort-level effect was not significant (<code class="para-code">p=0.90</code>), so this is not evidence for a universal rHC protocol. The encouraging part is that the simulator recovered a structured response pattern rather than undifferentiated noise. Temporal SOZ patients improved in this tiny sample, while hippocampal, frontal, and occipital groups did not show a reliable benefit.</p>
+    <p class="para-precision-text">That does not prove a clinical subgroup. It does suggest the right next experiment: larger virtual cohorts, patient-specific connectomes, and protocols selected based on seizure onset zone rather than applied uniformly.</p>
   </div>
 
   <!-- Network Antagonism hypothesis -->
   <div class="para-antagonism-box" style="margin-bottom:24px;">
     <div class="para-antagonism-title">A working hypothesis</div>
-    <p class="para-antagonism-text">One possible explanation is network antagonism. If stimulation is applied to a region that is already close to seizure onset, the external input may push the simulated node toward instability instead of suppressing it. That is a hypothesis generated by the model, not a clinical conclusion.</p>
-    <p class="para-antagonism-text" style="margin-top:10px;margin-bottom:0;">The simplified stimulation model is an important limitation. Real DBS and RNS involve pulse timing, frequency, waveform, electrode geometry, and adaptation over time. The current prototype intentionally abstracts those away.</p>
+    <p class="para-antagonism-text">One possible explanation is network antagonism. If stimulation is applied to a region that is already close to seizure onset, the external input may push the simulated node toward instability instead of suppression. That is a useful model-generated hypothesis because it points to a concrete follow-up: match stimulation targets to patient network topology.</p>
+    <p class="para-antagonism-text" style="margin-top:10px;margin-bottom:0;">The simplified stimulation model remains an important limitation. Real DBS and RNS involve pulse timing, frequency, waveform, electrode geometry, and adaptation over time. The current prototype abstracts those away, so the result should be read as a stratification signal for future simulation, not a clinical recommendation.</p>
   </div>
 
   <details class="technical-details" style="margin-bottom:24px;">
