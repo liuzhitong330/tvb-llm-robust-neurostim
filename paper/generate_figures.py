@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import textwrap
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -59,15 +60,15 @@ def save(fig: plt.Figure, name: str) -> None:
 
 
 def method_schematic() -> None:
-    fig, ax = plt.subplots(figsize=(7.2, 2.55))
+    fig, ax = plt.subplots(figsize=(7.2, 2.7))
     ax.set_axis_off()
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
 
     boxes = [
-        (0.03, 0.23, 0.25, 0.5, "Literature mining", "136 PubMed papers\n1,080 extracted ideas\nranked research gaps"),
-        (0.375, 0.23, 0.25, 0.5, "Virtual cohort", "TVB Epileptor model\n76-region connectome\nsampled patient variability"),
-        (0.72, 0.23, 0.25, 0.5, "Minimax search", "LLM proposes parameters\nTVB returns rewards\nmaximize worst case"),
+        (0.035, 0.22, 0.26, 0.52, "1. Literature", "136 PubMed papers; 1,080 extracted ideas; ranked research gaps"),
+        (0.37, 0.22, 0.26, 0.52, "2. Simulation", "TVB Epileptor; 76-region connectome; sampled virtual patients"),
+        (0.705, 0.22, 0.26, 0.52, "3. Minimax search", "LLM proposes; TVB scores; retain best worst-case reward"),
     ]
     for x, y, w, h, title, body in boxes:
         patch = FancyBboxPatch(
@@ -80,10 +81,19 @@ def method_schematic() -> None:
             edgecolor="#cbd5e1",
         )
         ax.add_patch(patch)
-        ax.text(x + 0.025, y + h - 0.11, title, weight="bold", color=COLORS["dark"], fontsize=10)
-        ax.text(x + 0.025, y + h - 0.22, body, color="#475569", va="top", linespacing=1.45)
+        ax.text(x + 0.02, y + h - 0.105, title, weight="bold", color=COLORS["dark"], fontsize=9.5)
+        wrapped = "\n".join(textwrap.wrap(body, width=25))
+        ax.text(
+            x + 0.02,
+            y + h - 0.205,
+            wrapped,
+            color="#475569",
+            va="top",
+            fontsize=8.0,
+            linespacing=1.35,
+        )
 
-    for start, end in [((0.29, 0.48), (0.365, 0.48)), ((0.635, 0.48), (0.71, 0.48))]:
+    for start, end in [((0.302, 0.48), (0.362, 0.48)), ((0.637, 0.48), (0.697, 0.48))]:
         ax.add_patch(
             FancyArrowPatch(
                 start,
