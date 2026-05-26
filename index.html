@@ -1310,8 +1310,95 @@
     outline: 2px solid #818cf8;
     outline-offset: 2px;
   }
+  .simulator-problem-layout {
+    align-items: start;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+    margin: 2rem 0 2.5rem;
+  }
+  .simulator-loop-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+  }
+  .simulator-loop-row {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .simulator-loop-text {
+    min-width: 0;
+  }
+  .brain-map-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .brain-map-legend {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    min-width: 0;
+  }
+  .brain-map-legend-gradient {
+    background: linear-gradient(to right,#2196f3,#ff5722);
+    border-radius: 5px;
+    height: 10px;
+    width: 120px;
+  }
+  .brain-map-frame {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    display: block;
+    height: 500px;
+    width: 100%;
+  }
+  .brain-map-info-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 1rem;
+  }
   @media (max-width: 760px) {
     .tvb-explainer-grid { grid-template-columns: 1fr; }
+    .simulator-problem-layout {
+      display: block;
+      margin: 1.5rem 0 2rem;
+    }
+    .simulator-loop-card {
+      margin-top: 1.5rem;
+      padding: 1rem;
+    }
+    .simulator-loop-row {
+      align-items: flex-start;
+    }
+    .simulator-loop-text div {
+      overflow-wrap: anywhere;
+    }
+    .brain-map-controls {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    .brain-map-legend {
+      margin-left: 0;
+      width: 100%;
+    }
+    .brain-map-legend-gradient {
+      flex: 1;
+      min-width: 80px;
+      max-width: 180px;
+    }
+    .brain-map-frame {
+      height: min(420px, 78vh);
+    }
+    .brain-map-info-grid {
+      grid-template-columns: 1fr;
+    }
   }
   .method-step-arrow {
     color: #0d9488;
@@ -1703,7 +1790,7 @@
   <div class="section-title">The Problem We Ask the Simulator to Solve</div>
   <div class="section-sub">Given a virtual cohort of seizure-prone brains, find a parameter setting that reduces simulated seizure activity without relying on average-case improvement alone.</div>
 
-  <div style="display:grid;grid-template-columns:3fr 2fr;gap:2rem;margin:2rem 0 2.5rem;align-items:start;">
+  <div class="simulator-problem-layout">
     <div>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">Brain stimulation has a large design space. The target, intensity, timing, and waveform can all matter, and patients differ because seizure networks vary. A setting that helps one virtual patient can fail another. At the same time, the literature is too broad to exhaust manually: many papers point to plausible targets, mechanisms, and biomarkers.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, use it to organize the literature and propose candidate simulator experiments, and let The Virtual Brain evaluate each candidate in simulation.</p>
@@ -1712,21 +1799,21 @@
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The search is run in two modes. In the first mode, the optimizer is allowed to change the simulator's internal disease knobs: epileptogenicity <em>x</em><sub>0</sub>, which controls how seizure-prone a region is, and coupling <em>K</em>, which controls how strongly regions drive one another. This is not a treatment protocol; it asks whether the simulated brain can be moved into a more stable dynamical regime at all. In the second mode, the optimizer is given a more clinical constraint: it must choose where to stimulate and how much external current to add. That is closer to what a device could do, but it is also much harder because it can only push on the system indirectly.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The key objective is robustness across patients. For each candidate, TVB evaluates a small virtual cohort, and the score is based on the weakest simulated response. This prevents the optimizer from selecting a setting that looks good on average while failing the most vulnerable virtual patient.</p>
     </div>
-    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;">
+    <div class="simulator-loop-card">
       <div style="display:flex;flex-direction:column;gap:1rem;">
-        <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="simulator-loop-row">
           <div style="width:40px;height:40px;border-radius:50%;background:#e8e0ff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#5b4fcf;flex-shrink:0;">1</div>
-          <div><div style="font-size:13px;font-weight:500;">Proposal source</div><div style="font-size:12px;color:var(--color-text-secondary);">literature context → candidate settings</div></div>
+          <div class="simulator-loop-text"><div style="font-size:13px;font-weight:500;">Proposal source</div><div style="font-size:12px;color:var(--color-text-secondary);">literature context → candidate settings</div></div>
         </div>
         <div style="width:1px;height:16px;background:var(--color-border-tertiary);margin-left:20px;"></div>
-        <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="simulator-loop-row">
           <div style="width:40px;height:40px;border-radius:50%;background:#e0f0e8;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#2d7a4f;flex-shrink:0;">2</div>
-          <div><div style="font-size:13px;font-weight:500;">Simulator</div><div style="font-size:12px;color:var(--color-text-secondary);">candidate setting → activity traces</div></div>
+          <div class="simulator-loop-text"><div style="font-size:13px;font-weight:500;">Simulator</div><div style="font-size:12px;color:var(--color-text-secondary);">candidate setting → activity traces</div></div>
         </div>
         <div style="width:1px;height:16px;background:var(--color-border-tertiary);margin-left:20px;"></div>
-        <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="simulator-loop-row">
           <div style="width:40px;height:40px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#b45309;flex-shrink:0;">3</div>
-          <div><div style="font-size:13px;font-weight:500;">Objective</div><div style="font-size:12px;color:var(--color-text-secondary);">reward history → robust next proposal</div></div>
+          <div class="simulator-loop-text"><div style="font-size:13px;font-weight:500;">Objective</div><div style="font-size:12px;color:var(--color-text-secondary);">reward history → robust next proposal</div></div>
         </div>
         <div style="margin-top:4px;padding-top:1rem;border-top:1px solid var(--color-border-tertiary);">
           <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Controllable variables</div>
@@ -2010,19 +2097,19 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <section style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
   <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">A map of the simulated brain</h2>
   <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">Before getting into reward curves, it helps to see what is being simulated. Each sphere is one of 76 cortical or subcortical regions in The Virtual Brain connectome. Red means high seizure-like activity; blue means lower activity. Drag to rotate.</p>
-  <div style="display:flex;gap:12px;margin-bottom:1rem;align-items:center;flex-wrap:wrap;">
+  <div class="brain-map-controls">
     <div class="brain-mode-switch" role="radiogroup" aria-label="Brain simulation state">
       <button class="brain-mode-option is-active" type="button" role="radio" aria-checked="true" data-brain-mode="baseline" onclick="setBrainMode('baseline')">Baseline</button>
       <button class="brain-mode-option" type="button" role="radio" aria-checked="false" data-brain-mode="optimized" onclick="setBrainMode('optimized')">Optimized</button>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+    <div class="brain-map-legend">
       <span style="font-size:12px;color:var(--color-text-secondary);">Low</span>
-      <div style="width:120px;height:10px;border-radius:5px;background:linear-gradient(to right,#2196f3,#ff5722);"></div>
+      <div class="brain-map-legend-gradient"></div>
       <span style="font-size:12px;color:var(--color-text-secondary);">High seizure activity</span>
     </div>
   </div>
-  <iframe id="brain-iframe" src="brain3d.html" style="width:100%;height:500px;border:none;border-radius:var(--border-radius-lg);"></iframe>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:1rem;">
+  <iframe id="brain-iframe" src="brain3d.html" class="brain-map-frame"></iframe>
+  <div class="brain-map-info-grid">
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;">
       <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Each sphere = one brain region</div>
       <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">76 cortical and subcortical regions from the Desikan-Killiany atlas. Color encodes seizure intensity — measured as the temporal variance of x₁ (the primary seizure variable) from TVB simulation. Red = high seizure activity, blue = suppressed.</div>
