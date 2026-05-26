@@ -43,6 +43,7 @@ def test_github_pages_site_contains_new_narrative_and_required_assets() -> None:
     html = (ROOT / "index.html").read_text(encoding="utf-8")
 
     assert "By <strong>Cathy Liu</strong>" in html
+    assert "liuzhitong330@gmail.com" in html
     assert "Language-model-guided search for robust virtual neurostimulation" in html
     assert "Main result and central caveat" in html
     assert "The Pipeline" in html
