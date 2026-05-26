@@ -1256,44 +1256,6 @@
     color: #3730a3;
     font-weight: 800;
   }
-  .logic-list {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    display: grid;
-    gap: 10px;
-    margin: 0 0 20px;
-    padding: 18px 20px;
-  }
-  .logic-heading {
-    color: #0f172a;
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    margin-bottom: 2px;
-    text-transform: uppercase;
-  }
-  .logic-item {
-    color: #475569;
-    font-size: 0.9rem;
-    line-height: 1.58;
-    padding-left: 18px;
-    position: relative;
-  }
-  .logic-item::before {
-    background: #0d9488;
-    border-radius: 999px;
-    content: "";
-    height: 6px;
-    left: 0;
-    position: absolute;
-    top: 0.68em;
-    width: 6px;
-  }
-  .logic-item strong {
-    color: #0f172a;
-    font-weight: 700;
-  }
   .tvb-explainer-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1972,19 +1934,11 @@
 
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:2rem;margin:2rem 0 2.5rem;align-items:start;">
     <div>
-      <div class="logic-list" aria-label="Core project logic">
-        <div class="logic-heading">High-level overview</div>
-        <div class="logic-item"><strong>Brain stimulation has a large design space:</strong> target, intensity, timing, and waveform can all matter.</div>
-        <div class="logic-item"><strong>Patients differ:</strong> seizure networks vary, so a setting that helps one virtual patient can fail another.</div>
-        <div class="logic-item"><strong>The literature is too broad to exhaust manually:</strong> many papers point to plausible targets, mechanisms, and biomarkers.</div>
-        <div class="logic-item"><strong>The LLM proposes:</strong> it organizes the literature and suggests candidate simulator experiments.</div>
-        <div class="logic-item"><strong>TVB evaluates:</strong> the simulator, not the LLM, decides whether a candidate reduces seizure-like dynamics.</div>
-        <div class="logic-item"><strong>The search compares solution strategies:</strong> we test both direct model-control optimization and a more constrained clinical-style stimulation search.</div>
-      </div>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, ask it to propose the next candidate setting, and let The Virtual Brain evaluate that setting in simulation.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The simulator represents each virtual patient as a 76-region brain network. Each region has seizure-like dynamics governed by the Epileptor model, and regions interact through structural connectivity. When a candidate setting is applied, TVB runs the dynamics forward and produces activity traces across brain regions and time.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">Brain stimulation has a large design space. The target, intensity, timing, and waveform can all matter, and patients differ because seizure networks vary. A setting that helps one virtual patient can fail another. At the same time, the literature is too broad to exhaust manually: many papers point to plausible targets, mechanisms, and biomarkers.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, use it to organize the literature and propose candidate simulator experiments, and let The Virtual Brain evaluate each candidate in simulation.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The simulator represents each virtual patient as a 76-region brain network. Each region has seizure-like dynamics governed by the Epileptor model, and regions interact through structural connectivity. When a candidate setting is applied, TVB runs the dynamics forward and produces activity traces across brain regions and time. The simulator, not the LLM, decides whether the candidate reduces seizure-like dynamics.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">We then convert those traces into a reward: lower temporal variance in the seizure variable means less seizure-like activity, so higher reward means better simulated control. The optimizer sees the reward history and proposes another setting. The loop is simple: propose, simulate, score, update.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">There are two versions of the control problem. The first lets the optimizer tune intrinsic model parameters such as epileptogenicity <em>x</em><sub>0</sub> and coupling <em>K</em>. This asks whether the disease dynamics can be moved into a more stable regime at all. The second is more constrained: choose a stimulation site and external-current boost, which is closer to a clinical intervention but much harder.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The search compares two solution strategies. The first lets the optimizer tune intrinsic model parameters such as epileptogenicity <em>x</em><sub>0</sub> and coupling <em>K</em>. This asks whether the disease dynamics can be moved into a more stable regime at all. The second is more constrained: choose a stimulation site and external-current boost, which is closer to a clinical intervention but much harder.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The key objective is robustness across patients. For each candidate, TVB evaluates a small virtual cohort, and the score is based on the weakest simulated response. This prevents the optimizer from selecting a setting that looks good on average while failing the most vulnerable virtual patient.</p>
     </div>
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;">
