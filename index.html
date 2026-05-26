@@ -2196,111 +2196,52 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      MECHANISTIC INSIGHTS
 ══════════════════════════════════════════════ -->
 <section id="mechanistic-insights">
-  <div class="section-title">Translational Constraint: Intrinsic Control vs External Stimulation</div>
-  <div class="section-sub">The next question is whether the strong simulator result survives when the intervention is constrained to something closer to a device.</div>
+  <div class="section-title">Clinical-Style Stimulation Search</div>
+  <div class="section-sub">We then move to the harder setup: choosing a stimulation site and intensity, closer to what a device can actually vary.</div>
 
   <div class="result-explainer">
-    <h3>Step 2: make the control problem more realistic</h3>
-    <p>The first experiment changed intrinsic simulator parameters. That is useful scientifically, but it is not what a clinical device directly controls. A stimulator cannot simply dial down epileptogenicity x₀. It can choose where to stimulate, how strongly to stimulate, and when to stimulate.</p>
-    <p>So the second experiment uses a narrower action space: choose one stimulation site and an external-current boost. The gain falls from 39.8% to 1.7%. That drop is not a failure of the story; it is the translational bottleneck the simulator exposes. The model can identify a better dynamical regime, but the simplified stimulation proxy only weakly reaches it.</p>
+    <h3>Step 2: search over choices a stimulator can express</h3>
+    <p>The intrinsic-control result shows that the simulator contains more stable regimes. The next experiment asks a more practical question: can the LLM-guided loop find a useful intervention when the action space is limited to a stimulation site and an external-current boost?</p>
+    <p>In this constrained setting, the loop selected right hippocampus stimulation with a low external-current boost. The worst-case reward improved by 1.7% over baseline. The effect is smaller than direct model control, but the setup is also substantially harder: the optimizer is no longer allowed to change the disease parameters directly. It has to work through a simplified stimulation input.</p>
   </div>
 
-  <!-- Bar chart + comparison table row -->
   <div class="mech-top-row">
-
-    <!-- Bar chart -->
     <div class="mech-card mech-chart-card">
-      <div class="mech-card-title">Optimization improvement over baseline</div>
+      <div class="mech-card-title">External stimulation improvement over baseline</div>
       <canvas id="mech-bar-chart" height="200"></canvas>
     </div>
 
-    <!-- Comparison table -->
-    <div class="mech-card" style="flex:1;min-width:0;">
-      <div class="mech-card-title">A Tale of Two Optimizations</div>
-      <div style="overflow-x:auto;">
-        <table class="mech-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th><span class="mech-badge mech-badge-indigo">Intrinsic (x₀)</span></th>
-              <th><span class="mech-badge mech-badge-teal">Clinical (I<sub>ext</sub>)</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="mech-row-label">Optimization target</td>
-              <td>x₀ (epileptogenicity, intrinsic)</td>
-              <td>I<sub>ext</sub> (external stimulation current)</td>
-            </tr>
-            <tr>
-              <td class="mech-row-label">Improvement</td>
-              <td><strong style="color:var(--green)">+39.8%</strong></td>
-              <td><strong style="color:var(--amber)">+1.7%</strong></td>
-            </tr>
-            <tr>
-              <td class="mech-row-label">Best parameters</td>
-              <td>x₀ = −2.1, K = 0.0165</td>
-              <td>rHC, boost = 0.6</td>
-            </tr>
-            <tr>
-              <td class="mech-row-label">Core mechanism</td>
-              <td>Shifts seizure bifurcation threshold</td>
-              <td>Superimposes external signal on ongoing seizure</td>
-            </tr>
-            <tr>
-              <td class="mech-row-label">Scientific role</td>
-              <td>Theoretical upper bound</td>
-              <td>Real-world clinical challenge</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="mech-version-card mech-version-teal" style="flex:1;min-width:280px;margin-bottom:0;">
+      <div class="mech-version-tag">LLM-guided stimulation protocol</div>
+      <div class="mech-version-title">Right hippocampus, low-intensity external current</div>
+      <div class="mech-version-result">+1.7% worst-case improvement</div>
+      <div class="mech-version-vars">rHC (right hippocampus) &nbsp;·&nbsp; I<sub>ext</sub> boost = 0.6</div>
+      <p class="mech-version-text">This result is modest but meaningful in context: the search is restricted to a simple stimulation proxy, evaluated under a robustness objective, and completed in a small eight-protocol budget.</p>
     </div>
   </div><!-- /.mech-top-row -->
 
-  <!-- Two version cards -->
-  <div class="mech-version-row">
-
-    <div class="mech-version-card mech-version-indigo">
-      <div class="mech-version-tag">Intrinsic parameter optimization</div>
-      <div class="mech-version-title">Experiment 1: change the simulated disease state</div>
-      <div class="mech-version-result">+39.8% worst-case improvement</div>
-      <div class="mech-version-vars">x₀ = −2.1 &nbsp;·&nbsp; K = 0.0165</div>
-      <p class="mech-version-text">This asks what the simulator can achieve if it can move the intrinsic dynamics directly. It is the cleanest version of the problem and gives a useful upper bound.</p>
-    </div>
-
-    <div class="mech-version-card mech-version-teal">
-      <div class="mech-version-tag">External stimulation (I<sub>ext</sub>)</div>
-      <div class="mech-version-title">Experiment 2: perturb one region from the outside</div>
-      <div class="mech-version-result">+1.7% worst-case improvement</div>
-      <div class="mech-version-vars">rHC (right hippocampus) &nbsp;·&nbsp; I<sub>ext</sub> boost = 0.6</div>
-      <p class="mech-version-text">This is closer to what an implanted device can do in the simplified model. The gain is much smaller, which is exactly what a translational stress test should reveal.</p>
-    </div>
-
-  </div><!-- /.mech-version-row -->
-
   <!-- Deep dive -->
   <div class="mech-card" style="margin-bottom:28px;">
-    <div class="mech-card-title">Why only 1.7%?</div>
+    <div class="mech-card-title">Why the constrained search is difficult</div>
     <ul class="mech-bullet-list">
       <li>
-        <span class="mech-bullet-heading">Bifurcation theory</span>
-        x₀ shifts the system's bifurcation point: the threshold between healthy and seizing states. Adjusting it is a first-order intervention. I<sub>ext</sub>, by contrast, perturbs a system that is already seizure-prone.
+        <span class="mech-bullet-heading">External stimulation is indirect</span>
+        The simplified I<sub>ext</sub> input perturbs activity at one region. It does not directly rewrite the model's epileptogenicity or connectivity parameters, so the optimizer has less leverage over the underlying seizure dynamics.
       </li>
       <li>
-        <span class="mech-bullet-heading">Energy mismatch</span>
-        Epileptic oscillations in the Epileptor model are high-energy, phase-coherent limit cycles. A sinusoidal I<sub>ext</sub> at fixed frequency cannot desynchronize or entrain the system unless it is carefully phase-matched — which open-loop stimulation cannot achieve.
+        <span class="mech-bullet-heading">Timing and waveform are simplified</span>
+        Real DBS and RNS depend on pulse timing, frequency, waveform, electrode geometry, and adaptation over time. This prototype abstracts those details into a single external-current boost, so it cannot capture many mechanisms that make real stimulation effective.
       </li>
       <li>
-        <span class="mech-bullet-heading">Model limitation (honest)</span>
-        The Epileptor is a phenomenological model that captures seizure onset and offset but does not model synaptic plasticity or depolarization block. Real DBS likely works through mechanisms absent here: long-term synaptic weight changes that indirectly shift x₀ or K, or high-frequency depolarization block that silences the target region entirely.
+        <span class="mech-bullet-heading">Robustness is a stricter target</span>
+        The optimizer is not rewarded for helping only the easiest virtual patients. It is pushed toward settings that protect the weakest simulated response, which can favor lower-intensity protocols that avoid destabilizing vulnerable cases.
       </li>
     </ul>
   </div>
 
   <!-- What LLM contributed box -->
   <div class="mech-insight-box" style="margin-bottom:28px;">
-    <div class="mech-insight-title">What the LLM contributed despite the 1.7% ceiling</div>
+    <div class="mech-insight-title">What the LLM contributed in the stimulation search</div>
     <ul class="mech-llm-list">
       <li>Found <strong>rHC</strong> as the optimal stimulation site — consistent with clinical literature on hippocampal stimulation for temporal lobe epilepsy.</li>
       <li>Identified that <strong>lower intensities (boost = 0.6) outperform higher ones</strong> in the minimax setting — excessive stimulation destabilizes some patients.</li>
@@ -2309,7 +2250,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </div>
 
   <!-- Footer note -->
-  <p class="mech-footer-note">The 20x gap between intrinsic parameter control and external stimulation is scientifically important: the simulator can identify a robust target regime, but the currently tested stimulation proxy only weakly reaches it.</p>
+  <p class="mech-footer-note">The point of this experiment is not that rHC stimulation is solved. It is that an LLM-guided loop can use literature priors to propose a biologically plausible stimulation protocol, test it in a simulator, and expose where the simplified intervention helps or remains limited.</p>
 
 </section>
 
@@ -3458,11 +3399,11 @@ updateDemo(); // init
 new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
   type: 'bar',
   data: {
-    labels: ['Intrinsic (x₀)', 'Clinical (Iext)'],
+    labels: ['rHC low-intensity stimulation'],
     datasets: [{
-      data: [39.8, 1.7],
-      backgroundColor: ['rgba(79,70,229,0.85)', 'rgba(13,148,136,0.85)'],
-      borderColor:     ['rgba(79,70,229,1)',    'rgba(13,148,136,1)'],
+      data: [1.7],
+      backgroundColor: ['rgba(13,148,136,0.85)'],
+      borderColor:     ['rgba(13,148,136,1)'],
       borderWidth: 1.5,
       borderRadius: 6,
       borderSkipped: false,
@@ -3486,7 +3427,7 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
       },
       y: {
         beginAtZero: true,
-        max: 50,
+        max: 3,
         ticks: {
           callback: v => '+' + v + '%',
           font: { size: 11 },
@@ -3509,7 +3450,7 @@ new Chart(document.getElementById('mech-bar-chart').getContext('2d'), {
       chart.getDatasetMeta(0).data.forEach((bar, i) => {
         const val = data.datasets[0].data[i];
         ctx.save();
-        ctx.fillStyle = i === 0 ? '#4338ca' : '#0f766e';
+        ctx.fillStyle = '#0f766e';
         ctx.font = 'bold 13px -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('+' + val.toFixed(1) + '%', bar.x, bar.y - 8);
