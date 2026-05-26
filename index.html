@@ -2171,6 +2171,24 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <hr class="divider">
 
 <!-- ══════════════════════════════════════════════
+     LLM-PROPOSED RESEARCH DIRECTIONS
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Ideas Proposed by the Literature Miner</div>
+  <div class="section-sub">Before the simulator search, the LLM read across the epilepsy and neuromodulation literature and surfaced candidate directions worth testing.</div>
+
+  <div class="result-explainer">
+    <h3>Why this comes before the results</h3>
+    <p>The optimizer does not start from nowhere. The literature-mining stage turns papers into a ranked set of research directions: digital twins, computational biomarkers, stimulation targeting, patient-specific optimization, and closed-loop control.</p>
+    <p>The cards below are not claims that these ideas work clinically. They are the hypothesis source. TVB then acts as the evaluator, testing whether proposed directions produce better simulated outcomes across virtual patients.</p>
+  </div>
+
+  <div class="ideas-grid" id="ideas-grid"></div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
      OPTIMIZATION TRAJECTORY
 ══════════════════════════════════════════════ -->
 <section id="result-worked">
@@ -2837,18 +2855,6 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       If this pattern generalizes, the opportunity is not limited to epilepsy. Many biological problems have the same structure: enormous literature, expensive experiments, heterogeneous subjects, and mechanistic models that are imperfect but informative. In those settings, LLMs could help researchers search more systematically, surface overlooked combinations, document the rationale for each experiment, and prioritize the next measurement. The future value depends on better simulators, patient-specific data, expert validation, and prospective testing, but the workflow points toward a practical role for language models in early-stage biological discovery.
     </p>
   </div>
-</section>
-
-<hr class="divider">
-
-<!-- ══════════════════════════════════════════════
-     TOP IDEAS
-══════════════════════════════════════════════ -->
-<section>
-  <div class="section-title">Appendix: What the Literature Miner Surfaced</div>
-  <div class="section-sub">These literature-derived directions explain where the project came from. They support the origin story rather than competing with the main result.</div>
-
-  <div class="ideas-grid" id="ideas-grid"></div>
 </section>
 
 <hr class="divider">
