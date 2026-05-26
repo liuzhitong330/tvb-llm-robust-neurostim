@@ -2870,6 +2870,31 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <hr class="divider">
 
 <!-- ══════════════════════════════════════════════
+     DISCUSSION
+══════════════════════════════════════════════ -->
+<section>
+  <div class="section-title">Discussion: What This Proof of Concept Suggests</div>
+  <div class="section-sub">The central result is not that a language model can decide a therapy. It is that language models may become useful search partners when a biological simulator can reject weak ideas.</div>
+
+  <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:26px 30px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+    <p style="font-size:0.92rem;color:#334155;line-height:1.78;margin-bottom:16px;">
+      This project is best read as a proof of concept for LLM-guided biological search. The LLM does not diagnose epilepsy, validate a treatment, or replace clinical judgment. Its role is narrower and more useful: read a large body of literature, organize plausible hypotheses, propose the next simulator experiment, and keep track of why that experiment was worth trying.
+    </p>
+    <p style="font-size:0.92rem;color:#334155;line-height:1.78;margin-bottom:16px;">
+      The important safeguard is that the model is not the evaluator. TVB supplies the constraint. Every proposal has to survive a mechanistic simulation across virtual patients, and the score emphasizes robustness rather than average-case improvement alone. That pairing changes the role of an LLM from an answer generator into a hypothesis generator embedded inside an experimental loop.
+    </p>
+    <p style="font-size:0.92rem;color:#334155;line-height:1.78;margin-bottom:16px;">
+      The strongest result shows why the idea is worth studying: when the search could directly tune intrinsic simulator parameters, it found a substantially more stable regime. The more constrained stimulation result shows why the idea is not yet a clinical claim. Translating a favorable simulated regime into an intervention that an implanted device can actually deliver is much harder, and the cohort split shows that patient-specific response can dominate the average.
+    </p>
+    <p style="font-size:0.92rem;color:#334155;line-height:1.78;margin-bottom:0;">
+      If this pattern generalizes, the opportunity is not limited to epilepsy. Many biological problems have the same structure: enormous literature, expensive experiments, heterogeneous subjects, and mechanistic models that are imperfect but informative. In those settings, LLMs could help researchers search more systematically, surface overlooked combinations, document the rationale for each experiment, and prioritize the next measurement. The future value depends on better simulators, patient-specific data, expert validation, and prospective testing, but the workflow points toward a practical role for language models in early-stage biological discovery.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
      TOP IDEAS
 ══════════════════════════════════════════════ -->
 <section>
