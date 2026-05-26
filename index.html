@@ -1281,6 +1281,36 @@
     font-size: 0.82rem;
     line-height: 1.55;
   }
+  .brain-mode-switch {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 999px;
+    background: #ffffff;
+  }
+  .brain-mode-option {
+    min-width: 92px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .brain-mode-option.is-active {
+    background: #eef2ff;
+    color: #3730a3;
+    box-shadow: 0 1px 3px rgba(79, 70, 229, 0.14);
+  }
+  .brain-mode-option:focus-visible {
+    outline: 2px solid #818cf8;
+    outline-offset: 2px;
+  }
   @media (max-width: 760px) {
     .tvb-explainer-grid { grid-template-columns: 1fr; }
   }
@@ -2188,9 +2218,11 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <section style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
   <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">A map of the simulated brain</h2>
   <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">Before getting into reward curves, it helps to see what is being simulated. Each sphere is one of 76 cortical or subcortical regions in The Virtual Brain connectome. Red means high seizure-like activity; blue means lower activity. Drag to rotate.</p>
-  <div style="display:flex;gap:12px;margin-bottom:1rem;">
-    <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'baseline'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Baseline</button>
-    <button onclick="document.getElementById('brain-iframe').contentWindow.postMessage({mode:'optimized'}, '*')" style="padding:6px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;">Optimized</button>
+  <div style="display:flex;gap:12px;margin-bottom:1rem;align-items:center;flex-wrap:wrap;">
+    <div class="brain-mode-switch" role="radiogroup" aria-label="Brain simulation state">
+      <button class="brain-mode-option is-active" type="button" role="radio" aria-checked="true" data-brain-mode="baseline" onclick="setBrainMode('baseline')">Baseline</button>
+      <button class="brain-mode-option" type="button" role="radio" aria-checked="false" data-brain-mode="optimized" onclick="setBrainMode('optimized')">Optimized</button>
+    </div>
     <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
       <span style="font-size:12px;color:var(--color-text-secondary);">Low</span>
       <div style="width:120px;height:10px;border-radius:5px;background:linear-gradient(to right,#2196f3,#ff5722);"></div>
@@ -3095,6 +3127,19 @@ const MODAL_DATA = {"papers":[{"pmid":"41923273","title":"Functional Segregation
 
 <script>
 // ── Modal population ─────────────────────────────
+
+function setBrainMode(mode) {
+  const iframe = document.getElementById('brain-iframe');
+  if (iframe?.contentWindow) {
+    iframe.contentWindow.postMessage({ mode }, '*');
+  }
+
+  document.querySelectorAll('[data-brain-mode]').forEach((option) => {
+    const isActive = option.dataset.brainMode === mode;
+    option.classList.toggle('is-active', isActive);
+    option.setAttribute('aria-checked', String(isActive));
+  });
+}
 
 // Modal 1 — papers
 (function() {
