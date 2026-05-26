@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 
 from tvb_llm_neurostim.cohort_analysis import run_cohort_study
+from tvb_llm_neurostim.config import PathsConfig
 
 
 def main() -> None:
@@ -15,14 +15,18 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
 
-    checkpoints = [Path("checkpoint_baseline_20.json"), Path("checkpoint_optimized_20.json")]
+    paths = PathsConfig()
+    checkpoints = [
+        paths.results_dir / "checkpoint_baseline_20.json",
+        paths.results_dir / "checkpoint_optimized_20.json",
+    ]
     if args.force:
         for checkpoint in checkpoints:
             checkpoint.unlink(missing_ok=True)
 
     summary = run_cohort_study(
         n_patients=20,
-        output_json=Path("cohort_results_20.json"),
+        output_json=paths.cohort_results_json,
         baseline_checkpoint=checkpoints[0],
         optimized_checkpoint=checkpoints[1],
         max_workers=args.workers,

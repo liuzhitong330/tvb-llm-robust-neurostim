@@ -94,6 +94,7 @@ def run_intrinsic_optimization(
             f"| worst={worst:.4f} | mean={mean:.4f} {marker}"
         )
 
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump(history, handle, indent=2)
     print(f"\nBest worst-case reward: {best_worst:.4f}")
@@ -199,6 +200,7 @@ def run_clinical_optimization(
         "recommendation": recommendation,
         "history": history,
     }
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump(result, handle, indent=2)
     print(f"\nClinical recommendation: {recommendation['description']}")
@@ -208,7 +210,7 @@ def run_clinical_optimization(
 
 def run_bo_comparison(
     *,
-    output_json: Path = Path("bo_comparison.json"),
+    output_json: Path = DEFAULT_PATHS.bo_comparison_json,
     api_key: str | None = None,
     n_calls: int = 8,
     objective: Callable[[float, int], float] | None = None,
@@ -300,6 +302,7 @@ Prefer moderate intensities, hippocampal targets for temporal epilepsy, and mini
         "bo_best_params": {"iext_boost": round(float(bo_result.x[0]), 2), "site_index": int(bo_result.x[1])},
         "reasoning_log": reasoning_log,
     }
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump(results, handle, indent=2)
     print(f"Saved to {output_json}")

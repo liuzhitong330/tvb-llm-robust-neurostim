@@ -86,7 +86,7 @@ def infer_reward_trend(history: list[dict[str, Any]]) -> str:
 def rag_optimize(
     *,
     gaps_json: Path = DEFAULT_PATHS.gaps_json,
-    output_json: Path = Path("rag_results.json"),
+    output_json: Path = DEFAULT_PATHS.rag_results_json,
     api_key: str | None = None,
     n_iterations: int = 8,
 ) -> dict[str, Any]:
@@ -208,6 +208,7 @@ Respond with JSON only:
         "history": history,
         "rag_log": rag_log,
     }
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump(result, handle, indent=2)
     print(f"Saved to {output_json}")

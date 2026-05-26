@@ -84,6 +84,7 @@ class BatchSimulator:
             return json.load(handle)
 
     def _save_checkpoint(self, results: dict[str, dict[str, Any]]) -> None:
+        self.checkpoint_file.parent.mkdir(parents=True, exist_ok=True)
         with self.checkpoint_file.open("w", encoding="utf-8") as handle:
             json.dump(results, handle, indent=2)
 

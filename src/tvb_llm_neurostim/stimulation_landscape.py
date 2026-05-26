@@ -18,11 +18,13 @@ from typing import Any
 
 import numpy as np
 
+from tvb_llm_neurostim.config import PathsConfig
 from tvb_llm_neurostim.simulation import get_labels, run_robust_clinical
 
 DEFAULT_BOOSTS = (0.0, 0.3, 0.6, 0.9, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0)
 DEFAULT_RANDOM_SEEDS = 50
 DEFAULT_RANDOM_BUDGET = 8
+DEFAULT_PATHS = PathsConfig()
 
 
 @dataclass(frozen=True)
@@ -63,7 +65,7 @@ def _round_candidate(row: dict[str, Any]) -> dict[str, Any]:
 
 def run_stimulation_landscape(
     *,
-    output_json: Path = Path("clinical_landscape.json"),
+    output_json: Path = DEFAULT_PATHS.clinical_landscape_json,
     boosts: tuple[float, ...] = DEFAULT_BOOSTS,
     max_workers: int = 4,
     random_seeds: int = DEFAULT_RANDOM_SEEDS,
@@ -153,6 +155,7 @@ def run_stimulation_landscape(
         "grid": rounded_rows,
     }
 
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
     print(f"Saved {output_json}")
@@ -161,7 +164,7 @@ def run_stimulation_landscape(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=Path("clinical_landscape.json"))
+    parser.add_argument("--output", type=Path, default=DEFAULT_PATHS.clinical_landscape_json)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--random-seeds", type=int, default=DEFAULT_RANDOM_SEEDS)
     parser.add_argument(

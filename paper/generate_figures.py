@@ -12,6 +12,7 @@ import numpy as np
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 ROOT = Path(__file__).resolve().parents[1]
+RESULTS = ROOT / "results"
 OUT = Path(__file__).resolve().parent / "images"
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -29,7 +30,7 @@ COLORS = {
 
 
 def load_json(name: str):
-    with (ROOT / name).open(encoding="utf-8") as handle:
+    with (RESULTS / name).open(encoding="utf-8") as handle:
         return json.load(handle)
 
 

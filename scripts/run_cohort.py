@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Run the small cohort smoke study."""
 
-from pathlib import Path
-
 from tvb_llm_neurostim.cohort_analysis import run_cohort_study
+from tvb_llm_neurostim.config import PathsConfig
 
 
 def main() -> None:
+    paths = PathsConfig()
     summary = run_cohort_study(
         n_patients=5,
-        output_json=Path("cohort_results_test.json"),
-        baseline_checkpoint=Path("checkpoint_baseline.json"),
-        optimized_checkpoint=Path("checkpoint_optimized.json"),
+        output_json=paths.results_dir / "cohort_results_test.json",
+        baseline_checkpoint=paths.results_dir / "checkpoint_baseline.json",
+        optimized_checkpoint=paths.results_dir / "checkpoint_optimized.json",
         max_workers=2,
     )
     print(f"\n=== Results (n={summary['n_patients']}) ===")

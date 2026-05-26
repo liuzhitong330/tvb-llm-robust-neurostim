@@ -111,6 +111,7 @@ def run_cohort_study(
     )
 
     summary = summarize_rewards(baseline_results, optimized_results)
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
     print(f"\nSaved to {output_json}")

@@ -40,8 +40,11 @@ tvb-stimulation-landscape = "tvb_llm_neurostim.stimulation_landscape:main"
 requires = ["setuptools>=80.0.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["src"]
 include = ["tvb_llm_neurostim*"]
 
 [tool.ruff]
@@ -54,4 +57,4 @@ ignore = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]

@@ -1,8 +1,4 @@
-"""Typed configuration for the research pipeline.
-
-The project still exposes simple scripts at the repository root, but the core
-configuration lives here so runs are reproducible and reviewable.
-"""
+"""Typed configuration for the research pipeline."""
 
 from __future__ import annotations
 
@@ -20,14 +16,18 @@ class FrozenModel(BaseModel):
 class PathsConfig(FrozenModel):
     """Default artifact paths used by the pipeline and GitHub Pages site."""
 
-    papers_csv: Path = Path("all_papers.csv")
-    gaps_json: Path = Path("gaps.json")
-    ranked_ideas_json: Path = Path("ranked_ideas.json")
+    results_dir: Path = Path("results")
+    papers_csv: Path = Path("results/all_papers.csv")
+    gaps_json: Path = Path("results/gaps.json")
+    ranked_ideas_json: Path = Path("results/ranked_ideas.json")
     ranked_ideas_md: Path = Path("ranked_ideas.md")
-    results_json: Path = Path("results.json")
-    results_png: Path = Path("results.png")
-    clinical_results_json: Path = Path("results_v2.json")
-    cohort_results_json: Path = Path("cohort_results_20.json")
+    results_json: Path = Path("results/results.json")
+    results_png: Path = Path("results/results.png")
+    clinical_results_json: Path = Path("results/results_v2.json")
+    cohort_results_json: Path = Path("results/cohort_results_20.json")
+    bo_comparison_json: Path = Path("results/bo_comparison.json")
+    rag_results_json: Path = Path("results/rag_results.json")
+    clinical_landscape_json: Path = Path("results/clinical_landscape.json")
 
 
 class ModelConfig(FrozenModel):

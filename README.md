@@ -6,9 +6,11 @@ The project asks whether a large language model can help search for brain-stimul
 
 ## What Is In This Repository
 
-- `index.html`, `brain3d.html`, and checked-in JSON artifacts power the GitHub Pages essay.
-- `tvb_llm_neurostim/` contains the package implementation.
-- Root Python files such as `simulate.py`, `rl_loop.py`, and `rank_ideas.py` are compatibility wrappers so existing commands still work.
+- `index.html` and `brain3d.html` power the GitHub Pages essay.
+- `src/tvb_llm_neurostim/` contains the package implementation.
+- `scripts/` contains runnable research scripts and legacy entrypoints.
+- `results/` contains checked-in JSON and plot artifacts used by the paper and site.
+- `paper/` contains the LaTeX manuscript, generated figures, and PDF.
 - `tests/` contains integration tests over the package, result artifacts, and static site.
 
 ## Pipeline
@@ -41,12 +43,12 @@ The `tvb` extra is needed for actual TVB simulations. Tests and static artifact 
 ```bash
 uv run pytest
 uv run ruff check .
-uv run python visualize.py --input results.json --output results.png
-uv run python fetch_all_papers.py --email you@example.com
-uv run python extract_gaps.py --api-key "$ANTHROPIC_API_KEY"
-uv run python rank_ideas.py --api-key "$ANTHROPIC_API_KEY"
-uv run python rl_loop.py --api-key "$ANTHROPIC_API_KEY"
-uv run python rl_loop_v2.py --api-key "$ANTHROPIC_API_KEY"
+uv run tvb-visualize --input results/results.json --output results/results.png
+uv run tvb-fetch-corpus --email you@example.com
+uv run tvb-extract-gaps --api-key "$ANTHROPIC_API_KEY"
+uv run tvb-rank-ideas --api-key "$ANTHROPIC_API_KEY"
+uv run python scripts/rl_loop.py --api-key "$ANTHROPIC_API_KEY"
+uv run python scripts/rl_loop_v2.py --api-key "$ANTHROPIC_API_KEY"
 ```
 
 Do not use `pip`, `poetry`, `conda`, or manual virtualenv activation for this project.
@@ -55,13 +57,13 @@ Do not use `pip`, `poetry`, `conda`, or manual virtualenv activation for this pr
 
 The repository keeps the published results as static artifacts:
 
-- `results.json` and `results.png`: intrinsic minimax optimization trajectory.
-- `results_v2.json`: clinical-style external-stimulation optimization.
-- `cohort_results_20.json`: 20-patient cohort study.
-- `bo_comparison.json`: LLM versus Bayesian optimization comparison.
-- `clinical_landscape.json`: all-region external-stimulation landscape and random-search baselines.
-- `rag_results.json`: RAG-augmented optimizer trace.
-- `brain3d_data.json`, `waveform_data.json`, `generalization_data.json`, and related JSON files: website visualizations.
+- `results/results.json` and `results/results.png`: intrinsic minimax optimization trajectory.
+- `results/results_v2.json`: clinical-style external-stimulation optimization.
+- `results/cohort_results_20.json`: 20-patient cohort study.
+- `results/bo_comparison.json`: LLM versus Bayesian optimization comparison.
+- `results/clinical_landscape.json`: all-region external-stimulation landscape and random-search baselines.
+- `results/rag_results.json`: RAG-augmented optimizer trace.
+- `results/brain3d_data.json`, `results/waveform_data.json`, `results/generalization_data.json`, and related JSON files: website visualizations and paper figures.
 
 The cleanup does not regenerate or replace these results by default.
 

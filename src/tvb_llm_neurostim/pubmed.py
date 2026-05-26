@@ -132,6 +132,7 @@ def read_papers_csv(path: Path) -> list[Paper]:
 
 
 def write_papers_csv(path: Path, papers: list[Paper]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=PAPER_FIELDNAMES)
         writer.writeheader()

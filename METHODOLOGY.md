@@ -62,9 +62,9 @@ Abstract: <paper abstract>
 
 Each call used `max_tokens=1024`. The model was instructed to return valid JSON only (no markdown fences). JSON parse errors were logged and assigned empty fields.
 
-**Script:** `extract_gaps.py`  
-**Total extraction tasks:** 1,080 (across 136 papers, ~7.9 gaps per paper on average)  
-**Output:** `gaps.json`
+**Script:** `scripts/extract_gaps.py`
+**Total extraction tasks:** 1,080 (across 136 papers, ~7.9 gaps per paper on average)
+**Output:** `results/gaps.json`
 
 ---
 
@@ -80,7 +80,7 @@ When multiple batches were processed, a second Haiku call consolidated the raw c
 
 **Note:** this is LLM-based semantic grouping, not embedding-based clustering. Results are not deterministic — re-running the pipeline may produce different cluster boundaries and slightly different final rankings.
 
-**Script:** `rank_ideas.py` (`group_ideas()`, `consolidate_clusters()`)  
+**Script:** `scripts/rank_ideas.py` (`group_ideas()`, `consolidate_clusters()`)
 **Final cluster count:** ~30
 
 ---
@@ -99,7 +99,7 @@ Each cluster was scored by `claude-opus-4-5` on three axes (1–10 each):
 
 The scoring prompt provided detailed anchor descriptions for scores 1–3, 4–6, and 7–10 on each axis, along with instructions to return a structured JSON object including scores, rationale, and a "key opportunity" sentence per cluster.
 
-Clusters were then ranked by total score descending. The top 20 were saved to `ranked_ideas.json` and `ranked_ideas.md`.
+Clusters were then ranked by total score descending. The top 20 were saved to `results/ranked_ideas.json` and `ranked_ideas.md`.
 
 **Top result:** Score 25/30 for the cluster *"Digital Twins & Multimodal AI for Precision Neurology"* — and the gap driving Stage 3 (robust RL transfer across patients) also scored 25/30 under this rubric.
 

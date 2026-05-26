@@ -56,6 +56,7 @@ def render_results_plot(input_json: Path, output_png: Path) -> None:
     axes[1].grid(True, alpha=0.3)
 
     plt.tight_layout()
+    output_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_png, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print(f"Saved {output_png}")

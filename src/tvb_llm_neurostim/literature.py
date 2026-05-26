@@ -146,6 +146,7 @@ def run_gap_extraction(
         if index < len(papers):
             time.sleep(literature_config.extraction_pause_seconds)
 
+    output_json.parent.mkdir(parents=True, exist_ok=True)
     with output_json.open("w", encoding="utf-8") as handle:
         json.dump([result.model_dump() for result in results], handle, indent=2, ensure_ascii=False)
 

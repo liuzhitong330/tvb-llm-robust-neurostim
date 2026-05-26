@@ -9,6 +9,7 @@ from tvb_llm_neurostim.rag import infer_reward_trend, retrieve_knowledge
 from tvb_llm_neurostim.visualization import render_results_plot
 
 ROOT = Path(__file__).resolve().parents[1]
+RESULTS = ROOT / "results"
 
 
 def test_pydantic_configs_validate_defaults() -> None:
@@ -18,6 +19,14 @@ def test_pydantic_configs_validate_defaults() -> None:
     assert len(literature.queries) == 10
     assert simulation.coupling_noise_low < simulation.coupling_noise_high
     assert simulation.n_patients == 5
+
+
+def test_repository_uses_src_scripts_results_layout() -> None:
+    assert (ROOT / "src" / "tvb_llm_neurostim").is_dir()
+    assert (ROOT / "scripts").is_dir()
+    assert (ROOT / "results").is_dir()
+    assert not (ROOT / "tvb_llm_neurostim").exists()
+    assert not any(ROOT.glob("*.py"))
 
 
 def test_json_response_parser_handles_fences_and_embedded_json() -> None:
@@ -48,10 +57,10 @@ def test_rag_retrieval_prefers_site_and_trend_keywords() -> None:
     assert infer_reward_trend([{"reward": -0.5}, {"reward": -0.51}]) == "worsening"
 
 
-def test_legacy_wrappers_import_without_running_tvb() -> None:
+def test_package_imports_without_running_tvb() -> None:
     code = (
-        "import simulate, simulate_v2, rl_loop, rl_loop_v2, "
-        "rag_optimizer, bo_comparison, run_stimulation_landscape"
+        "from tvb_llm_neurostim import config, simulation; "
+        "from tvb_llm_neurostim import optimization, rag, stimulation_landscape"
     )
     result = subprocess.run(
         ["uv", "run", "python", "-c", code],
@@ -65,6 +74,6 @@ def test_legacy_wrappers_import_without_running_tvb() -> None:
 
 def test_visualization_renders_from_checked_in_results(tmp_path: Path) -> None:
     output = tmp_path / "results.png"
-    render_results_plot(ROOT / "results.json", output)
+    render_results_plot(RESULTS / "results.json", output)
     assert output.exists()
     assert output.stat().st_size > 10_000

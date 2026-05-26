@@ -264,12 +264,14 @@ def judge_clusters(
 
 
 def save_json(ranked: list[ScoredCluster], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         json.dump([idea.model_dump() for idea in ranked], handle, indent=2, ensure_ascii=False)
     print(f"  Saved JSON -> {path}")
 
 
 def save_markdown(ranked: list[ScoredCluster], path: Path, gaps_data: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     pmid_url = {str(paper["pmid"]): paper.get("url", "") for paper in gaps_data}
     lines = [
         "# Top 20 Research Ideas: Epilepsy x Computational Modeling",
