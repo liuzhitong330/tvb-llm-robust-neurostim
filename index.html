@@ -1979,8 +1979,7 @@
         <div class="logic-item"><strong>The literature is too broad to exhaust manually:</strong> many papers point to plausible targets, mechanisms, and biomarkers.</div>
         <div class="logic-item"><strong>The LLM proposes:</strong> it organizes the literature and suggests candidate simulator experiments.</div>
         <div class="logic-item"><strong>TVB evaluates:</strong> the simulator, not the LLM, decides whether a candidate reduces seizure-like dynamics.</div>
-        <div class="logic-item"><strong>The objective is robust performance:</strong> average improvement is not enough if the weakest virtual-patient response gets worse.</div>
-        <div class="logic-item"><strong>The result split is informative:</strong> direct model-control works strongly, clinical-style stimulation works weakly, and that gap shows what remains hard about translation.</div>
+        <div class="logic-item"><strong>The search compares solution strategies:</strong> we test both direct model-control optimization and a more constrained clinical-style stimulation search.</div>
       </div>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, ask it to propose the next candidate setting, and let The Virtual Brain evaluate that setting in simulation.</p>
       <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The simulator represents each virtual patient as a 76-region brain network. Each region has seizure-like dynamics governed by the Epileptor model, and regions interact through structural connectivity. When a candidate setting is applied, TVB runs the dynamics forward and produces activity traces across brain regions and time.</p>
