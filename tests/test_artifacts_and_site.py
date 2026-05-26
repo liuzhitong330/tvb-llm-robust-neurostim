@@ -28,6 +28,11 @@ def test_checked_in_result_artifacts_have_expected_shapes() -> None:
     assert load_json("cohort_results_20.json")["n_patients"] == 20
     assert len(load_json("bo_comparison.json")["bo_trajectory"]) == 8
     assert len(load_json("rag_results.json")["history"]) == 8
+    landscape = load_json("clinical_landscape.json")
+    assert landscape["n_candidates"] == 760
+    assert len(landscape["grid"]) == 760
+    assert landscape["grid_best"]["site_name"] == "lPFCDM"
+    assert landscape["heuristics"]["right_hippocampus"]["site_name"] == "rHC"
     brain = load_json("brain3d_data.json")
     assert len(brain["regions"]) == 76
     assert len(brain["edges"]) > 0

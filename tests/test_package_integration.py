@@ -49,7 +49,10 @@ def test_rag_retrieval_prefers_site_and_trend_keywords() -> None:
 
 
 def test_legacy_wrappers_import_without_running_tvb() -> None:
-    code = "import simulate, simulate_v2, rl_loop, rl_loop_v2, rag_optimizer, bo_comparison"
+    code = (
+        "import simulate, simulate_v2, rl_loop, rl_loop_v2, "
+        "rag_optimizer, bo_comparison, run_stimulation_landscape"
+    )
     result = subprocess.run(
         ["uv", "run", "python", "-c", code],
         cwd=ROOT,

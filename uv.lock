@@ -1662,6 +1662,15 @@ wheels = [
 ]
 
 [[package]]
+name = "tvb-data"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/c4/bea5253a62fa7a231844ef7144b55998546b91f0678a6e56a189a795395c/tvb_data-3.0.0.tar.gz", hash = "sha256:6cadd8b0c7757bd367d1eb8b7c107c6d933d7528b0917440d4e57e646e82a3d1", size = 51934679, upload-time = "2025-02-26T11:37:50.622Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/65/7a/a60b1fba878ed80456dca7e229d0acddcd107b768b19ed7e5f0d6a3b3a10/tvb_data-3.0.0-py3-none-any.whl", hash = "sha256:681e9fb1fd807b57f9b55c7fd147ac7563ded90c978d42eeae1bb150adab0b12", size = 51941585, upload-time = "2025-02-26T11:37:40.007Z" },
+]
+
+[[package]]
 name = "tvb-library"
 version = "2.10.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1702,6 +1711,7 @@ analysis = [
     { name = "scipy" },
 ]
 tvb = [
+    { name = "tvb-data" },
     { name = "tvb-library" },
 ]
 
@@ -1720,6 +1730,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12.0" },
     { name = "scikit-optimize", marker = "extra == 'analysis'", specifier = ">=0.10.2" },
     { name = "scipy", marker = "extra == 'analysis'", specifier = ">=1.15.0" },
+    { name = "tvb-data", marker = "extra == 'tvb'", specifier = ">=3.0.0" },
     { name = "tvb-library", marker = "extra == 'tvb'", specifier = ">=2.9.1" },
 ]
 provides-extras = ["analysis", "tvb"]

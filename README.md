@@ -59,6 +59,7 @@ The repository keeps the published results as static artifacts:
 - `results_v2.json`: clinical-style external-stimulation optimization.
 - `cohort_results_20.json`: 20-patient cohort study.
 - `bo_comparison.json`: LLM versus Bayesian optimization comparison.
+- `clinical_landscape.json`: all-region external-stimulation landscape and random-search baselines.
 - `rag_results.json`: RAG-augmented optimizer trace.
 - `brain3d_data.json`, `waveform_data.json`, `generalization_data.json`, and related JSON files: website visualizations.
 

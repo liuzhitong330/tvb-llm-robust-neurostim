@@ -273,6 +273,93 @@ def clinical_and_comparison_results() -> None:
     save(fig, "fig3_clinical_results.png")
 
 
+def stimulation_landscape_results() -> None:
+    landscape = load_json("clinical_landscape.json")
+    grid = landscape["grid"]
+    boosts = landscape["boosts"]
+
+    by_site: dict[int, list[dict[str, object]]] = {}
+    for row in grid:
+        by_site.setdefault(int(row["site_index"]), []).append(row)
+    site_best = [
+        max(rows, key=lambda row: float(row["worst_case_reward"]))
+        for rows in by_site.values()
+    ]
+    site_best = sorted(site_best, key=lambda row: float(row["worst_case_reward"]), reverse=True)
+    top_sites = site_best[:15]
+    heatmap = np.full((len(top_sites), len(boosts)), np.nan)
+    for y_idx, best_row in enumerate(top_sites):
+        site_rows = by_site[int(best_row["site_index"])]
+        for row in site_rows:
+            x_idx = boosts.index(row["iext_boost"])
+            heatmap[y_idx, x_idx] = float(row["worst_case_reward"])
+
+    fig, axes = plt.subplots(2, 2, figsize=(7.2, 5.9))
+
+    ax = axes[0, 0]
+    image = ax.imshow(heatmap, aspect="auto", cmap="viridis")
+    ax.set_xticks(np.arange(len(boosts)), [str(boost) for boost in boosts], rotation=45, ha="right")
+    ax.set_yticks(
+        np.arange(len(top_sites)),
+        [f"{row['site_name']} ({row['site_index']})" for row in top_sites],
+    )
+    ax.set_title("A. Top-site stimulation landscape")
+    ax.set_xlabel("Iext boost")
+    ax.set_ylabel("Region")
+    cbar = fig.colorbar(image, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label("Worst-case reward")
+
+    ax = axes[0, 1]
+    top10 = landscape["top10"]
+    y = np.arange(len(top10))
+    rewards = [row["worst_case_reward"] for row in top10]
+    colors = [COLORS["green"] if idx == 0 else COLORS["blue"] for idx in range(len(top10))]
+    ax.scatter(rewards, y, color=colors, s=62, zorder=3)
+    for value, y_val in zip(rewards, y, strict=True):
+        ax.plot([landscape["baseline"]["worst_case_reward"], value], [y_val, y_val], color="#cbd5e1", linewidth=1.2, zorder=1)
+    ax.set_yticks(y, [f"{row['site_name']} b={row['iext_boost']}" for row in top10])
+    ax.invert_yaxis()
+    ax.axvline(landscape["baseline"]["worst_case_reward"], color=COLORS["red"], linestyle=":", linewidth=1.3)
+    ax.set_title("B. Best grid candidates")
+    ax.set_xlabel("Worst-case reward")
+    ax.set_xlim(-0.505, -0.43)
+
+    ax = axes[1, 0]
+    random_best = landscape["random_search"]["best_rewards"]
+    ax.hist(random_best, bins=16, color=COLORS["gray"], alpha=0.78, edgecolor="white")
+    ax.axvline(landscape["random_search"]["median_best_reward"], color=COLORS["dark"], linewidth=1.4, label="Random median")
+    ax.axvline(landscape["grid_best"]["worst_case_reward"], color=COLORS["green"], linewidth=1.6, label="Grid best")
+    ax.axvline(landscape["heuristics"]["right_hippocampus"]["worst_case_reward"], color=COLORS["purple"], linewidth=1.6, label="rHC candidate")
+    ax.set_title("C. 100 random 8-evaluation searches")
+    ax.set_xlabel("Best worst-case reward")
+    ax.set_ylabel("Seeds")
+    ax.legend(frameon=False)
+
+    ax = axes[1, 1]
+    rows = [
+        ("Grid best", landscape["grid_best"]),
+        ("rHC candidate", landscape["heuristics"]["right_hippocampus"]),
+        ("Random median", {"worst_case_reward": landscape["random_search"]["median_best_reward"]}),
+        ("rFEF hub", landscape["heuristics"]["right_fef_hub"]),
+        ("Top graph hub", landscape["heuristics"]["right_pfc_orb_top_hub"]),
+        ("No stimulation", landscape["baseline"]),
+    ]
+    y = np.arange(len(rows))
+    values = [row["worst_case_reward"] for _, row in rows]
+    colors = [COLORS["green"], COLORS["purple"], COLORS["gray"], COLORS["orange"], COLORS["teal"], COLORS["red"]]
+    ax.scatter(values, y, color=colors, s=74, zorder=3)
+    for value, y_val in zip(values, y, strict=True):
+        ax.plot([landscape["baseline"]["worst_case_reward"], value], [y_val, y_val], color="#cbd5e1", linewidth=1.4, zorder=1)
+    ax.set_yticks(y, [label for label, _ in rows])
+    ax.invert_yaxis()
+    ax.set_title("D. Baseline and heuristic comparison")
+    ax.set_xlabel("Worst-case reward")
+    ax.set_xlim(-0.505, -0.43)
+
+    fig.tight_layout()
+    save(fig, "fig5_stimulation_landscape.png")
+
+
 def robustness_and_topology() -> None:
     generalization = load_json("generalization_data.json")
     topology = load_json("network_topology.json")
@@ -345,6 +432,7 @@ def main() -> None:
     method_schematic()
     intrinsic_results()
     clinical_and_comparison_results()
+    stimulation_landscape_results()
     robustness_and_topology()
     print(f"Saved figures to {OUT}")
 

@@ -18,6 +18,7 @@ analysis = [
     "scipy>=1.15.0",
 ]
 tvb = [
+    "tvb-data>=3.0.0",
     "tvb-library>=2.9.1",
 ]
 
@@ -33,6 +34,7 @@ tvb-fetch-corpus = "tvb_llm_neurostim.pubmed:main_fetch_all_papers"
 tvb-extract-gaps = "tvb_llm_neurostim.literature:main_extract_gaps"
 tvb-rank-ideas = "tvb_llm_neurostim.ranking:main_rank_ideas"
 tvb-visualize = "tvb_llm_neurostim.visualization:main"
+tvb-stimulation-landscape = "tvb_llm_neurostim.stimulation_landscape:main"
 
 [build-system]
 requires = ["setuptools>=80.0.0"]
