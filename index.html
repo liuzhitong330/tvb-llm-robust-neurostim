@@ -1929,31 +1929,43 @@
      PIPELINE
 ══════════════════════════════════════════════ -->
 <section style="padding-top:24px;">
-  <div class="section-title">From Literature Hypotheses to Preclinical Triage</div>
-  <div class="section-sub">The central question is whether literature-guided simulation can identify which ideas deserve more serious testing.</div>
+  <div class="section-title">The Problem We Ask the Simulator to Solve</div>
+  <div class="section-sub">Given a virtual cohort of seizure-prone brains, find a parameter setting that reduces simulated seizure activity without relying on average-case improvement alone.</div>
 
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:2rem;margin:2rem 0 2.5rem;align-items:start;">
     <div>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">In translational neurotechnology, the bottleneck is often not a shortage of ideas. The literature contains many plausible targets, mechanisms, biomarkers, and stimulation strategies. The harder problem is deciding which of those ideas are coherent enough to test, and which should be deprioritized before they consume scarce experimental or clinical effort.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The LLM organizes that search space by reading across the literature, proposing candidate interventions, and tracking what has already been tried. The simulator then acts as the constraint: every proposal must pass through a mechanistic model of seizure-like dynamics before it is treated as a viable lead.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">That framing changes how to read the results. The strong model-control result shows that the simulated disease dynamics can be moved into a more stable regime. The weaker clinical-style stimulation result shows that reaching that regime through a simple stimulation proxy is much harder. That gap is useful; it points to the actual translational work still needed.</p>
-      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The goal is preclinical triage, not clinical proof. A good simulation workflow should identify promising directions, expose brittle ones, and make failure cases visible early enough to guide patient selection, target choice, waveform design, and closed-loop control.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, ask it to propose the next candidate setting, and let The Virtual Brain evaluate that setting in simulation.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The simulator represents each virtual patient as a 76-region brain network. Each region has seizure-like dynamics governed by the Epileptor model, and regions interact through structural connectivity. When a candidate setting is applied, TVB runs the dynamics forward and produces activity traces across brain regions and time.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">We then convert those traces into a reward: lower temporal variance in the seizure variable means less seizure-like activity, so higher reward means better simulated control. The optimizer sees the reward history and proposes another setting. The loop is simple: propose, simulate, score, update.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">There are two versions of the control problem. The first lets the optimizer tune intrinsic model parameters such as epileptogenicity <em>x</em><sub>0</sub> and coupling <em>K</em>. This asks whether the disease dynamics can be moved into a more stable regime at all. The second is more constrained: choose a stimulation site and external-current boost, which is closer to a clinical intervention but much harder.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The key objective is robustness across patients. For each candidate, TVB evaluates a small virtual cohort, and the score is based on the weakest simulated response. This prevents the optimizer from selecting a setting that looks good on average while failing the most vulnerable virtual patient.</p>
     </div>
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.5rem;">
       <div style="display:flex;flex-direction:column;gap:1rem;">
         <div style="display:flex;align-items:center;gap:1rem;">
           <div style="width:40px;height:40px;border-radius:50%;background:#e8e0ff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#5b4fcf;flex-shrink:0;">1</div>
-          <div><div style="font-size:13px;font-weight:500;">Literature mining</div><div style="font-size:12px;color:var(--color-text-secondary);">136 papers → ranked research gaps</div></div>
+          <div><div style="font-size:13px;font-weight:500;">Proposal source</div><div style="font-size:12px;color:var(--color-text-secondary);">literature context → candidate settings</div></div>
         </div>
         <div style="width:1px;height:16px;background:var(--color-border-tertiary);margin-left:20px;"></div>
         <div style="display:flex;align-items:center;gap:1rem;">
           <div style="width:40px;height:40px;border-radius:50%;background:#e0f0e8;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#2d7a4f;flex-shrink:0;">2</div>
-          <div><div style="font-size:13px;font-weight:500;">TVB digital twin</div><div style="font-size:12px;color:var(--color-text-secondary);">76-region brain model → seizure simulation</div></div>
+          <div><div style="font-size:13px;font-weight:500;">Simulator</div><div style="font-size:12px;color:var(--color-text-secondary);">candidate setting → activity traces</div></div>
         </div>
         <div style="width:1px;height:16px;background:var(--color-border-tertiary);margin-left:20px;"></div>
         <div style="display:flex;align-items:center;gap:1rem;">
           <div style="width:40px;height:40px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#b45309;flex-shrink:0;">3</div>
-          <div><div style="font-size:13px;font-weight:500;">Simulation triage</div><div style="font-size:12px;color:var(--color-text-secondary);">separate robust leads from brittle ones</div></div>
+          <div><div style="font-size:13px;font-weight:500;">Objective</div><div style="font-size:12px;color:var(--color-text-secondary);">reward history → robust next proposal</div></div>
+        </div>
+        <div style="margin-top:4px;padding-top:1rem;border-top:1px solid var(--color-border-tertiary);">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Controllable variables</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.7;">
+            <strong>Model-control search:</strong> <em>x</em><sub>0</sub>, <em>K</em><br>
+            <strong>Stimulation search:</strong> target region, <em>I</em><sub>ext</sub> boost
+          </div>
+        </div>
+        <div style="padding-top:1rem;border-top:1px solid var(--color-border-tertiary);">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Score</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.7;">Minimize seizure-like variance, evaluated by the worst virtual-patient response.</div>
         </div>
       </div>
     </div>
