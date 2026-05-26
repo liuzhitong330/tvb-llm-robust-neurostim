@@ -2291,6 +2291,10 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <p class="para-antagonism-text" style="margin-top:10px;margin-bottom:0;">The simplified stimulation model is an important limitation. Real DBS and RNS involve pulse timing, frequency, waveform, electrode geometry, and adaptation over time. The current prototype intentionally abstracts those away.</p>
   </div>
 
+  <details class="technical-details" style="margin-bottom:24px;">
+    <summary>Additional result: why rHC may be fragile</summary>
+    <div class="technical-details-body">
+
   <!-- Structural Connectome Analysis subsection -->
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
     <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">Structural Connectome Analysis: Why rHC?</div>
@@ -2375,6 +2379,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Revised interpretation:</strong> stimulating rHC modulates a global background excitability via diffuse coupling — not targeted pathway suppression. This explains the high patient-to-patient variability: outcomes depend on how each individual's network topology translates global I<sub>ext</sub> perturbation into local seizure dynamics.</p>
     <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin:0;"><strong>Prediction:</strong> selecting rFEF (degree=26, strength=45.0) as the stimulation target would produce more consistent network-wide effects — but carries higher risk of global adverse events. The <em>hub-outlier trade-off</em> is a fundamental tension in neuromodulation target selection.</p>
   </div>
+    </div>
+  </details>
 
   <!-- PART 4: Per-patient scatter -->
   <div class="mech-card" style="margin-bottom:24px;">
