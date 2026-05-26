@@ -43,7 +43,8 @@ def test_github_pages_site_contains_new_narrative_and_required_assets() -> None:
     assert "The Pipeline" in html
     assert "Discussion: What This Proof of Concept Suggests" in html
     assert "Step 1: test the cleanest version of the problem" in html
-    assert "Step 5: bound the claim" in html
+    assert "Robustness and Patient Selection" in html
+    assert "Show intrinsic-control generalization checks" in html
     assert "hero-brain-canvas" in html
     assert "assets/human_brain.glb" in html
     assert (ROOT / "assets" / "human_brain.glb").exists()

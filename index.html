@@ -1614,7 +1614,7 @@
           <span class="metric-value">586</span>
           <div class="metric-label">Open Questions</div>
         </div>
-        <div class="metric-card" data-scroll="section-generalization" role="button" tabindex="0" aria-label="Scroll to Generalization section">
+        <div class="metric-card" data-scroll="section-generalization" role="button" tabindex="0" aria-label="Scroll to robustness section">
           <span class="metric-value" style="color:#22c55e">+39.8%</span>
           <div class="metric-label">Robust Simulation Gain</div>
         </div>
@@ -1637,7 +1637,7 @@
     <a href="#mechanistic-insights" data-nav="mechanistic-insights">Translational Gap</a>
     <a href="#precision-intervention" data-nav="precision-intervention">Cohort Findings</a>
     <a href="#llm-vs-bo"            data-nav="llm-vs-bo">LLM vs BO</a>
-    <a href="#section-generalization" data-nav="section-generalization">Generalization</a>
+    <a href="#section-generalization" data-nav="section-generalization">Robustness</a>
     <a href="paper/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Paper ↗</a>
     <a href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim" target="_blank" rel="noopener">Code ↗</a>
   </div>
@@ -2125,14 +2125,19 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      PARADOXICAL EFFECT
 ══════════════════════════════════════════════ -->
 <section id="precision-intervention">
-  <div class="section-title">Cohort Result: Patient Heterogeneity</div>
-  <div class="section-sub">The clinical-style search does more than choose a protocol: it reveals which virtual patients respond and where personalization may matter most.</div>
+  <div class="section-title" id="section-generalization">Robustness and Patient Selection</div>
+  <div class="section-sub">The stimulation result is modest, but it surfaces the key translational question: which virtual patients benefit, and does the stronger intrinsic result hold beyond the training cohort?</div>
 
   <div class="result-explainer">
-    <h3>Step 3: turn an average result into a stratification signal</h3>
-    <p>Across the full 20-patient virtual cohort, the average effect of right-hippocampal stimulation was small. But the average hides the more useful result: the protocol improved 11 virtual patients and worsened 9.</p>
-    <p>That split is exactly what a simulator-based preclinical workflow is good for. Instead of treating the protocol as simply good or bad, it exposes a responder pattern that can guide the next experiment: which virtual patients benefit, which do not, and what network features might explain the difference. The subgroup chart should be read as an early patient-selection signal, not as a validated clinical subgroup.</p>
+    <h3>Step 3: check whether the signal survives patient variability</h3>
+    <p>The clinical-style rHC protocol produced a small overall gain, but the more useful finding is that it separated the cohort: <strong>11 of 20 virtual patients improved</strong>. That turns a weak average effect into a patient-selection problem, which is exactly the kind of question a simulator can help expose before a protocol is treated as broadly applicable.</p>
+    <p>The stronger intrinsic-control result also passed a basic robustness check. The optimized setting improved worst-case reward on <strong>8 held-out virtual patients</strong> and remained better than baseline in a <strong>30-patient stress distribution</strong>. These checks do not make the result clinical evidence, but they make the proof of concept stronger: the loop found a regime that was not limited to the five virtual patients used during search.</p>
   </div>
+
+  <details class="technical-details" style="margin-bottom:24px;">
+    <summary>Show patient heterogeneity details</summary>
+    <div class="technical-details-body">
+      <p>The detailed cohort analysis asks whether rHC stimulation helps all virtual patients equally. It does not: the same protocol improves some simulated networks and worsens others, which makes patient stratification the natural next step.</p>
 
   <!-- PART 2: Forest plot -->
   <div class="mech-card" style="margin-bottom:8px;">
@@ -2296,6 +2301,51 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <canvas id="scatter-chart"></canvas>
     </div>
   </div>
+    </div>
+  </details>
+
+  <details class="technical-details" style="margin-bottom:24px;">
+    <summary>Show intrinsic-control generalization checks</summary>
+    <div class="technical-details-body">
+      <p>The primary 39.8% result comes from intrinsic model-control optimization. These archived checks ask whether that setting still beats baseline outside the five virtual patients used during optimization.</p>
+
+      <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+        <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
+          On <strong>8 held-out virtual patients</strong>, worst-case reward improved from
+          <strong>−0.4985</strong> to <strong>−0.3346</strong> — a <strong>32.9%</strong>
+          worst-case gain. Mean reward improved from −0.4602 to −0.2848.
+        </p>
+        <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:0;">
+          In a <strong>30-patient stress distribution</strong>, worst-case reward improved from
+          <strong>−0.5175</strong> to <strong>−0.4047</strong> (<strong>21.8%</strong>
+          gain), and mean reward improved from −0.4451 to −0.3055. The right reading is robustness within the sampled simulation regime, not a guarantee of clinical generalization.
+        </p>
+      </div>
+
+      <div class="viz-grid">
+        <div class="viz-card">
+          <div class="viz-card-title">Train vs test worst-case reward</div>
+          <div class="viz-chart-wrap" style="height:260px">
+            <canvas id="gen-traintest"></canvas>
+          </div>
+        </div>
+
+        <div class="viz-card">
+          <div class="viz-card-title">Worst-case reward across variability regimes</div>
+          <div class="viz-chart-wrap" style="height:260px">
+            <canvas id="gen-variability"></canvas>
+          </div>
+        </div>
+
+        <div class="viz-card viz-full">
+          <div class="viz-card-title">Stress test: reward distribution across 30 virtual patients</div>
+          <div class="viz-chart-wrap" style="height:240px">
+            <canvas id="gen-stress"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
 
 </section>
 
@@ -2541,77 +2591,6 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   </details>
 
 </section>
-
-<hr class="divider">
-
-<!-- ══════════════════════════════════════════════
-     GENERALIZATION & ROBUSTNESS
-══════════════════════════════════════════════ -->
-<section>
-  <div class="section-title" id="section-generalization">Generalization Check</div>
-  <div class="section-sub">The last result asks whether the strong intrinsic setting was only fit to the five virtual patients used during search.</div>
-
-  <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
-    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      Up to this point, the main claim has been about the optimization loop. A separate question is whether the optimized intrinsic setting generalizes beyond the small cohort used during the loop.
-    </p>
-    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      The archived checks are encouraging. The optimized intrinsic parameters were evaluated on
-      <strong>8 unseen virtual patients</strong> and a <strong>30-patient stress distribution</strong>.
-      The rewards remained better than baseline across these tests.
-    </p>
-    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      On <strong>8 held-out virtual patients</strong>, worst-case reward improved from
-      <strong>−0.4985</strong> to <strong>−0.3346</strong> — a <strong>32.9%</strong>
-      worst-case gain. Mean reward improved from −0.4602 to −0.2848. The direction is preserved
-      even though these patients were never seen during optimization.
-    </p>
-    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
-      The <strong>30-patient stress distribution</strong> shows the same pattern: worst-case reward
-      improved from <strong>−0.5175</strong> to <strong>−0.4047</strong> (<strong>21.8%</strong>
-      gain), and mean reward improved from −0.4451 to −0.3055.
-    </p>
-    <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:0;">
-      These results should be interpreted as a proof-of-concept for robustness-oriented
-      optimization, rather than a definitive demonstration of cross-patient consistency.
-      Performance is expected to degrade as patient variability increases beyond the sampled regime.
-    </p>
-  </div>
-
-  <div class="result-explainer">
-    <h3>Step 5: bound the claim</h3>
-    <p>The first chart compares the optimized setting on the training virtual patients and on held-out virtual patients. The second and third charts test whether the same setting remains better than baseline under broader sampled variability.</p>
-    <p>The result is positive but bounded: the optimized setting remains better than baseline in these archived checks, but this is still a small simulated cohort. The correct interpretation is robustness within the sampled regime, not a guarantee of clinical generalization.</p>
-  </div>
-
-  <div class="viz-grid">
-    <!-- Chart 1: Train vs Test -->
-    <div class="viz-card">
-      <div class="viz-card-title">Train vs test worst-case reward (generalization check)</div>
-      <div class="viz-chart-wrap" style="height:260px">
-        <canvas id="gen-traintest"></canvas>
-      </div>
-    </div>
-
-    <!-- Chart 2: Robustness across variability regimes -->
-    <div class="viz-card">
-      <div class="viz-card-title">Worst-case reward across variability regimes</div>
-      <div class="viz-chart-wrap" style="height:260px">
-        <canvas id="gen-variability"></canvas>
-      </div>
-    </div>
-
-    <!-- Chart 3: Stress test distribution (full width) -->
-    <div class="viz-card viz-full">
-      <div class="viz-card-title">Stress test: reward distribution across 30 virtual patients</div>
-      <div class="viz-chart-wrap" style="height:240px">
-        <canvas id="gen-stress"></canvas>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
 
 <!-- ══════════════════════════════════════════════
      DISCUSSION
