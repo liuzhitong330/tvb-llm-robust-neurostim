@@ -1916,6 +1916,20 @@
       <p>The literature stage gives the optimizer a scientific prior. The point is not to claim the LLM has discovered truth from abstracts; it is to narrow the search toward questions the field already thinks are important.</p>
       <div class="pipe-narrative">
         <p>The pipeline retrieved 136 papers, extracted 1,080 candidate ideas, and retained 586 unique open questions. The highest-value cluster pointed toward a very practical problem: stimulation settings that appear promising in one patient may not transfer to another.</p>
+        <div class="metrics" style="margin-top:16px;margin-bottom:16px;">
+          <div class="metric-card" data-modal="modal-papers" role="button" tabindex="0" aria-label="View papers mined from PubMed">
+            <span class="metric-value">136</span>
+            <div class="metric-label">Papers Mined</div>
+          </div>
+          <div class="metric-card" data-modal="modal-ideas" role="button" tabindex="0" aria-label="View sample extracted research ideas">
+            <span class="metric-value">1,080</span>
+            <div class="metric-label">Research Ideas Extracted</div>
+          </div>
+          <div class="metric-card" data-modal="modal-gaps" role="button" tabindex="0" aria-label="View ranked open questions">
+            <span class="metric-value">586</span>
+            <div class="metric-label">Open Questions</div>
+          </div>
+        </div>
         <details class="technical-details">
           <summary>Show the literature-mining protocol</summary>
           <div class="technical-details-body">
