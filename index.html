@@ -2178,9 +2178,9 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
   <div class="section-sub">Before the simulator search, the LLM read across the epilepsy and neuromodulation literature and surfaced candidate directions worth testing.</div>
 
   <div class="result-explainer">
-    <h3>Why this comes before the results</h3>
-    <p>The optimizer does not start from nowhere. The literature-mining stage turns papers into a ranked set of research directions: digital twins, computational biomarkers, stimulation targeting, patient-specific optimization, and closed-loop control.</p>
-    <p>The cards below are not claims that these ideas work clinically. They are the hypothesis source. TVB then acts as the evaluator, testing whether proposed directions produce better simulated outcomes across virtual patients.</p>
+    <h3>What the literature search is doing</h3>
+    <p>The LLM is not inventing a treatment from scratch. It is doing a first-pass synthesis job: read papers, identify recurring unsolved problems, and turn those problems into simulator-testable hypotheses.</p>
+    <p>For this project, the useful chain is: epilepsy stimulation is patient-specific; the literature points toward digital twins, biomarkers, and network-guided targeting; therefore, test whether a TVB virtual cohort can be used as the evaluator for candidate stimulation strategies. The cards below show that chain in plain language.</p>
   </div>
 
   <div class="ideas-grid" id="ideas-grid"></div>
@@ -3184,21 +3184,21 @@ const WAVEFORM_DATA = {"baseline": {"time": [0.5, 10.5, 20.5, 30.5, 40.5, 50.5, 
 const TOP_IDEAS = [
   {
     rank: 1, total: 25, novelty: 7, tvb: 10, clinical: 8,
-    theme: "Digital Twins & Multimodal AI for Precision Neurology",
-    summary: "Integrating neuroimaging, EEG, and multi-omic data with computational simulations to create patient-specific digital models for personalized diagnosis and treatment planning.",
-    opportunity: "Establish TVB as the simulation backbone of a digital twin platform that ingests imaging, EEG, and genetics to optimize individual stimulation parameters."
+    theme: "Use virtual patients before testing stimulation ideas",
+    summary: "The literature repeatedly points to patient-specific digital twins as a way to test interventions before trying them in people.",
+    opportunity: "Project translation: use TVB as the sandbox. Each proposed setting is evaluated on simulated seizure dynamics across a virtual cohort."
   },
   {
     rank: 2, total: 25, novelty: 7, tvb: 9, clinical: 9,
-    theme: "Computational Biomarkers for Neuromodulation Outcome Prediction",
-    summary: "Identifying quantitative computational and electrophysiological biomarkers that predict surgical outcomes, RNS responses, and DBS efficacy using network analysis.",
-    opportunity: "Prospectively validate a TVB-derived network excitability index against RNS/DBS outcomes in a multi-center registry."
+    theme: "Look for signals that predict who responds",
+    summary: "Many papers ask why the same neuromodulation protocol helps some patients and not others. That makes patient heterogeneity part of the problem, not noise to average away.",
+    opportunity: "Project translation: score candidates by the weakest virtual-patient response and later inspect the cohort split instead of reporting only the mean."
   },
   {
     rank: 3, total: 24, novelty: 7, tvb: 9, clinical: 8,
-    theme: "Optimal Stimulation Target Identification via Network Analysis",
-    summary: "Using connectivity metrics and circuit-based approaches to identify optimal stimulation locations beyond the seizure onset zone, focusing on node centrality.",
-    opportunity: "Retrospective analysis correlating TVB-predicted optimal targets with actual responder outcomes across multiple centers."
+    theme: "Choose stimulation targets using network structure",
+    summary: "The literature suggests that where stimulation is delivered matters because seizure activity spreads through a network, not an isolated point.",
+    opportunity: "Project translation: let the LLM propose stimulation sites, evaluate them in TVB, and then use the connectome to explain why rHC behaves differently across patients."
   }
 ];
 
@@ -4111,12 +4111,6 @@ TOP_IDEAS.forEach(idea => {
         <h3>${idea.theme}</h3>
         <p>${idea.summary}</p>
         <p class="idea-opp">→ ${idea.opportunity}</p>
-        <div class="score-pills">
-          <span class="pill pill-total">Total ${idea.total}/30</span>
-          <span class="pill pill-nov">Novelty ${idea.novelty}/10</span>
-          <span class="pill pill-tvb">TVB ${idea.tvb}/10</span>
-          <span class="pill pill-ci">Clinical ${idea.clinical}/10</span>
-        </div>
       </div>
     </div>
   `);
