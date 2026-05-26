@@ -1181,10 +1181,7 @@
     border-bottom: 1px solid var(--border);
   }
   .takeaway-strip {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 24px;
-    align-items: stretch;
+    display: block;
     margin-top: 34px;
   }
   .takeaway-copy {
@@ -1320,47 +1317,7 @@
     font-size: 1.4rem;
     margin-top: 14px;
   }
-  .minimax-diagram {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 8px;
-    padding: 22px 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 22px;
-  }
-  .mini-panel-title {
-    color: var(--accent);
-    font-weight: 700;
-    font-size: 0.84rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 12px;
-  }
-  .patient-bars {
-    display: flex;
-    align-items: end;
-    gap: 8px;
-    height: 112px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 10px;
-  }
-  .patient-bar {
-    flex: 1;
-    min-width: 16px;
-    background: linear-gradient(180deg, #34d399, #0d9488);
-    border-radius: 4px 4px 0 0;
-  }
-  .patient-bar.bad { background: linear-gradient(180deg, #fb923c, #dc2626); }
-  .mini-caption {
-    color: var(--muted);
-    font-size: 0.84rem;
-    line-height: 1.55;
-  }
   @media (max-width: 760px) {
-    .takeaway-strip,
-    .minimax-diagram { grid-template-columns: 1fr; }
     .method-map { grid-template-columns: 1fr; }
     .method-step { border-right: none; border-bottom: 1px solid var(--border); }
     .method-step:last-child { border-bottom: none; }
@@ -1861,30 +1818,6 @@
       <div class="takeaway-copy">
         <h3>Key result</h3>
         <p>LLM-guided discovery paired with a biological simulation environment produced a 39.8% robust simulation gain in the model-control experiment, highlighting the potential of LLM-guided search for complex biological design problems.</p>
-      </div>
-      <div class="minimax-diagram" aria-label="Average optimization versus minimax optimization diagram">
-        <div>
-          <div class="mini-panel-title">Average-only search</div>
-          <div class="patient-bars">
-            <div class="patient-bar" style="height:92%"></div>
-            <div class="patient-bar" style="height:82%"></div>
-            <div class="patient-bar" style="height:74%"></div>
-            <div class="patient-bar bad" style="height:24%"></div>
-            <div class="patient-bar" style="height:68%"></div>
-          </div>
-          <div class="mini-caption">Can make the cohort look improved while hiding a weak simulated response.</div>
-        </div>
-        <div>
-          <div class="mini-panel-title">Robust search</div>
-          <div class="patient-bars">
-            <div class="patient-bar" style="height:74%"></div>
-            <div class="patient-bar" style="height:68%"></div>
-            <div class="patient-bar" style="height:70%"></div>
-            <div class="patient-bar" style="height:64%"></div>
-            <div class="patient-bar" style="height:67%"></div>
-          </div>
-          <div class="mini-caption">Selects for settings that lift the weakest virtual-patient outcome.</div>
-        </div>
       </div>
     </div>
   </div>
