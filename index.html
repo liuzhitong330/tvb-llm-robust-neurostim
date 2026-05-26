@@ -1241,6 +1241,49 @@
     font-size: 0.88rem;
     line-height: 1.6;
   }
+  .phase-purpose {
+    border-left: 3px solid #c7d2fe;
+    background: #f8fafc;
+    border-radius: 0 8px 8px 0;
+    color: #334155;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin: 0 0 16px;
+    padding: 12px 14px;
+  }
+  .phase-purpose strong {
+    color: #3730a3;
+    font-weight: 800;
+  }
+  .tvb-explainer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .tvb-explainer-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 14px;
+  }
+  .tvb-explainer-label {
+    color: #0d9488;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .tvb-explainer-text {
+    color: #475569;
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  @media (max-width: 760px) {
+    .tvb-explainer-grid { grid-template-columns: 1fr; }
+  }
   .method-step-arrow {
     color: #0d9488;
     font-weight: 800;
@@ -1893,6 +1936,7 @@
         <div class="pipe-num">1</div>
         <h3>Literature Mining</h3>
       </div>
+      <div class="phase-purpose"><strong>Purpose:</strong> convert a large epilepsy and neuromodulation literature into a ranked set of testable simulation hypotheses.</div>
       <p>The literature stage gives the optimizer a scientific prior. The point is not to claim the LLM has discovered truth from abstracts; it is to narrow the search toward questions the field already thinks are important.</p>
       <div class="pipe-narrative">
         <p>The pipeline retrieved 136 papers, extracted 1,080 candidate ideas, and retained 586 unique open questions. The highest-value cluster pointed toward a very practical problem: stimulation settings that appear promising in one patient may not transfer to another.</p>
@@ -1927,7 +1971,8 @@
         <div class="pipe-num">2</div>
         <h3>TVB Digital Twin</h3>
       </div>
-      <p>The Virtual Brain Epileptor model instantiated for 5 virtual patients with sampled variability in epileptogenicity (x₀) and inter-regional coupling (K). Each parameter set produces a reward signal measuring seizure suppression.</p>
+      <div class="phase-purpose"><strong>Purpose:</strong> use a mechanistic whole-brain simulator as the experimental sandbox, so every proposed setting is tested against seizure-like dynamics rather than judged by the LLM.</div>
+      <p>The Virtual Brain is a simulation framework for whole-brain dynamics. In this project, each virtual brain is a 76-region network: every region runs an Epileptor seizure model, and regions influence one another through a structural connectome. A candidate intervention changes the model, the simulation runs forward in time, and the output shows whether seizure-like activity is suppressed or amplified.</p>
 
       <!-- Inline brain-network SVG -->
       <div class="brain-svg-wrap">
@@ -1978,6 +2023,25 @@
           The simulator grounds the workflow in explicit model dynamics. Each virtual patient is a network
           of 76 brain regions running an Epileptor seizure model. Change a candidate setting, run the
           simulation, and measure whether seizure-like oscillations calm down or get worse.
+        </p>
+        <div class="tvb-explainer-grid">
+          <div class="tvb-explainer-card">
+            <div class="tvb-explainer-label">Digital brain</div>
+            <div class="tvb-explainer-text">A virtual patient is represented as connected brain regions, not a single abstract score.</div>
+          </div>
+          <div class="tvb-explainer-card">
+            <div class="tvb-explainer-label">Seizure model</div>
+            <div class="tvb-explainer-text">The Epileptor equations generate seizure-like transitions, spread, and recovery across the network.</div>
+          </div>
+          <div class="tvb-explainer-card">
+            <div class="tvb-explainer-label">Reward</div>
+            <div class="tvb-explainer-text">Lower variance in simulated seizure activity is treated as better control, so the optimizer can compare settings.</div>
+          </div>
+        </div>
+        <p>
+          The TVB optimization loop is therefore not asking the LLM whether a treatment sounds plausible.
+          It asks the LLM for a candidate setting, runs that setting in TVB, converts the simulated
+          activity into a reward, and feeds the result back into the next proposal.
         </p>
       </div>
 
@@ -2065,6 +2129,7 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
         <div class="pipe-num" style="background:var(--green)">3</div>
         <h3>Minimax Optimization</h3>
       </div>
+      <div class="phase-purpose"><strong>Purpose:</strong> search for settings that remain strong across virtual patients, with the weakest simulated response defining the score.</div>
 
       <div class="pipe-narrative" style="margin-bottom:14px;">
         <p>
