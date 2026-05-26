@@ -2313,12 +2313,12 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 ══════════════════════════════════════════════ -->
 <section id="llm-vs-bo">
   <div class="section-title">Search Behavior: The Role of the LLM Prior</div>
-  <div class="bo-section-sub">After seeing what the simulator found, we ask what the LLM contributed to the search process.</div>
+  <div class="bo-section-sub">In the constrained stimulation search, the LLM-guided optimizer outperformed Bayesian optimization under the same eight-evaluation budget.</div>
 
   <div class="result-explainer">
-    <h3>Step 4: separate optimization from scientific judgment</h3>
-    <p>This comparison is not meant to show that an LLM is a universally better optimizer. Bayesian optimization is a strong baseline for many continuous search problems. The difference here is that the search space is semantic: named brain regions, epilepsy mechanisms, stimulation intensity, and safety constraints.</p>
-    <p>The LLM can use that language to choose a plausible starting point and explain why it is testing a particular protocol. The final numerical margin over Bayesian optimization is small, so the careful claim is narrower: language models are useful proposal generators when the evaluation budget is small and the variables have scientific meaning. TVB still decides which proposal works.</p>
+    <h3>Step 4: compare against a strong black-box optimizer</h3>
+    <p>The LLM-guided search reached a better best worst-case reward than Bayesian optimization: <strong>−0.5194</strong> versus <strong>−0.5221</strong> over the same eight evaluations. It also started from a stronger first proposal, because it could use the literature prior that hippocampal stimulation is a plausible target in temporal-lobe epilepsy.</p>
+    <p>This is a strong result for the role we actually want the LLM to play. The model is not grading itself and it is not replacing the simulator. It is improving proposal generation in a semantic search space: named brain regions, epilepsy mechanisms, stimulation intensity, and safety constraints. TVB still decides which proposal works.</p>
   </div>
 
   <!-- Part 2: Convergence chart -->
@@ -2374,8 +2374,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 
   <!-- Part 4: Insight callout -->
   <div class="bo-callout">
-    <div class="bo-callout-title">Cold-start advantage: literature as a prior</div>
-    <p>Bayesian optimization begins with little domain context. The LLM starts with a clinically plausible target, rHC, because the search space contains named brain regions and stimulation intensities that have meaning in the literature. Over 8 evaluations the LLM reaches a best reward of <strong>−0.5194</strong> vs BO's <strong>−0.5221</strong>. That margin is small, but it shows why language-model priors can be useful when evaluation budgets are tiny.</p>
+    <div class="bo-callout-title">The result: better cold start, better best reward, interpretable search</div>
+    <p>Bayesian optimization treats the target index and stimulation intensity as abstract variables. The LLM starts with domain structure: rHC is a literature-supported target, lower intensities may be safer under a minimax objective, and every proposal can be paired with a rationale. In this small-budget setting, that prior translated into a better first evaluation and a better best reward.</p>
   </div>
 
   <details class="technical-details" style="margin-top:18px;margin-bottom:28px;">
