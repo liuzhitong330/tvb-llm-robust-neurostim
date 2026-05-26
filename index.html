@@ -1823,38 +1823,6 @@
   </div>
 </section>
 
-<div class="story-band">
-  <section>
-    <div class="section-title">The Pipeline</div>
-    <div class="section-sub">The workflow has three stages: literature synthesis, virtual-patient simulation, and robustness-oriented search.</div>
-    <div class="method-map">
-      <div class="method-step">
-        <div>
-          <div class="method-step-number">Step 1</div>
-          <div class="method-step-title">Read the field first</div>
-          <div class="method-step-text">Start from the epilepsy literature instead of a blank search space. Analyze 136 PubMed papers, extract candidate interventions and open questions, and rank the ones that can be tested in TVB.</div>
-        </div>
-        <div class="method-step-arrow">→</div>
-      </div>
-      <div class="method-step">
-        <div>
-          <div class="method-step-number">Step 2</div>
-          <div class="method-step-title">Build virtual epileptic brains</div>
-          <div class="method-step-text">Run seizure dynamics over a 76-region brain network. Each candidate setting is tested against sampled virtual patients, not a single cherry-picked case.</div>
-        </div>
-        <div class="method-step-arrow">→</div>
-      </div>
-      <div class="method-step">
-        <div>
-          <div class="method-step-number">Step 3</div>
-          <div class="method-step-title">Search for robust settings</div>
-          <div class="method-step-text">Claude proposes the next setting. TVB returns the score. The optimizer favors settings that keep working across the virtual cohort.</div>
-        </div>
-        <div class="method-step-arrow">✓</div>
-      </div>
-    </div>
-  </section>
-</div>
 
 <hr class="divider">
 
@@ -1905,7 +1873,8 @@
     </div>
   </div>
 
-
+  <div class="section-title">The Pipeline</div>
+  <div class="section-sub">The workflow has three stages: literature synthesis, virtual-patient simulation, and robustness-oriented search.</div>
   <div class="pipeline">
     <div class="pipe-stage">
       <div class="pipe-header">
@@ -2168,7 +2137,6 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
 <!-- ══════════════════════════════════════════════
      INTERACTIVE DEMO
 ══════════════════════════════════════════════ -->
-<section>
 <section style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
   <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">A map of the simulated brain</h2>
   <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">Before getting into reward curves, it helps to see what is being simulated. Each sphere is one of 76 cortical or subcortical regions in The Virtual Brain connectome. Red means high seizure-like activity; blue means lower activity. Drag to rotate.</p>
@@ -2199,8 +2167,32 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     </div>
   </div>
 </section>
-  <div class="section-title">Parameter Sensitivity Explorer</div>
-  <div class="section-sub">A precomputed TVB grid showing how small parameter changes alter the distribution of patient rewards.</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     OPTIMIZATION TRAJECTORY
+══════════════════════════════════════════════ -->
+<section id="result-worked">
+  <div class="section-title">Primary Result: Robust Intrinsic Control</div>
+  <div class="section-sub">When the optimizer could tune the simulated disease state, it found a robust regime quickly.</div>
+
+  <div class="result-explainer">
+    <h3>What this result is saying</h3>
+    <p>The chart below tracks the optimization loop. Each point is one parameter setting proposed by the LLM and evaluated by TVB across five virtual patients. The red line is the worst-case reward; the blue line is the mean reward.</p>
+    <p>The important observation is that the worst-case reward rises sharply, not merely the average. By iteration 4, the optimizer finds a setting that improves the least favorable virtual patient by 39.8% relative to baseline.</p>
+  </div>
+
+  <div class="traj-card">
+    <canvas id="traj-chart" height="160"></canvas>
+  </div>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The baseline worst-case reward was −0.5285. By iteration 4, the LLM-guided loop found x₀ = −2.1 and K = 0.0165, reaching −0.3182. That is the 39.8% worst-case improvement highlighted at the top of the essay. The important point is that improvement was visible in the weakest virtual-patient response, not only in the mean.</p>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:10px;">This is the clean proof of concept. If a future therapy could push the brain toward this lower-epileptogenicity regime, the model predicts a large robustness gain. The rest of the page asks the harder question: how much of that gain survives when the intervention is constrained to something closer to stimulation?</p>
+</section>
+
+<section>
+  <div class="section-title">Optional Explorer: Parameter Sensitivity</div>
+  <div class="section-sub">A precomputed TVB grid showing how small parameter changes alter the distribution of patient rewards after the main model-control result.</div>
 
   <div class="result-explainer">
     <h3>Interpretation</h3>
@@ -2261,28 +2253,6 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
       <canvas id="patient-chart" height="220"></canvas>
     </div>
   </div>
-</section>
-
-<hr class="divider">
-
-<!-- ══════════════════════════════════════════════
-     OPTIMIZATION TRAJECTORY
-══════════════════════════════════════════════ -->
-<section id="result-worked">
-  <div class="section-title">Primary Result: Robust Intrinsic Control</div>
-  <div class="section-sub">When the optimizer could tune the simulated disease state, it found a robust regime quickly.</div>
-
-  <div class="result-explainer">
-    <h3>What this result is saying</h3>
-    <p>The chart below tracks the optimization loop. Each point is one parameter setting proposed by the LLM and evaluated by TVB across five virtual patients. The red line is the worst-case reward; the blue line is the mean reward.</p>
-    <p>The important observation is that the worst-case reward rises sharply, not merely the average. By iteration 4, the optimizer finds a setting that improves the least favorable virtual patient by 39.8% relative to baseline.</p>
-  </div>
-
-  <div class="traj-card">
-    <canvas id="traj-chart" height="160"></canvas>
-  </div>
-  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The baseline worst-case reward was −0.5285. By iteration 4, the LLM-guided loop found x₀ = −2.1 and K = 0.0165, reaching −0.3182. That is the 39.8% worst-case improvement highlighted at the top of the essay. The important point is that improvement was visible in the weakest virtual-patient response, not only in the mean.</p>
-  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:10px;">This is the clean proof of concept. If a future therapy could push the brain toward this lower-epileptogenicity regime, the model predicts a large robustness gain. The rest of the page asks the harder question: how much of that gain survives when the intervention is constrained to something closer to stimulation?</p>
 </section>
 
 <hr class="divider">
@@ -2660,6 +2630,11 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <p>Bayesian optimization begins with little domain context. The LLM starts with a clinically plausible target, rHC, because the search space contains named brain regions and stimulation intensities that have meaning in the literature. Over 8 evaluations the LLM reaches a best reward of <strong>−0.5194</strong> vs BO's <strong>−0.5221</strong>. That margin is small, but it shows why language-model priors can be useful when evaluation budgets are tiny.</p>
   </div>
 
+  <details class="technical-details" style="margin-top:18px;margin-bottom:28px;">
+    <summary>Show proposal-rationale examples</summary>
+    <div class="technical-details-body">
+      <p>These examples are supporting evidence for the search behavior claim. They show how the LLM turns domain language into candidate simulator evaluations, while the simulator still determines the score.</p>
+
   <!-- Reasoning trace comparison -->
   <div style="margin-bottom:28px;">
     <div style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:14px;">Reasoning Trace: Black Box vs Knowledge-Guided Search</div>
@@ -2736,8 +2711,15 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <p class="bo-quote-text" id="bo-reasoning-text"></p>
     <div class="bo-quote-reward">Proposed: <code>iext_boost = 1.2</code>, <code>site_index = 9</code> (rHC) &nbsp;·&nbsp; Reward achieved: <span>−0.5202</span></div>
   </div>
+    </div>
+  </details>
 
   <hr style="border:none;border-top:1px solid var(--border);margin:32px 0;">
+
+  <details class="technical-details" style="margin-bottom:28px;">
+    <summary>Show RAG-augmented search details</summary>
+    <div class="technical-details-body">
+      <p>The retrieval-augmented variant adds literature snippets to the proposal step. It is useful for tracing where a candidate came from, but the result here is intentionally modest: retrieval preserved the initial clinical prior and then explored some literature-motivated targets that were not better in this simulator.</p>
 
   <!-- ── RAG-Augmented Optimization subsection ── -->
   <div class="rag-header">
@@ -2814,6 +2796,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
     <div class="rag-callout-title">Honest Assessment: Strength and Limitation of RAG-Augmented Optimization</div>
     <p>The RAG optimizer achieved the same best reward (−0.5206) as the plain LLM optimizer, confirming that the literature prior correctly identifies rHC at moderate intensity as the best available protocol. However, subsequent iterations explored amygdala and auditory cortex targets — clinically motivated but suboptimal in this model. This illustrates both the <strong>strength</strong> (informed initialization) and the <strong>limitation</strong> (literature bias toward clinical targets that may not align with model dynamics) of RAG-augmented optimization.</p>
   </div>
+    </div>
+  </details>
 
 </section>
 
@@ -2889,8 +2873,8 @@ dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
      TOP IDEAS
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="section-title">What the Literature Miner Surfaced</div>
-  <div class="section-sub">These are not conclusions. They are the research gaps that guided the project toward robust patient transfer.</div>
+  <div class="section-title">Appendix: What the Literature Miner Surfaced</div>
+  <div class="section-sub">These literature-derived directions explain where the project came from. They support the origin story rather than competing with the main result.</div>
 
   <div class="ideas-grid" id="ideas-grid"></div>
 </section>
