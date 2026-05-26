@@ -274,6 +274,39 @@
     line-height: 1.1;
   }
   .metric-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .hero-resources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 860px;
+    margin-top: 18px;
+  }
+  .hero-resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--text);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  }
+  .hero-resource-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.10);
+  }
+  .hero-resource-primary {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #3730a3;
+  }
   @media (max-width: 780px) {
     .hero { min-height: auto; padding-top: 48px; }
     .hero-copy { padding-top: 200px; }
@@ -1656,20 +1689,20 @@
       <div class="hero-tag">Public research essay</div>
       <div class="hero-byline">By <strong>Cathy Liu</strong></div>
       <h1>Language-model-guided search for robust virtual neurostimulation</h1>
-      <p>We built a research pipeline that reads epilepsy literature, runs seizure simulations in The Virtual Brain, and searches for settings that improve the hardest virtual patient rather than only the average one.</p>
+      <p>We use an LLM to read epilepsy research, propose candidate stimulation strategies, and test them inside a biological brain simulation before asking which choices look robust across virtual patients.</p>
 
       <div class="hero-thesis">
         <div class="hero-thesis-item">
           <div class="hero-thesis-label">Approach</div>
-          <div class="hero-thesis-text">Use digital twins as a sandbox for high-risk stimulation choices.</div>
+          <div class="hero-thesis-text">Turn the literature into candidate interventions, then evaluate them in a mechanistic simulator.</div>
         </div>
         <div class="hero-thesis-item">
           <div class="hero-thesis-label">Objective</div>
-          <div class="hero-thesis-text">Optimize for the patient who responds worst, because averages hide failures.</div>
+          <div class="hero-thesis-text">Search for stimulation choices that improve simulated patient performance across a cohort.</div>
         </div>
         <div class="hero-thesis-item">
           <div class="hero-thesis-label">Primary Finding</div>
-          <div class="hero-thesis-text">The model-control experiment improved worst-case reward by 39.8%.</div>
+          <div class="hero-thesis-text">Direct model-control search produced a large robust gain; clinical-style stimulation exposed the translational gap.</div>
         </div>
       </div>
 
@@ -1688,8 +1721,13 @@
         </div>
         <div class="metric-card" data-scroll="section-generalization" role="button" tabindex="0" aria-label="Scroll to Generalization section">
           <span class="metric-value" style="color:#22c55e">+39.8%</span>
-          <div class="metric-label">Worst-Case Improvement</div>
+          <div class="metric-label">Robust Simulation Gain</div>
         </div>
+      </div>
+
+      <div class="hero-resources" aria-label="Project resources">
+        <a class="hero-resource-link hero-resource-primary" href="paper/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Read the paper PDF ↗</a>
+        <a class="hero-resource-link" href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim" target="_blank" rel="noopener">View the codebase ↗</a>
       </div>
     </div>
   </div>
@@ -1705,7 +1743,8 @@
     <a href="#precision-intervention" data-nav="precision-intervention">Cohort Findings</a>
     <a href="#llm-vs-bo"            data-nav="llm-vs-bo">LLM vs BO</a>
     <a href="#section-generalization" data-nav="section-generalization">Generalization</a>
-    <a href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim/raw/main/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Paper ↗</a>
+    <a href="paper/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Paper ↗</a>
+    <a href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim" target="_blank" rel="noopener">Code ↗</a>
   </div>
 </nav>
 
@@ -1736,11 +1775,13 @@
 <section>
   <div class="essay-lede">
     <div class="essay-eyebrow">Start here</div>
-    <h2>The hard part of brain stimulation is not finding a setting that works once. It is finding one that still works when the patient changes.</h2>
-    <p>Brain stimulation is already used for people whose seizures do not respond to medication. But tuning it is slow, expensive, and deeply personal. A clinician can move the target, change the intensity, change the timing, and change the waveform. The problem is that every patient brings a different seizure network.</p>
-    <p>That makes epilepsy a difficult optimization problem. A setting that looks good on the average patient can quietly fail the person at the edge of the distribution. We make that failure mode explicit. Instead of asking, <strong>what works best on average?</strong>, the pipeline asks, <strong>what is the best choice for the patient who responds worst?</strong></p>
+    <h2>Brain stimulation is becoming programmable. The hard question is how to choose the program.</h2>
+    <p>Epilepsy is a disorder in which brain networks can enter seizure states: abnormal, self-sustaining patterns of activity that can disrupt awareness, movement, memory, and safety. Many people respond to medication. For drug-resistant epilepsy, clinicians may also consider implanted devices that stimulate parts of the brain to reduce seizure activity.</p>
+    <p>The promise is powerful, but the design space is large. A clinician can change the target, intensity, timing, and waveform. Each choice interacts with a patient's own seizure network. Meanwhile, the research literature is deep and fast-moving: papers describe stimulation sites, seizure-onset zones, digital twins, biomarkers, closed-loop devices, and competing mechanisms. No human can exhaustively turn that literature into every plausible experiment.</p>
+    <p>This is where language models become useful, if they are kept in the right role. We use an LLM to read the literature and propose candidate experiments. We use The Virtual Brain, a whole-brain simulator, to decide whether those proposals reduce seizure-like dynamics in virtual patients. The simulator, not the language model, scores the result.</p>
+    <p>The reason we care about the weakest simulated response is clinical rather than aesthetic. If a stimulation policy improves the average but makes a subset of patients worse, the mean has hidden the most important safety signal. In a preclinical simulation workflow, surfacing that failure early is the point: it tells us where a proposed intervention may need patient selection, different targeting, or a more adaptive protocol.</p>
     <div class="article-note">
-      <p>This is the core idea behind the project: use an LLM to propose scientific experiments, use The Virtual Brain to score them, and make the optimization care about the worst case. The LLM is not trusted as a doctor. It is treated as a search engine with a memory for literature.</p>
+      <p>This is the core idea behind the project: use an LLM to propose scientific experiments, use The Virtual Brain to score them, and make the optimization care about robustness across virtual patients. The LLM is not trusted as a doctor. It is treated as a literature-aware proposal engine inside a simulator-controlled loop.</p>
     </div>
 
     <div class="takeaway-strip">
@@ -1758,7 +1799,7 @@
             <div class="patient-bar bad" style="height:24%"></div>
             <div class="patient-bar" style="height:68%"></div>
           </div>
-          <div class="mini-caption">Looks good in aggregate, but one patient is left behind.</div>
+          <div class="mini-caption">Looks good in aggregate, but masks a potentially adverse responder.</div>
         </div>
         <div>
           <div class="mini-panel-title">Minimax objective</div>
@@ -1769,7 +1810,7 @@
             <div class="patient-bar" style="height:64%"></div>
             <div class="patient-bar" style="height:67%"></div>
           </div>
-          <div class="mini-caption">Sacrifices some upside to raise the floor for the hardest case.</div>
+          <div class="mini-caption">Chooses the setting that improves the lowest simulated response.</div>
         </div>
       </div>
     </div>
@@ -1778,14 +1819,14 @@
 
 <div class="story-band">
   <section>
-    <div class="section-title">The Pipeline, Without the Jargon</div>
+    <div class="section-title">The Pipeline</div>
     <div class="section-sub">The project is easiest to understand as a three-part research machine.</div>
     <div class="method-map">
       <div class="method-step">
         <div>
           <div class="method-step-number">Step 1</div>
           <div class="method-step-title">Read the field first</div>
-          <div class="method-step-text">Start from the epilepsy literature instead of a blank search space. Mine 136 PubMed papers, extract candidate research gaps, and rank the ones that can actually be tested in TVB.</div>
+          <div class="method-step-text">Start from the epilepsy literature instead of a blank search space. Mine 136 PubMed papers, extract candidate interventions and open questions, and rank the ones that can actually be tested in TVB.</div>
         </div>
         <div class="method-step-arrow">→</div>
       </div>
@@ -1801,7 +1842,7 @@
         <div>
           <div class="method-step-number">Step 3</div>
           <div class="method-step-title">Search for robust settings</div>
-          <div class="method-step-text">Claude proposes the next setting. TVB returns the score. The objective rewards settings that raise the floor for the worst patient.</div>
+          <div class="method-step-text">Claude proposes the next setting. TVB returns the score. The optimizer favors settings that keep working across the virtual cohort.</div>
         </div>
         <div class="method-step-arrow">✓</div>
       </div>
@@ -1874,7 +1915,10 @@
           <a href="METHODOLOGY.md" style="color:var(--accent);font-weight:600;text-decoration:none;" target="_blank">→ Full methodology, queries, prompts, and scoring rubric: METHODOLOGY.md on GitHub</a>
         </p>
       </div>
-      <p style="margin-top:14px;font-size:0.82rem;color:var(--muted);">Implementation scripts are available in the GitHub repository.</p>
+      <div class="hero-resources" style="margin-top:16px;">
+        <a class="hero-resource-link hero-resource-primary" href="paper/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Academic paper PDF ↗</a>
+        <a class="hero-resource-link" href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim" target="_blank" rel="noopener">Codebase and artifacts ↗</a>
+      </div>
     </div>
 
     <div class="pipe-connector">

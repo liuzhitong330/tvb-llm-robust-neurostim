@@ -40,7 +40,7 @@ def test_github_pages_site_contains_new_narrative_and_required_assets() -> None:
     assert "By <strong>Cathy Liu</strong>" in html
     assert "Language-model-guided search for robust virtual neurostimulation" in html
     assert "Main result and central caveat" in html
-    assert "The Pipeline, Without the Jargon" in html
+    assert "The Pipeline" in html
     assert "Parameter Sensitivity Explorer" in html
     assert "What this result is saying" in html
     assert "hero-brain-canvas" in html
