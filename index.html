@@ -1859,12 +1859,12 @@
 
     <div class="takeaway-strip">
       <div class="takeaway-copy">
-        <h3>Summary</h3>
-        <p>We connect literature mining, virtual epilepsy patients, and minimax optimization into one loop: propose a setting, simulate it, penalize failures in any patient, and iterate.</p>
+        <h3>Key result</h3>
+        <p>LLM-guided discovery paired with a biological simulation environment produced a 39.8% robust simulation gain in the model-control experiment, highlighting the potential of LLM-guided search for complex biological design problems.</p>
       </div>
       <div class="minimax-diagram" aria-label="Average optimization versus minimax optimization diagram">
         <div>
-          <div class="mini-panel-title">Average objective</div>
+          <div class="mini-panel-title">Average-only search</div>
           <div class="patient-bars">
             <div class="patient-bar" style="height:92%"></div>
             <div class="patient-bar" style="height:82%"></div>
@@ -1872,10 +1872,10 @@
             <div class="patient-bar bad" style="height:24%"></div>
             <div class="patient-bar" style="height:68%"></div>
           </div>
-          <div class="mini-caption">Looks good in aggregate, but masks a potentially adverse responder.</div>
+          <div class="mini-caption">Can make the cohort look improved while hiding a weak simulated response.</div>
         </div>
         <div>
-          <div class="mini-panel-title">Minimax objective</div>
+          <div class="mini-panel-title">Robust search</div>
           <div class="patient-bars">
             <div class="patient-bar" style="height:74%"></div>
             <div class="patient-bar" style="height:68%"></div>
@@ -1883,7 +1883,7 @@
             <div class="patient-bar" style="height:64%"></div>
             <div class="patient-bar" style="height:67%"></div>
           </div>
-          <div class="mini-caption">Chooses the setting that improves the lowest simulated response.</div>
+          <div class="mini-caption">Selects for settings that lift the weakest virtual-patient outcome.</div>
         </div>
       </div>
     </div>
