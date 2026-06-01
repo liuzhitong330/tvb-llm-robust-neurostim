@@ -1,5 +1,8 @@
 # LLM-Guided Robust Optimization for Epilepsy Neurostimulation
 
+**[→ Read the research essay](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/)** · **[→ Paper PDF](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/paper/tvb_llm_robust_neurostimulation.pdf)**
+
+
 Public research essay and reproducible code for Cathy Liu's TVB + LLM neurostimulation project.
 
 The project asks whether a large language model can help search for brain-stimulation parameters that are robust across virtual epilepsy patients. The core result: in the intrinsic-parameter experiment, the best protocol improved worst-case reward by 39.8% over baseline while preserving the existing result artifacts used by the GitHub Pages site.
