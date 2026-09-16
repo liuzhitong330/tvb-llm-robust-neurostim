@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Archived virtual-brain network</title>
 <style>
 body { margin: 0; background: #f5f5f5; overflow: hidden; }
 #tooltip { position: absolute; display: none; background: rgba(0,0,0,0.8); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-family: sans-serif; pointer-events: none; }
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
+<canvas id="c" tabindex="0" aria-label="Virtual-brain network. Drag to rotate, use arrow keys to rotate, or use the pause button to stop rotation."></canvas><button id="pause" type="button" aria-pressed="false" style="position:absolute;top:12px;left:12px;z-index:3;border:1px solid #b7b0bb;background:#faf9f6;padding:8px 12px;color:#292629;cursor:pointer">Pause rotation</button>
 <div id="tooltip"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -75,11 +76,26 @@ function setMode(m) {
 }
 
 window.addEventListener('message', function(e) {
-  if (e.data && e.data.mode) setMode(e.data.mode);
+  if (e.origin === window.location.origin && e.source === window.parent && e.data && ['baseline', 'optimized'].includes(e.data.mode)) setMode(e.data.mode);
 });
 
-let drag = false, px = 0, py = 0, autoSpin = true;
-canvas.addEventListener('mousedown', e => { drag = true; autoSpin = false; px = e.clientX; py = e.clientY; });
+let drag = false, px = 0, py = 0, autoSpin = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pause = document.getElementById('pause');
+function updatePause() { pause.textContent = autoSpin ? 'Pause rotation' : 'Resume rotation'; pause.setAttribute('aria-pressed', String(!autoSpin)); }
+pause.addEventListener('click', () => { autoSpin = !autoSpin; updatePause(); });
+updatePause();
+canvas.addEventListener('keydown', e => {
+  const shifts = {ArrowLeft: [-.12, 0], ArrowRight: [.12, 0], ArrowUp: [0, -.12], ArrowDown: [0, .12]};
+  if (!shifts[e.key]) return;
+  e.preventDefault(); autoSpin = false; updatePause();
+  group.rotation.y += shifts[e.key][0]; group.rotation.x += shifts[e.key][1];
+});
+canvas.style.touchAction = 'none';
+canvas.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') return; drag=true;autoSpin=false;updatePause();px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || !drag) return;group.rotation.y+=(e.clientX-px)*.01;group.rotation.x+=(e.clientY-py)*.01;px=e.clientX;py=e.clientY; });
+canvas.addEventListener('pointerup', () => {drag=false;});
+canvas.addEventListener('pointercancel', () => {drag=false;});
+canvas.addEventListener('mousedown', e => { drag = true; autoSpin = false; updatePause(); px = e.clientX; py = e.clientY; });
 window.addEventListener('mouseup', () => { drag = false; });
 canvas.addEventListener('mousemove', e => {
   if (drag) {

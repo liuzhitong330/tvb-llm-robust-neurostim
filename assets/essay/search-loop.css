@@ -1,0 +1,106 @@
+/* Compact scientific diagram: neutral nodes, explicit evaluation and feedback. */
+.search-figure{
+  margin:32px 0 36px;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  container-type:inline-size;
+  container-name:search-figure;
+}
+.search-diagram{
+  --node-fill:#e8e6da;
+  --node-stroke:#828274;
+  --forward:#724849;
+  --feedback:#315f94;
+  padding:24px 22px 18px;
+  background:#fff;
+  border:1px solid #ddddd7;
+}
+.diagram-heading{margin-bottom:18px}
+.diagram-heading .figure-title{
+  margin:0 0 7px;
+  font-size:19px;
+  font-weight:500;
+  line-height:1.3;
+  letter-spacing:0;
+}
+.diagram-heading .figure-subtitle{font-size:13px;line-height:1.45;margin:0;color:#686863}
+.proposal-strip{background:#f6f6f3;border:1px solid #c8c8c0;min-width:0}
+.strip-heading{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px 16px;
+  color:#5e5e57;
+  font-size:12px;
+  line-height:1.4;
+  letter-spacing:0;
+}
+.proposal-strip .strip-heading{padding:11px 13px 0}
+.strip-heading a{font-size:12px;color:#696961;text-decoration:none;border-bottom:1px solid #b8b8ac}
+.diagram-code{
+  margin:0;
+  padding:12px 13px 14px;
+  font:13px/1.7 'SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  letter-spacing:0;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  color:#30312e;
+}
+.diagram-code code{font:inherit}
+.diagram-code mark{color:#23241e;background:var(--node-fill);padding:3px 2px;font-weight:500}
+.diagram-code .code-key{color:#30312e}
+.diagram-code .code-comment{color:#77786f;font-size:12px}
+.diagram-routing{margin:8px 0 4px}
+.diagram-routing svg{width:100%;height:auto;overflow:visible}
+.routing-mobile{display:none}
+.routing-node rect{fill:var(--node-fill);stroke:var(--node-stroke);stroke-width:1.35}
+.routing-node text{fill:#23251f;font-family:var(--sans);font-size:18px;font-weight:450;letter-spacing:0}
+.routing-node .node-subtext{font-size:14px;font-weight:400;fill:#53544c}
+.routing-node .mono-label{font-family:'SFMono-Regular',Consolas,monospace;font-size:13px}
+.routing-labels{font-family:var(--sans);font-size:13px;fill:#69605d;letter-spacing:0}
+.routing-labels .feedback-label{fill:var(--feedback)}
+.implementation-excerpts{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;min-width:0}
+.excerpt{
+  min-width:0;
+  background:#f6f6f3;
+  border:1px solid #c8c8c0;
+  display:flex;
+  flex-direction:column;
+}
+.excerpt .strip-heading{padding:11px 13px;border-bottom:1px solid #ddddd5}
+.excerpt .diagram-code{flex:1}
+.code-source{font-size:12px;line-height:1.5;color:#5e5e57;text-decoration:none;text-underline-offset:3px}
+.code-source:hover,.strip-heading a:hover{text-decoration:underline;color:#25251e}
+.excerpt>a.code-source{margin:0 13px 12px;align-self:flex-start;border-bottom:1px solid #b8b8ac}
+.code-sources{display:flex;gap:17px;margin:0 13px 12px;flex-wrap:wrap}
+.code-sources a{border-bottom:1px solid #b8b8ac}
+.diagram-footnote{font-size:12px!important;line-height:1.5!important;color:#707069;margin:13px 0 0!important;letter-spacing:0}
+@container search-figure (max-width:650px){
+  .search-diagram{padding:20px 16px 16px}
+  .implementation-excerpts{grid-template-columns:1fr}
+  .excerpt .diagram-code{font-size:14px}
+}
+@container search-figure (max-width:520px){
+  .routing-desktop{display:none}
+  .routing-mobile{display:block;max-width:360px;margin:0 auto}
+  .diagram-routing{margin:12px 0 16px}
+  .proposal-strip .diagram-code{font-size:13px}
+  .diagram-heading .figure-title{font-size:18px}
+  .diagram-heading .figure-subtitle{font-size:13px}
+}
+@media(max-width:600px){
+  .search-figure{margin:27px 0 30px}
+  .search-diagram{padding:18px 14px 14px}
+  .routing-desktop{display:none}
+  .routing-mobile{display:block;max-width:360px;margin:0 auto}
+  .implementation-excerpts{grid-template-columns:1fr}
+}
+@media print{
+  .search-figure{margin:20px 0;break-inside:avoid}
+  .search-diagram{padding:15px}
+  .routing-desktop{display:block}
+  .routing-mobile{display:none}
+  .implementation-excerpts{grid-template-columns:1.1fr 1fr}
+  .diagram-code{font-size:9pt}
+}

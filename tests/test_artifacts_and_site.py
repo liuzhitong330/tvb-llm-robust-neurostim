@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,45 +39,81 @@ def test_checked_in_result_artifacts_have_expected_shapes() -> None:
     assert "baseline" in load_json("waveform_data.json")
 
 
+class SiteParser(__import__("html.parser", fromlist=["HTMLParser"]).HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.ids = []
+        self.links = []
+        self.images = []
+        self.headings = 0
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if "id" in attrs:
+            self.ids.append(attrs["id"])
+        for name in ("src", "href", "srcset"):
+            if name in attrs:
+                self.links.append(attrs[name])
+        if tag == "img":
+            self.images.append(attrs)
+        if tag == "h1":
+            self.headings += 1
+
+
 def test_github_pages_site_contains_new_narrative_and_required_assets() -> None:
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    from urllib.parse import urlsplit, unquote
 
-    assert "By <strong>Cathy Liu</strong>" in html
-    assert "liuzhitong330@gmail.com" in html
-    assert "Language-model-guided search for robust virtual neurostimulation" in html
-    assert "Main result and central caveat" in html
-    assert "The Pipeline" in html
-    assert "Discussion: What This Proof of Concept Suggests" in html
-    assert "Step 1: test the cleanest version of the problem" in html
-    assert "Robustness and Patient Selection" in html
-    assert "Show intrinsic-control generalization checks" in html
-    assert "hero-brain-canvas" in html
-    assert "assets/human_brain.glb" in html
-    assert (ROOT / "assets" / "human_brain.glb").exists()
-    assert "evolve.py" not in html
-    assert "github.com/liuzhitong330/tvb-llm-robust-neurostim" in html
-
-    local_sources = re.findall(r'\s(?:src|href)="([^"#:]+)"', html)
-    missing = [
-        source
-        for source in local_sources
-        if source
-        and "${" not in source
-        and not source.startswith(("mailto", "javascript"))
-        and not (ROOT / source).exists()
-    ]
-    assert missing == []
+    for page in ["index.html", "notebook.html", "brain3d.html"]:
+        parser = SiteParser()
+        parser.feed((ROOT / page).read_text(encoding="utf-8"))
+        assert len(parser.ids) == len(set(parser.ids)), f"Duplicate IDs in {page}"
+        for target in parser.links:
+            parts = urlsplit(target)
+            if parts.scheme or parts.netloc or "${" in target:
+                continue
+            dest = ROOT / unquote(parts.path) if parts.path else ROOT / page
+            assert dest.exists(), f"Missing resource: {page} → {target}"
+            if parts.fragment and dest.suffix == ".html":
+                linked = SiteParser()
+                linked.feed(dest.read_text(encoding="utf-8"))
+                assert parts.fragment in linked.ids, f"Broken anchor: {page} → {target}"
+        if page == "index.html":
+            assert parser.headings == 1
+            assert all(image.get("alt") for image in parser.images)
+            assert all(image.get("width") and image.get("height") for image in parser.images)
+            assert "article" in parser.ids
+            assert "patient-readout" in parser.ids
 
 
 def test_site_chart_targets_are_present_once() -> None:
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    # All existing exploratory visualizations remain available in the notebook.
+    html = (ROOT / "notebook.html").read_text(encoding="utf-8")
     for chart_id in [
-        "waveform-chart",
-        "traj-chart",
-        "forest-chart",
-        "bo-convergence-chart",
-        "gen-traintest",
-        "gen-variability",
-        "gen-stress",
+        "waveform-chart", "traj-chart", "forest-chart", "bo-convergence-chart",
+        "gen-traintest", "gen-variability", "gen-stress", "brain-iframe",
     ]:
         assert html.count(f'id="{chart_id}"') == 1
+
+
+def test_editorial_patient_chart_preserves_pairs_and_subgroups() -> None:
+    source = load_json("cohort_results_20.json")
+    rows = json.loads((ROOT / "assets/essay/cohort-data.json").read_text())
+    assert len(rows) == source["n_patients"]
+    for i, row in enumerate(rows):
+        assert row["id"] == i + 1
+        assert row["baseline"] == source["baseline"]["rewards"][i]
+        assert row["stimulated"] == source["optimized"]["rewards"][i]
+        assert row["subtype"] == source["soz_types"][i]
+        assert row["delta"] == round(row["stimulated"] - row["baseline"], 4)
+    assert sum(row["delta"] > 0 for row in rows) == 11
+    assert sum(row["delta"] < 0 for row in rows) == 9
+
+
+def test_editorial_figures_are_valid_svg() -> None:
+    import xml.etree.ElementTree as ET
+
+    for path in (ROOT / "assets/essay").glob("*.svg"):
+        root = ET.parse(path).getroot()
+        assert root.tag == "{http://www.w3.org/2000/svg}svg"
+        assert root.find("{http://www.w3.org/2000/svg}title") is not None
+        assert root.find("{http://www.w3.org/2000/svg}desc") is not None

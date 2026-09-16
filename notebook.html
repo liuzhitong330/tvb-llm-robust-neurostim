@@ -1,0 +1,3499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive research notebook — Cathy Liu</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --dark:    #1e293b;
+    --darker:  #0f172a;
+    --accent:  #4f46e5;
+    --accent2: #4338ca;
+    --teal:    #0d9488;
+    --amber:   #d97706;
+    --red:     #dc2626;
+    --green:   #16a34a;
+    --text:    #1e293b;
+    --muted:   #64748b;
+    --card:    #ffffff;
+    --border:  #e2e8f0;
+    --radius:  12px;
+    --color-background-secondary: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #64748b;
+    --color-border-secondary: #cbd5e1;
+    --color-border-tertiary: #e2e8f0;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f8fafc;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: min(680px, 85vh);
+    background:
+      radial-gradient(circle at 70% 10%, rgba(99, 102, 241, 0.07), transparent 40%),
+      radial-gradient(circle at 20% 80%, rgba(13, 148, 136, 0.06), transparent 40%),
+      linear-gradient(160deg, #f8fafc 0%, #eef2ff 60%, #f0fdfa 100%);
+    padding: 64px 24px 40px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 42%;
+    background:
+      linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(to bottom, #000, transparent 88%);
+    z-index: -2;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 46% 0 0;
+    background: linear-gradient(to bottom, transparent, rgba(238, 242, 255, 0.5));
+    z-index: -1;
+  }
+  .hero-inner {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(79,70,229,0.08);
+    color: #4338ca;
+    border: 1px solid rgba(79,70,229,0.2);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    margin-bottom: 18px;
+  }
+  .hero-byline {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  .hero-byline strong { color: var(--text); font-weight: 700; }
+  .hero-byline a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .hero-byline a:hover { text-decoration: underline; }
+  .hero-copy {
+    max-width: 760px;
+    padding-top: clamp(140px, 18vw, 220px);
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.5vw, 3.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 20px;
+    color: var(--color-text-primary);
+  }
+  .hero p {
+    color: #475569;
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    max-width: 640px;
+    margin: 0 0 28px;
+    line-height: 1.75;
+  }
+  .hero-brain {
+    position: absolute;
+    top: 18px;
+    left: calc(50% + 390px);
+    width: min(1180px, 82vw);
+    height: clamp(430px, 54vw, 690px);
+    transform: translateX(-50%);
+    opacity: 0.55;
+    filter: drop-shadow(0 20px 50px rgba(79, 70, 229, 0.12));
+    z-index: -1;
+    pointer-events: none;
+  }
+  .hero-brain canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-brain-fallback {
+    display: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 46%, rgba(99,102,241,0.15), transparent 40%),
+      radial-gradient(circle at 51% 50%, rgba(79,70,229,0.10), transparent 55%);
+    border: 1px solid rgba(99,102,241,0.15);
+  }
+  .hero-brain.is-fallback canvas { display: none; }
+  .hero-brain.is-fallback .hero-brain-fallback { display: block; }
+  .brain-edge { stroke: rgba(99,102,241,0.35); stroke-width: 1.1; }
+  .brain-edge.hot { stroke: rgba(13,148,136,0.7); stroke-width: 1.7; }
+  .brain-node { fill: #818cf8; opacity: 0.75; }
+  .brain-node.hot { fill: #0d9488; opacity: 1; }
+  .brain-node.warn { fill: #f97316; opacity: 1; }
+  .hero-thesis {
+    color: var(--text);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0 0 34px;
+    max-width: 860px;
+  }
+  .hero-thesis-item {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-height: 80px;
+  }
+  .hero-thesis-label {
+    color: var(--teal);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .hero-thesis-text {
+    color: #475569;
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  /* ── Key Findings bar ── */
+  .key-findings-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 0;
+    padding: 16px 0;
+  }
+  .kf-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: transform .15s, box-shadow .15s;
+    cursor: pointer;
+  }
+  .kf-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+  .kf-indigo { background: #eef2ff; border: 1px solid #c7d2fe; }
+  .kf-amber  { background: #fffbeb; border: 1px solid #fcd34d; }
+  .kf-green  { background: #f0fdf4; border: 1px solid #86efac; }
+  .kf-stat {
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .kf-indigo .kf-stat { color: #4338ca; }
+  .kf-amber  .kf-stat { color: #b45309; }
+  .kf-green  .kf-stat { color: #15803d; }
+  .kf-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 4px;
+  }
+  .kf-indigo .kf-label { color: #4338ca; }
+  .kf-amber  .kf-label { color: #b45309; }
+  .kf-green  .kf-label { color: #15803d; }
+  .kf-body {
+    font-size: 12px;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .kf-indigo .kf-body { color: #312e81; }
+  .kf-amber  .kf-body { color: #78350f; }
+  .kf-green  .kf-body { color: #14532d; }
+  .kf-link {
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+  .kf-indigo .kf-link { color: #6366f1; }
+  .kf-amber  .kf-link { color: #d97706; }
+  .kf-green  .kf-link { color: #16a34a; }
+  @media (max-width: 720px) {
+    .key-findings-bar { grid-template-columns: 1fr; }
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: 960px;
+    margin: 0;
+  }
+  .metric-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    min-width: 150px;
+    flex: 1;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .metric-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(79,70,229,0.1); }
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    display: block;
+    line-height: 1.1;
+  }
+  .metric-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .hero-resources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 860px;
+    margin-top: 18px;
+  }
+  .hero-resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--text);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  }
+  .hero-resource-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.10);
+  }
+  .hero-resource-primary {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #3730a3;
+  }
+  @media (max-width: 780px) {
+    .hero { min-height: auto; padding-top: 48px; }
+    .hero-copy { padding-top: 200px; }
+    .hero-brain { top: -18px; left: 50%; width: 150vw; height: 280px; }
+    .hero-thesis { grid-template-columns: 1fr; }
+  }
+
+  /* ── MECHANISTIC INSIGHTS ── */
+  .mech-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .mech-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .mech-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .mech-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 700;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+    background: #f8fafc;
+  }
+  .mech-table thead th:first-child { width: 28%; }
+  .mech-table tbody tr:nth-child(even) { background: #f8fafc; }
+  .mech-table tbody tr:nth-child(odd)  { background: #ffffff; }
+  .mech-table tbody td {
+    padding: 10px 14px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .mech-table tbody tr:last-child td { border-bottom: none; }
+  .mech-row-label {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  .mech-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .mech-badge-indigo { background: #eef2ff; color: #4338ca; }
+  .mech-badge-teal   { background: #f0fdfa; color: #0d9488; }
+  .mech-insight-box {
+    border-left: 4px solid var(--accent);
+    background: #f5f3ff;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+  }
+  .mech-insight-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #3730a3;
+    margin-bottom: 10px;
+  }
+  .mech-insight-text {
+    font-size: 0.9rem;
+    color: #3730a3;
+    line-height: 1.75;
+    margin: 0;
+  }
+  .mech-insight-text strong { color: #312e81; }
+  .mech-result-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 680px) {
+    .mech-result-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .mech-result-item {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .mech-result-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mech-result-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .mech-result-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .mech-bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .mech-bullet-list li {
+    padding-left: 16px;
+    border-left: 3px solid #c7d2fe;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .mech-bullet-heading {
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .mech-top-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: stretch;
+  }
+  .mech-chart-card { width: 260px; flex-shrink: 0; }
+  @media (max-width: 720px) {
+    .mech-top-row { flex-direction: column; }
+    .mech-chart-card { width: 100%; }
+  }
+  .mech-version-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 600px) { .mech-version-row { grid-template-columns: 1fr; } }
+  .mech-version-card {
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    border: 1px solid transparent;
+  }
+  .mech-version-indigo {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+  }
+  .mech-version-teal {
+    background: #f0fdfa;
+    border-color: #99f6e4;
+  }
+  .mech-version-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+  }
+  .mech-version-indigo .mech-version-tag { color: #4338ca; }
+  .mech-version-teal   .mech-version-tag { color: #0d9488; }
+  .mech-version-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .mech-version-result {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .mech-version-indigo .mech-version-result { color: #3730a3; }
+  .mech-version-teal   .mech-version-result { color: #0f766e; }
+  .mech-version-vars {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-bottom: 10px;
+  }
+  .mech-version-text {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+  }
+  .mech-llm-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mech-llm-list li {
+    font-size: 0.88rem;
+    color: #3730a3;
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+  }
+  .mech-llm-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .mech-llm-list li strong { color: #312e81; }
+  .mech-footer-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+    text-align: center;
+    padding: 14px 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  /* ── PARADOXICAL EFFECT ── */
+  .para-chart-wrap {
+    position: relative;
+    max-width: 680px;
+    margin: 0 auto;
+    height: 220px;
+  }
+  .para-callout {
+    border-left: 4px solid var(--amber);
+    background: #fffbeb;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 22px 26px;
+  }
+  .para-callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 8px;
+  }
+  .para-callout-lead {
+    font-size: 0.88rem;
+    color: #78350f;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .para-soz-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .para-soz-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .para-soz-green  { background: #dcfce7; }
+  .para-soz-red    { background: #fee2e2; }
+  .para-soz-orange { background: #ffedd5; }
+  .para-soz-arrow  { font-weight: 700; flex-shrink: 0; }
+  .para-soz-green  .para-soz-arrow { color: #16a34a; }
+  .para-soz-red    .para-soz-arrow { color: #dc2626; }
+  .para-soz-orange .para-soz-arrow { color: #d97706; }
+  .para-soz-type   { font-weight: 600; color: var(--text); min-width: 160px; }
+  .para-soz-n      { font-weight: 400; color: var(--muted); font-size: 0.78rem; }
+  .para-soz-delta  { color: var(--text); }
+  .para-soz-verdict {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-left: auto;
+  }
+  .para-stats-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .para-stat-pill {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+  .para-stat-green { background: #dcfce7; color: #166534; }
+  .para-stat-red   { background: #fee2e2; color: #991b1b; }
+  .para-callout-conclusion {
+    font-size: 0.87rem;
+    color: #78350f;
+    line-height: 1.65;
+    margin: 0 0 12px;
+  }
+  .para-callout-analysis {
+    font-size: 0.85rem;
+    color: #78350f;
+    line-height: 1.7;
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid #fde68a;
+  }
+  .para-callout-analysis strong { color: #92400e; }
+  .para-callout-analysis em     { font-style: italic; }
+  .para-precision-box {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 22px 26px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .para-precision-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .para-precision-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin: 0 0 12px;
+  }
+  .para-precision-text:last-child { margin-bottom: 0; }
+  .para-precision-text strong { color: var(--text); }
+  .para-precision-text em     { font-style: italic; color: var(--text); }
+  .para-code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.82em;
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-style: normal;
+  }
+  .para-antagonism-box {
+    background: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+  }
+  .para-antagonism-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: #0c4a6e;
+    margin-bottom: 10px;
+  }
+  .para-antagonism-text {
+    font-size: 0.87rem;
+    color: #075985;
+    line-height: 1.7;
+    margin: 0;
+  }
+  .para-antagonism-text strong { color: #0c4a6e; }
+  .para-future-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+  }
+  .para-future-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .para-future-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .para-future-text strong { color: var(--text); }
+
+  /* ── LLM vs BO ── */
+  .bo-section-sub { color: var(--muted); font-size: 0.97rem; margin-bottom: 28px; }
+  .bo-chart-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 28px;
+  }
+  .bo-chart-title { font-weight: 600; font-size: 0.95rem; color: var(--text); margin-bottom: 14px; }
+  .bo-chart-wrap { height: 220px; position: relative; }
+  .bo-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 28px; }
+  .bo-table th { background: #f8fafc; font-weight: 600; color: var(--muted); text-transform: uppercase;
+    font-size: 0.78rem; letter-spacing: .05em; padding: 10px 14px; border-bottom: 2px solid var(--border); text-align: left; }
+  .bo-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .bo-table tr:last-child td { border-bottom: none; }
+  .bo-table .win { color: #16a34a; font-weight: 600; }
+  .bo-callout {
+    background: #eef2ff; border-left: 4px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px; margin-bottom: 28px;
+  }
+  .bo-callout-title { font-weight: 700; font-size: 0.95rem; color: #3730a3; margin-bottom: 6px; }
+  .bo-callout p { font-size: 0.9rem; color: #4338ca; margin: 0; line-height: 1.55; }
+  .bo-when-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 28px; }
+  .bo-when-card { border-radius: var(--radius); padding: 18px 20px; }
+  .bo-when-card.bo { background: #fff1f2; border: 1px solid #fca5a5; }
+  .bo-when-card.llm { background: #f0fdf4; border: 1px solid #86efac; }
+  .bo-when-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 10px; }
+  .bo-when-card.bo .bo-when-title { color: #be123c; }
+  .bo-when-card.llm .bo-when-title { color: #15803d; }
+  .bo-when-list { list-style: none; padding: 0; margin: 0; }
+  .bo-when-list li { font-size: 0.87rem; color: var(--text); padding: 3px 0; padding-left: 16px; position: relative; }
+  .bo-when-list li::before { content: "✓"; position: absolute; left: 0; font-size: 0.8rem; }
+  .bo-when-card.bo .bo-when-list li::before { color: #be123c; }
+  .bo-when-card.llm .bo-when-list li::before { color: #15803d; }
+  .bo-quote-block {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 24px; position: relative;
+  }
+  .bo-quote-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); margin-bottom: 10px; }
+  .bo-quote-iter { display: inline-block; background: var(--accent); color: #fff;
+    border-radius: 4px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; }
+  .bo-quote-text { font-size: 0.875rem; color: var(--text); line-height: 1.65; font-style: italic;
+    border-left: 3px solid var(--accent); padding-left: 14px; margin: 0; }
+  .bo-quote-reward { margin-top: 10px; font-size: 0.82rem; color: var(--muted); }
+  .bo-quote-reward span { color: #16a34a; font-weight: 600; font-style: normal; font-family: monospace; }
+  @media (max-width: 680px) { .bo-when-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { .trace-compare-grid { grid-template-columns: 1fr !important; } }
+
+  /* ── RAG subsection ── */
+  .rag-header { margin-bottom: 22px; }
+  .rag-title { font-weight: 700; font-size: 1.05rem; color: var(--text); margin-bottom: 4px; }
+  .rag-subtitle { font-size: 0.875rem; color: var(--muted); }
+  /* Architecture diagram */
+  .rag-arch { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap;
+    background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px 20px; margin-bottom: 24px; }
+  .rag-arch-box { background: #fff; border: 2px solid #c7d2fe; border-radius: 10px;
+    padding: 12px 16px; font-size: 0.82rem; text-align: center; color: #3730a3; font-weight: 600;
+    min-width: 140px; box-shadow: 0 1px 4px rgba(79,70,229,0.10); }
+  .rag-arch-box.center { background: #4f46e5; color: #fff; border-color: #4f46e5;
+    font-size: 0.9rem; padding: 14px 20px; min-width: 160px; }
+  .rag-arch-box.output { background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+  .rag-arch-inputs { display: flex; flex-direction: column; gap: 12px; }
+  .rag-arch-arrow { font-size: 1.2rem; color: #818cf8; padding: 0 8px; align-self: center; }
+  .rag-arch-label { font-size: 0.72rem; font-weight: 400; color: inherit; margin-top: 3px; opacity: 0.85; }
+  /* Journal table */
+  .rag-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-bottom: 22px; }
+  .rag-table th { background: #eef2ff; font-weight: 600; color: #3730a3; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: .04em; padding: 10px 12px;
+    border-bottom: 2px solid #c7d2fe; text-align: left; }
+  .rag-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+  .rag-table tr:last-child td { border-bottom: none; }
+  .rag-table tr:nth-child(even) td { background: #f8fafc; }
+  .rag-iter-pill { display: inline-block; background: #4f46e5; color: #fff;
+    border-radius: 20px; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; }
+  .rag-pmid { font-size: 0.76rem; color: #6366f1; font-family: monospace; }
+  .rag-paper-title { font-size: 0.82rem; color: var(--text); }
+  .rag-params { font-family: monospace; font-size: 0.8rem; color: #475569; }
+  .rag-reward { font-weight: 600; font-size: 0.82rem; }
+  .rag-reward.worse { color: #dc2626; }
+  .rag-reward.best  { color: #16a34a; }
+  /* Assessment callout */
+  .rag-callout { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px; margin-bottom: 0; }
+  .rag-callout-title { font-weight: 700; font-size: 0.93rem; color: #92400e; margin-bottom: 8px; }
+  .rag-callout p { font-size: 0.88rem; color: #78350f; margin: 0; line-height: 1.65; }
+  .bo-log-section { margin-bottom: 28px; }
+  .bo-log-title { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+  .bo-log-note { font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; font-style: italic; background:#f8fafc; border-left:3px solid var(--accent); padding:8px 14px; border-radius:0 6px 6px 0; }
+  /* Timeline layout */
+  .bo-timeline { position: relative; padding-left: 36px; }
+  .bo-timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #4f46e5, #a5b4fc); border-radius:2px; }
+  .bo-tl-entry { position:relative; margin-bottom:20px; }
+  .bo-tl-entry:last-child { margin-bottom:0; }
+  .bo-tl-dot { position:absolute; left:-31px; top:12px; width:14px; height:14px; border-radius:50%; border:2px solid #4f46e5; background:#fff; z-index:1; }
+  .bo-tl-entry:nth-child(1) .bo-tl-dot { background:#4f46e5; }
+  .bo-tl-entry:nth-child(2) .bo-tl-dot { background:#7c3aed; border-color:#7c3aed; }
+  .bo-tl-entry:nth-child(3) .bo-tl-dot { background:#0ea5e9; border-color:#0ea5e9; }
+  .bo-tl-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
+  .bo-tl-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .bo-tl-iter { border-radius:20px; font-size:0.75rem; font-weight:700; padding:3px 10px; color:#fff; }
+  .bo-tl-entry:nth-child(1) .bo-tl-iter { background:#4f46e5; }
+  .bo-tl-entry:nth-child(2) .bo-tl-iter { background:#7c3aed; }
+  .bo-tl-entry:nth-child(3) .bo-tl-iter { background:#0ea5e9; }
+  .bo-tl-params { font-size:0.78rem; color:#475569; font-family:monospace; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:2px 8px; }
+  .bo-tl-reward { font-size:0.8rem; font-weight:600; color:#16a34a; margin-left:auto; font-family:monospace; }
+  .bo-tl-text { font-size:0.87rem; color:var(--text); line-height:1.65; }
+  /* legacy flat entries (kept for fallback) */
+  .bo-log-entry { padding: 16px 20px; border-radius: var(--radius); margin-bottom: 10px; border: 1px solid var(--border); }
+  .bo-log-entry:nth-child(odd) { background: #f8fafc; }
+  .bo-log-entry:nth-child(even) { background: #eef2ff; border-color: #c7d2fe; }
+  .bo-log-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .bo-log-iter { background: var(--accent); color: #fff; border-radius: 20px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+  .bo-log-params { font-size: 0.8rem; color: #475569; font-family: monospace; background: #fff; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 8px; }
+  .bo-log-reward { font-size: 0.8rem; font-weight: 600; color: #16a34a; margin-left: auto; }
+  .bo-log-text { font-size: 0.875rem; color: var(--text); line-height: 1.65; }
+
+  /* ── MODALS ── */
+  .metric-card[data-modal], .metric-card[data-scroll] {
+    cursor: pointer;
+  }
+  .metric-card[data-modal]:hover .metric-value,
+  .metric-card[data-scroll]:hover .metric-value {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal-card {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 620px;
+    width: 100%;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .modal-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: #f1f5f9; }
+  .modal-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    flex-shrink: 0;
+    line-height: 1.5;
+  }
+  .modal-body {
+    overflow-y: auto;
+    padding: 16px 24px 20px;
+    flex: 1;
+  }
+  .modal-body a { color: var(--accent); text-decoration: none; }
+  .modal-body a:hover { text-decoration: underline; }
+
+  /* Modal 1 — papers list */
+  .modal-paper-list { list-style: none; padding: 0; margin: 0; }
+  .modal-paper-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.88rem;
+  }
+  .modal-paper-item:last-child { border-bottom: none; }
+  .modal-paper-year {
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-footer-link {
+    display: block;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .modal-footer-link:hover { text-decoration: underline; }
+
+  /* Modal 2 — ideas cards */
+  .modal-idea-card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .modal-idea-source {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Modal 3 — ranked ideas */
+  .modal-ranked-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: start;
+  }
+  .modal-ranked-item:last-child { border-bottom: none; }
+  .modal-rank-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: #f1f5f9;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .modal-ranked-content { min-width: 0; }
+  .modal-ranked-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+  .modal-ranked-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    flex: 1;
+    min-width: 0;
+  }
+  .modal-score-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-score-pills {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+  }
+  .modal-pill {
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 1px 7px;
+    font-weight: 600;
+  }
+  .modal-pill-novelty { background: #ede9fe; color: #6d28d9; }
+  .modal-pill-tvb     { background: #d1fae5; color: #065f46; }
+  .modal-pill-clinical{ background: #fef3c7; color: #92400e; }
+  .modal-ranked-summary {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── SECTIONS ── */
+  section { max-width: 1000px; margin: 0 auto; padding: 56px 24px; }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .section-sub { color: var(--muted); font-size: 0.875rem; margin-bottom: 32px; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+  .story-summary {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+  }
+  .story-summary-inner {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    display: grid;
+    grid-template-columns: 1.2fr repeat(3, 1fr);
+    overflow: hidden;
+  }
+  .story-summary-copy {
+    padding: 20px 22px;
+    background: #f8fafc;
+    border-right: 1px solid var(--border);
+  }
+  .story-summary-copy h2 {
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .story-summary-copy p {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.62;
+  }
+  .story-summary-stat {
+    padding: 20px 18px;
+    border-right: 1px solid var(--border);
+  }
+  .story-summary-stat:last-child { border-right: none; }
+  .story-summary-value {
+    display: block;
+    color: var(--text);
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .story-summary-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+  .story-summary-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .article-note {
+    border-left: 4px solid #4f46e5;
+    background: #eef2ff;
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    margin: 28px 0;
+  }
+  .article-note p {
+    color: #3730a3;
+    font-size: 0.96rem;
+    line-height: 1.72;
+    margin: 0;
+  }
+  .result-explainer {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 4px solid #0d9488;
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    margin: 0 0 22px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .result-explainer h3 {
+    color: var(--text);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .result-explainer p {
+    color: #475569;
+    font-size: 0.92rem;
+    line-height: 1.72;
+    margin-bottom: 10px;
+  }
+  .result-explainer p:last-child { margin-bottom: 0; }
+  .technical-details {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #f8fafc;
+    margin-top: 16px;
+    padding: 0;
+  }
+  .technical-details summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .technical-details-body {
+    border-top: 1px solid var(--border);
+    padding: 16px;
+  }
+  .technical-details-body p,
+  .technical-details-body li {
+    color: #475569;
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+  @media (max-width: 820px) {
+    .story-summary-inner { grid-template-columns: 1fr; }
+    .story-summary-copy,
+    .story-summary-stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .story-summary-stat:last-child { border-bottom: none; }
+  }
+
+  .essay-lede {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .essay-eyebrow {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0d9488;
+    margin-bottom: 12px;
+  }
+  .essay-lede h2 {
+    color: var(--text);
+    font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .essay-lede p {
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .essay-lede strong {
+    color: #0f172a;
+    font-weight: 700;
+  }
+  .story-band {
+    background: #ffffff;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .takeaway-strip {
+    display: block;
+    margin-top: 34px;
+  }
+  .takeaway-copy {
+    border-left: 4px solid #0d9488;
+    background: #f0fdfa;
+    padding: 22px 26px;
+    border-radius: 0 8px 8px 0;
+  }
+  .takeaway-copy h3 {
+    color: #134e4a;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+  }
+  .takeaway-copy p {
+    color: #115e59;
+    font-size: 0.95rem;
+    line-height: 1.72;
+    margin: 0;
+  }
+  .method-map {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .method-step {
+    min-height: 160px;
+    padding: 20px 20px 18px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .method-step:last-child { border-right: none; }
+  .method-step-number {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .method-step-title {
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .method-step-text {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .phase-purpose {
+    border-left: 3px solid #c7d2fe;
+    background: #f8fafc;
+    border-radius: 0 8px 8px 0;
+    color: #334155;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin: 0 0 16px;
+    padding: 12px 14px;
+  }
+  .phase-purpose strong {
+    color: #3730a3;
+    font-weight: 800;
+  }
+  .tvb-explainer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .tvb-explainer-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 14px;
+  }
+  .tvb-explainer-label {
+    color: #0d9488;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .tvb-explainer-text {
+    color: #475569;
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  .brain-mode-switch {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 999px;
+    background: #ffffff;
+  }
+  .brain-mode-option {
+    min-width: 92px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .brain-mode-option.is-active {
+    background: #eef2ff;
+    color: #3730a3;
+    box-shadow: 0 1px 3px rgba(79, 70, 229, 0.14);
+  }
+  .brain-mode-option:focus-visible {
+    outline: 2px solid #818cf8;
+    outline-offset: 2px;
+  }
+  .simulator-problem-layout {
+    align-items: start;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+    margin: 2rem 0 2.5rem;
+  }
+  .simulator-loop-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+  }
+  .simulator-loop-row {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .simulator-loop-text {
+    min-width: 0;
+  }
+  .brain-map-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .brain-map-legend {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    min-width: 0;
+  }
+  .brain-map-legend-gradient {
+    background: linear-gradient(to right,#2196f3,#ff5722);
+    border-radius: 5px;
+    height: 10px;
+    width: 120px;
+  }
+  .brain-map-frame {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    display: block;
+    height: 500px;
+    width: 100%;
+  }
+  .brain-map-info-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 1rem;
+  }
+  @media (max-width: 760px) {
+    .tvb-explainer-grid { grid-template-columns: 1fr; }
+    .simulator-problem-layout {
+      display: block;
+      margin: 1.5rem 0 2rem;
+    }
+    .simulator-loop-card {
+      margin-top: 1.5rem;
+      padding: 1rem;
+    }
+    .simulator-loop-row {
+      align-items: flex-start;
+    }
+    .simulator-loop-text div {
+      overflow-wrap: anywhere;
+    }
+    .brain-map-controls {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    .brain-map-legend {
+      margin-left: 0;
+      width: 100%;
+    }
+    .brain-map-legend-gradient {
+      flex: 1;
+      min-width: 80px;
+      max-width: 180px;
+    }
+    .brain-map-frame {
+      height: min(420px, 78vh);
+    }
+    .brain-map-info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .method-step-arrow {
+    color: #0d9488;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-top: 14px;
+  }
+  @media (max-width: 760px) {
+    .method-map { grid-template-columns: 1fr; }
+    .method-step { border-right: none; border-bottom: 1px solid var(--border); }
+    .method-step:last-child { border-bottom: none; }
+  }
+
+  /* ── PIPELINE (vertical) ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .pipe-stage {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  @media (max-width: 600px) { .pipe-stage { padding: 24px 20px; } }
+  .pipe-highlight { border-left-color: var(--green); }
+
+  /* vertical connector between stages */
+  .pipe-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 4px 0;
+  }
+  .pipe-connector-line {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, var(--border), #a5b4fc);
+  }
+  .pipe-connector-arrow {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 9px solid #a5b4fc;
+  }
+
+  /* stage header row: number badge + title inline */
+  .pipe-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .pipe-num {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .pipe-stage h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0;
+    line-height: 1.25;
+  }
+  .pipe-stage > p  { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+  .pipe-files { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .pipe-tag {
+    font-size: 0.7rem;
+    background: rgba(99,102,241,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: monospace;
+  }
+
+  /* ── PIPE NARRATIVE ── */
+  .pipe-narrative {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .pipe-narrative p {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.65;
+  }
+  .pipe-narrative strong { color: var(--text); font-weight: 600; }
+  .pipe-narrative em { color: var(--accent2); font-style: italic; }
+
+  /* brain network svg wrapper */
+  .brain-svg-wrap {
+    margin: 14px 0 10px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ── STAGE 2 SUBSECTIONS ── */
+  .stage2-sub {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .stage2-sub-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+  .stage2-sub p {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.65;
+    margin-bottom: 8px;
+  }
+  .stage2-sub p:last-child { margin-bottom: 0; }
+  .stage2-sub strong { color: var(--text); font-weight: 600; }
+  .stage2-eq {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-family: 'SFMono-Regular', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.75rem;
+    color: #334155;
+    line-height: 1.9;
+    white-space: pre;
+  }
+  .stage2-eq-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  /* waveform chart card inside pipe-stage */
+  .waveform-card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 14px 0 0;
+  }
+  .waveform-card-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .chart-title { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ── TRAJECTORY ── */
+  .traj-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  /* ── VISUALIZATIONS ── */
+  .viz-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .viz-grid .viz-full { grid-column: 1 / -1; }
+  @media (max-width: 720px) {
+    .viz-grid { grid-template-columns: 1fr; }
+    .viz-grid .viz-full { grid-column: 1; }
+  }
+  .viz-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .viz-card-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .viz-chart-wrap {
+    position: relative;
+  }
+
+  /* ── STICKY NAV ── */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .site-nav-inner {
+    width: min(1000px, 100%);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    white-space: nowrap;
+  }
+  .site-nav-inner::-webkit-scrollbar { display: none; }
+  .site-nav a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0 14px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .site-nav a:hover { color: var(--accent); }
+  .site-nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: #ffffff;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+<link rel="stylesheet" href="assets/essay/notebook.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+<header class="notebook-head"><a href="./">← Research essay</a><p class="notebook-kicker">SUPPLEMENTARY MATERIAL</p><h1>Interactive research notebook</h1><p>Explore the archived simulation figures, literature records, and proposal histories.</p><p class="notebook-note">These are exploratory outputs. Intrinsic model control and external-current stimulation are different experiments. Model-generated rationales below are historical hypotheses, not verified mechanisms or safety evidence. Read the <a href="index.html#language-model">essay’s artifact notes</a> before interpreting optimizer comparisons.</p></header>
+<nav class="site-nav" id="site-nav" aria-label="Page sections">
+  <div class="site-nav-inner">
+    <a href="#result-worked"        data-nav="result-worked">Main Result</a>
+    <a href="#mechanistic-insights" data-nav="mechanistic-insights">Translational Gap</a>
+    <a href="#precision-intervention" data-nav="precision-intervention">Cohort Findings</a>
+    <a href="#llm-vs-bo"            data-nav="llm-vs-bo">LLM vs BO</a>
+    <a href="#section-generalization" data-nav="section-generalization">Robustness</a>
+    <a href="paper/tvb_llm_robust_neurostimulation.pdf" target="_blank" rel="noopener">Paper ↗</a>
+    <a href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim" target="_blank" rel="noopener">Code ↗</a>
+  </div>
+</nav>
+
+<section style="padding-top:24px;">
+  <div class="section-title">The Problem We Ask the Simulator to Solve</div>
+  <div class="section-sub">Given a virtual cohort of seizure-prone brains, find a parameter setting that reduces simulated seizure activity without relying on average-case improvement alone.</div>
+
+  <div class="simulator-problem-layout">
+    <div>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">Brain stimulation has a large design space. The target, intensity, timing, and waveform can all matter, and patients differ because seizure networks vary. A setting that helps one virtual patient can fail another. At the same time, the literature is too broad to exhaust manually: many papers point to plausible targets, mechanisms, and biomarkers.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The computational problem is intentionally narrow: we are not asking the LLM to invent a treatment or decide whether a therapy works. We give it a constrained search space, use it to organize the literature and propose candidate simulator experiments, and let The Virtual Brain evaluate each candidate in simulation.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The simulator represents each virtual patient as a 76-region brain network. Each region has seizure-like dynamics governed by the Epileptor model, and regions interact through structural connectivity. When a candidate setting is applied, TVB runs the dynamics forward and produces activity traces across brain regions and time. The simulator, not the LLM, decides whether the candidate reduces seizure-like dynamics.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">We then convert those traces into a reward: lower temporal variance in the seizure variable means less seizure-like activity, so higher reward means better simulated control. The optimizer sees the reward history and proposes another setting. The loop is simple: propose, simulate, score, update.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);margin-bottom:1rem;">The search is run in two modes. In the first mode, the optimizer is allowed to change the simulator's internal disease knobs: epileptogenicity <em>x</em><sub>0</sub>, which controls how seizure-prone a region is, and coupling <em>K</em>, which controls how strongly regions drive one another. This is not a treatment protocol; it asks whether the simulated brain can be moved into a more stable dynamical regime at all. In the second mode, the optimizer is given a more clinical constraint: it must choose where to stimulate and how much external current to add. That is closer to what a device could do, but it is also much harder because it can only push on the system indirectly.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--color-text-secondary);">The key objective is robustness across patients. For each candidate, TVB evaluates a small virtual cohort, and the score is based on the weakest simulated response. This prioritizes the weakest response in the sampled cohort; it does not guarantee that every patient improves.</p>
+    </div>
+    <div class="simulator-loop-card">
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="simulator-loop-row">
+          <div style="width:40px;height:40px;border-radius:50%;background:#e8e0ff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#5b4fcf;flex-shrink:0;">1</div>
+          <div class="simulator-loop-text"><div style="font-size:13px;font-weight:500;">Proposal source</div><div style="font-size:12px;color:var(--color-text-secondary);">literature context → candidate settings</div></div>
+        </div>
+        <div style="width:1px;height:16px;background:var(--color-border-tertiary);margin-left:20px;"></div>
+        <div class="simulator-loop-row">
+          <div style="width:40px;height:40px;border-radius:50%;background:#e0f0e8;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#2d7a4f;flex-shrink:0;">2</div>
+          <div class="simulator-loop-text"><div style="font-size:13px;font-weight:500;">Simulator</div><div style="font-size:12px;color:var(--color-text-secondary);">candidate setting → activity traces</div></div>
+        </div>
+        <div style="width:1px;height:16px;background:var(--color-border-tertiary);margin-left:20px;"></div>
+        <div class="simulator-loop-row">
+          <div style="width:40px;height:40px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#b45309;flex-shrink:0;">3</div>
+          <div class="simulator-loop-text"><div style="font-size:13px;font-weight:500;">Objective</div><div style="font-size:12px;color:var(--color-text-secondary);">reward history → robust next proposal</div></div>
+        </div>
+        <div style="margin-top:4px;padding-top:1rem;border-top:1px solid var(--color-border-tertiary);">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Controllable variables</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.7;">
+            <strong>Model-control search:</strong> <em>x</em><sub>0</sub>, <em>K</em><br>
+            <strong>Stimulation search:</strong> target region, <em>I</em><sub>ext</sub> boost
+          </div>
+        </div>
+        <div style="padding-top:1rem;border-top:1px solid var(--color-border-tertiary);">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Score</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.7;">Minimize seizure-like variance, evaluated by the worst virtual-patient response.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">The Pipeline</div>
+  <div class="section-sub">The workflow has three stages: literature synthesis, virtual-patient simulation, and robustness-oriented search.</div>
+  <div class="pipeline">
+    <div class="pipe-stage">
+      <div class="pipe-header">
+        <div class="pipe-num">1</div>
+        <h3>Literature Mining</h3>
+      </div>
+      <div class="phase-purpose"><strong>Purpose:</strong> convert a large epilepsy and neuromodulation literature into a ranked set of testable simulation hypotheses.</div>
+      <p>The literature stage gives the optimizer a scientific prior. The point is not to claim the LLM has discovered truth from abstracts; it is to narrow the search toward questions the field already thinks are important.</p>
+      <div class="pipe-narrative">
+        <p>The pipeline retrieved 136 papers, extracted 1,080 candidate ideas, and retained 586 unique open questions. The highest-value cluster pointed toward a very practical problem: stimulation settings that appear promising in one patient may not transfer to another.</p>
+        <div class="metrics" style="margin-top:16px;margin-bottom:16px;">
+          <div class="metric-card" data-modal="modal-papers" role="button" tabindex="0" aria-label="View papers mined from PubMed">
+            <span class="metric-value">136</span>
+            <div class="metric-label">Papers Mined</div>
+          </div>
+          <div class="metric-card" data-modal="modal-ideas" role="button" tabindex="0" aria-label="View sample extracted research ideas">
+            <span class="metric-value">1,080</span>
+            <div class="metric-label">Research Ideas Extracted</div>
+          </div>
+          <div class="metric-card" data-modal="modal-gaps" role="button" tabindex="0" aria-label="View ranked open questions">
+            <span class="metric-value">586</span>
+            <div class="metric-label">Open Questions</div>
+          </div>
+        </div>
+        <details class="technical-details">
+          <summary>Show the literature-mining protocol</summary>
+          <div class="technical-details-body">
+            <ol style="margin:0 0 10px 18px;display:flex;flex-direction:column;gap:8px;">
+              <li><strong>Query generation:</strong> 10 targeted PubMed queries spanning virtual brain modeling, closed-loop stimulation, and patient-specific epilepsy treatment.</li>
+              <li><strong>Retrieval and deduplication:</strong> 136 papers after exact PMID matching across query results.</li>
+              <li><strong>Gap extraction:</strong> 136 papers x approximately 8 extraction passes, producing 1,080 LLM-based extraction tasks using Claude Haiku.</li>
+              <li><strong>Clustering and ranking:</strong> gaps were grouped into thematic clusters and scored by Claude Opus on novelty, TVB feasibility, and clinical impact.</li>
+            </ol>
+            <p>The top-ranked gap scored 25/30 under this rubric. This is an auxiliary consistency signal, not peer review.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="pipe-connector">
+      <div class="pipe-connector-line"></div>
+      <div class="pipe-connector-arrow"></div>
+    </div>
+
+    <div class="pipe-stage">
+      <div class="pipe-header">
+        <div class="pipe-num">2</div>
+        <h3>TVB Digital Twin</h3>
+      </div>
+      <div class="phase-purpose"><strong>Purpose:</strong> use a mechanistic whole-brain simulator as the experimental sandbox, so every proposed setting is tested against seizure-like dynamics rather than judged by the LLM.</div>
+      <p>The Virtual Brain is a simulation framework for whole-brain dynamics. In this project, each virtual brain is a 76-region network: every region runs an Epileptor seizure model, and regions influence one another through a structural connectome. A candidate intervention changes the model, the simulation runs forward in time, and the output shows whether seizure-like activity is suppressed or amplified.</p>
+
+      <!-- Inline brain-network SVG -->
+      <div class="brain-svg-wrap">
+        <svg width="200" height="130" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Whole-brain connectivity network">
+          <!-- Edges (drawn first so nodes sit on top) -->
+          <!-- hub A (100,65) to others -->
+          <line x1="100" y1="65" x2="40"  y2="28"  stroke="#c7d2fe" stroke-width="1.4"/>
+          <line x1="100" y1="65" x2="160" y2="28"  stroke="#c7d2fe" stroke-width="1.4"/>
+          <line x1="100" y1="65" x2="28"  y2="75"  stroke="#c7d2fe" stroke-width="1.8"/>
+          <line x1="100" y1="65" x2="172" y2="75"  stroke="#c7d2fe" stroke-width="1.8"/>
+          <line x1="100" y1="65" x2="55"  y2="112" stroke="#c7d2fe" stroke-width="1.2"/>
+          <line x1="100" y1="65" x2="145" y2="112" stroke="#c7d2fe" stroke-width="1.2"/>
+          <line x1="100" y1="65" x2="100" y2="14"  stroke="#a5b4fc" stroke-width="2.2"/>
+          <!-- peripheral edges -->
+          <line x1="40"  y1="28"  x2="100" y2="14"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="160" y1="28"  x2="100" y2="14"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="40"  y1="28"  x2="28"  y2="75"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="160" y1="28"  x2="172" y2="75"  stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="28"  y1="75"  x2="55"  y2="112" stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="172" y1="75"  x2="145" y2="112" stroke="#e0e7ff" stroke-width="1"/>
+          <line x1="55"  y1="112" x2="145" y2="112" stroke="#e0e7ff" stroke-width="1"/>
+          <!-- epileptic node edge (red) -->
+          <line x1="100" y1="65" x2="70"  y2="50"  stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 2"/>
+          <!-- Nodes -->
+          <!-- hub centre — indigo -->
+          <circle cx="100" cy="65" r="9" fill="#4f46e5" opacity="0.9"/>
+          <!-- top hub — indigo -->
+          <circle cx="100" cy="14" r="7" fill="#6366f1" opacity="0.85"/>
+          <!-- large peripheral -->
+          <circle cx="28"  cy="75"  r="6" fill="#818cf8" opacity="0.75"/>
+          <circle cx="172" cy="75"  r="6" fill="#818cf8" opacity="0.75"/>
+          <!-- small peripheral -->
+          <circle cx="40"  cy="28"  r="5" fill="#a5b4fc" opacity="0.8"/>
+          <circle cx="160" cy="28"  r="5" fill="#a5b4fc" opacity="0.8"/>
+          <circle cx="55"  cy="112" r="5" fill="#a5b4fc" opacity="0.8"/>
+          <circle cx="145" cy="112" r="5" fill="#a5b4fc" opacity="0.8"/>
+          <!-- epileptic node — amber/red -->
+          <circle cx="70"  cy="50"  r="6" fill="#f97316" opacity="0.9"/>
+          <circle cx="70"  cy="50"  r="9" fill="#f97316" opacity="0.18"/>
+          <!-- labels -->
+          <text x="100" y="68" text-anchor="middle" font-size="6" fill="#ffffff" font-weight="700">Hub</text>
+          <text x="70"  y="68" text-anchor="middle" font-size="5.5" fill="#9a3412">SOZ</text>
+        </svg>
+      </div>
+
+      <div class="pipe-narrative">
+        <p>
+          The simulator grounds the workflow in explicit model dynamics. Each virtual patient is a network
+          of 76 brain regions running an Epileptor seizure model. Change a candidate setting, run the
+          simulation, and measure whether seizure-like oscillations calm down or get worse.
+        </p>
+        <div class="tvb-explainer-grid">
+          <div class="tvb-explainer-card">
+            <div class="tvb-explainer-label">Digital brain</div>
+            <div class="tvb-explainer-text">A virtual patient is represented as connected brain regions, not a single abstract score.</div>
+          </div>
+          <div class="tvb-explainer-card">
+            <div class="tvb-explainer-label">Seizure model</div>
+            <div class="tvb-explainer-text">The Epileptor equations generate seizure-like transitions, spread, and recovery across the network.</div>
+          </div>
+          <div class="tvb-explainer-card">
+            <div class="tvb-explainer-label">Reward</div>
+            <div class="tvb-explainer-text">Lower variance in simulated seizure activity is treated as better control, so the optimizer can compare settings.</div>
+          </div>
+        </div>
+        <p>
+          The TVB optimization loop is therefore not asking the LLM whether a treatment sounds plausible.
+          It asks the LLM for a candidate setting, runs that setting in TVB, converts the simulated
+          activity into a reward, and feeds the result back into the next proposal.
+        </p>
+      </div>
+
+      <p style="font-size:0.82rem;color:#475569;line-height:1.65;margin-top:14px;">
+        The first experiment tunes intrinsic model parameters, especially epileptogenicity x₀ and
+        coupling K. That is not a literal clinical stimulation prescription. It is a way to ask a
+        cleaner scientific question first: what would a robust seizure-suppressing dynamical regime
+        look like if we could reach it?
+      </p>
+
+      <!-- Seizure waveform chart -->
+      <div class="waveform-card">
+        <div class="waveform-card-title">Seizure activity (x₁) — baseline vs optimized, region 1</div>
+        <canvas id="waveform-chart" height="160"></canvas>
+      </div>
+
+      <details class="technical-details">
+        <summary>Show the TVB and Epileptor details</summary>
+        <div class="technical-details-body">
+          <!-- Subsection 1: Epileptor Model -->
+          <div class="stage2-sub">
+            <div class="stage2-sub-title">The Epileptor Model</div>
+            <p>
+              The Epileptor is a phenomenological neural mass model developed by Jirsa et al. (2014)
+              specifically to capture the essential dynamics of epileptic seizures. It consists of
+              <strong>six coupled ODEs operating across two timescales</strong>:
+            </p>
+            <details>
+              <summary style="cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0;">Show mathematical details (Epileptor ODE system)</summary>
+              <div class="stage2-eq-label">Fast subsystem — ictal oscillations</div>
+              <div class="stage2-eq">dx₁/dt = y₁ − f₁(x₁, x₂) − z + I₁
+dy₁/dt = 1 − 5x₁² − y₁</div>
+              <div class="stage2-eq-label">Slow permittivity variable</div>
+              <div class="stage2-eq">dz/dt = (1/τ₀)(4(x₁ − x₀) − z)</div>
+              <div class="stage2-eq-label">Fast subsystem 2 — interictal spikes</div>
+              <div class="stage2-eq">dx₂/dt = −y₂ + x₂ − x₂³ + I₂ + 2u − 0.3(z − 3.5)
+dy₂/dt = (1/τ₂)(−y₂ + f₂(x₂))</div>
+              <div class="stage2-eq-label">Coupling variable</div>
+              <div class="stage2-eq">du/dt = −γ(u − 0.1x₁)</div>
+            </details>
+            <p>
+              The parameter <strong>x₀</strong> (epileptogenicity) shifts the slow nullcline and
+              determines whether a brain region sits in a stable fixed point or undergoes seizure-like
+              oscillations. In this prototype, it acts as the compact control knob for disease state.
+            </p>
+          </div>
+
+          <!-- Subsection 2: 76-region connectome -->
+          <div class="stage2-sub">
+            <div class="stage2-sub-title">The 76-Region Connectome</div>
+            <p>
+              TVB uses a parcellated whole-brain structural connectome. Each region runs its own
+              Epileptor instance. Inter-regional coupling follows a linear scheme:
+            </p>
+            <div class="stage2-eq">region i receives:  K × C_ij × x₁_j</div>
+            <p>
+              where C<sub>ij</sub> is the normalized fiber tract density between regions i and j.
+              Seizure activity can therefore propagate across anatomical white matter pathways.
+            </p>
+          </div>
+
+          <!-- Subsection 3: From simulation to reward -->
+          <div class="stage2-sub">
+            <div class="stage2-sub-title">From Simulation to Reward</div>
+            <p>
+              Each simulation produces a matrix of x₁ values across time and regions. The reward signal is:
+            </p>
+            <div class="stage2-eq">reward = −mean( var(x₁, axis=time) )</div>
+            <p>
+              High temporal variance corresponds to seizure-like activity. Negating it means higher
+              reward corresponds to lower simulated seizure burden.
+            </p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="pipe-connector">
+      <div class="pipe-connector-line"></div>
+      <div class="pipe-connector-arrow" style="border-top-color:#6ee7b7"></div>
+    </div>
+
+    <div class="pipe-stage pipe-highlight">
+      <div class="pipe-header">
+        <div class="pipe-num" style="background:var(--green)">3</div>
+        <h3>Minimax Optimization</h3>
+      </div>
+      <div class="phase-purpose"><strong>Purpose:</strong> search for settings that remain strong across virtual patients, with the weakest simulated response defining the score.</div>
+
+      <div class="pipe-narrative" style="margin-bottom:14px;">
+        <p>
+          The optimization stage deliberately avoids optimizing only the average response. A standard
+          objective can reward a setting that helps most virtual patients while worsening the most
+          vulnerable one. This objective instead optimizes the minimum reward across the cohort, so
+          every proposal is evaluated by its weakest simulated response.
+        </p>
+        <p style="margin-top:10px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;font-size:0.81rem;color:#0c4a6e;line-height:1.65;">
+          We frame the problem as a minimax optimization under sampled patient variability —
+          optimizing for worst-case performance rather than claiming cross-patient consistency.
+          This is evaluated on a small cohort of 5 virtual patients with limited perturbations
+          (K ±0.003); robustness claims are restricted to this sampled variability regime.
+        </p>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">
+          v1 · LLM-Guided Optimization Loop
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
+          Claude proposes one (x₀, K) setting per iteration. TVB evaluates that setting across all five virtual patients. The next proposal uses the full history to raise the worst-case score.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">x₀ = −2.1</span>
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">K = 0.0165</span>
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">worst-case −0.3182</span>
+          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:4px;padding:2px 8px;">+40% vs baseline</span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#d97706;margin-bottom:6px;">
+          v2 · Clinical stimulation search
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;">
+          A more clinically realistic variant tunes external stimulation current (<em>I</em><sub>ext</sub>) and stimulation site. This version is much harder because it cannot directly move the disease-state parameter. The best archived protocol is right hippocampus stimulation at a low boost of 0.6.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.75rem;">
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">site = rHC</span>
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">Iext boost = 0.6</span>
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">worst-case +1.7%</span>
+          <span style="background:#fffbeb;border:1px solid #fde68a;color:#b45309;border-radius:4px;padding:2px 8px;">clinical constraint</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     INTERACTIVE DEMO
+══════════════════════════════════════════════ -->
+<section id="brain-map" style="padding: 3rem 0 2rem; border-top: 0.5px solid var(--color-border-tertiary);">
+  <h2 style="font-size:18px;font-weight:500;margin-bottom:0.5rem;">A map of the simulated brain</h2>
+  <p style="font-size:15px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:1rem;">Before getting into reward curves, it helps to see what is being simulated. Each sphere is one of 76 cortical or subcortical regions in The Virtual Brain connectome. Red means high seizure-like activity; blue means lower activity. Drag to rotate.</p>
+  <div class="brain-map-controls">
+    <div class="brain-mode-switch" role="radiogroup" aria-label="Brain simulation state">
+      <button class="brain-mode-option is-active" type="button" role="radio" aria-checked="true" data-brain-mode="baseline" onclick="setBrainMode('baseline')">Baseline</button>
+      <button class="brain-mode-option" type="button" role="radio" aria-checked="false" data-brain-mode="optimized" onclick="setBrainMode('optimized')">Optimized</button>
+    </div>
+    <div class="brain-map-legend">
+      <span style="font-size:12px;color:var(--color-text-secondary);">Low</span>
+      <div class="brain-map-legend-gradient"></div>
+      <span style="font-size:12px;color:var(--color-text-secondary);">High seizure activity</span>
+    </div>
+  </div>
+  <iframe id="brain-iframe" title="Archived 76-region brain network" loading="lazy" src="brain3d.html" class="brain-map-frame"></iframe>
+  <div class="brain-map-info-grid">
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;">
+      <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Each sphere = one brain region</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">76 regions from the default connectivity distributed with TVB. Color encodes seizure intensity — measured as the temporal variance of x₁ (the primary seizure variable) from TVB simulation. Red = high seizure activity, blue = suppressed.</div>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;">
+      <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Each line = a white matter connection</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">Lines represent structural fiber tract connections between regions, derived from diffusion tensor imaging (DTI). Seizures propagate along these pathways — which is why network structure matters for treatment.</div>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;">
+      <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Baseline vs optimized</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">This archived example compares intrinsic model settings (baseline x₀ = −1.6; selected x₀ = −2.1). It is not an external-stimulation result or a cohort-wide treatment effect.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     OPTIMIZATION TRAJECTORY
+══════════════════════════════════════════════ -->
+<section id="result-worked">
+  <div class="section-title">Primary Result: Robust Intrinsic Control</div>
+  <div class="section-sub">The first experiment asks whether the simulated seizure dynamics can be moved into a lower-variance regime at all.</div>
+
+
+
+  <div class="traj-card">
+    <canvas id="traj-chart" height="160"></canvas>
+  </div>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:16px;">The baseline worst-case reward was −0.5285. By iteration 4, the LLM-guided loop found x₀ = −2.1 and K = 0.0165, reaching −0.3182. That is a 39.8% worst-case improvement relative to baseline.</p>
+  <p style="font-size:0.875rem;color:var(--muted);line-height:1.65;margin-top:10px;">This is the strongest proof-of-concept result in the project. It shows that the LLM-plus-simulator loop can discover a robust region of the model’s parameter space. It does not yet show that an implantable stimulation protocol can reach that region. The next section makes that translation problem explicit.</p>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     MECHANISTIC INSIGHTS
+══════════════════════════════════════════════ -->
+<section id="mechanistic-insights">
+  <div class="section-title">Clinical-Style Stimulation Search</div>
+  <div class="section-sub">We then move to the harder setup: choosing a stimulation site and intensity, closer to what a device can actually vary.</div>
+
+
+
+  <div class="mech-version-card mech-version-teal" style="margin-bottom:28px;">
+    <div class="mech-version-tag">LLM-guided stimulation protocol</div>
+    <div class="mech-version-title">Right hippocampus, low-intensity external current</div>
+    <div class="mech-version-result">+1.7% worst-case improvement</div>
+    <div class="mech-version-vars">rHC (right hippocampus) &nbsp;·&nbsp; I<sub>ext</sub> boost = 0.6</div>
+    <p class="mech-version-text">This result is modest but meaningful in context: the search is restricted to a simple stimulation proxy, evaluated under a robustness objective, and completed in a small eight-protocol budget.</p>
+  </div>
+
+  <!-- Deep dive -->
+  <div class="mech-card" style="margin-bottom:28px;">
+    <div class="mech-card-title">Why the constrained search is difficult</div>
+    <ul class="mech-bullet-list">
+      <li>
+        <span class="mech-bullet-heading">External stimulation is indirect</span>
+        The simplified I<sub>ext</sub> input perturbs activity at one region. It does not directly rewrite the model's epileptogenicity or connectivity parameters, so the optimizer has less leverage over the underlying seizure dynamics.
+      </li>
+      <li>
+        <span class="mech-bullet-heading">Timing and waveform are simplified</span>
+        Real DBS and RNS depend on pulse timing, frequency, waveform, electrode geometry, and adaptation over time. This prototype abstracts those details into a single external-current boost, so it cannot capture many mechanisms that make real stimulation effective.
+      </li>
+      <li>
+        <span class="mech-bullet-heading">Robustness is a stricter target</span>
+        The optimizer is not rewarded for helping only the easiest virtual patients. It is pushed toward settings that protect the weakest simulated response, which can favor lower-intensity protocols that avoid destabilizing vulnerable cases.
+      </li>
+    </ul>
+  </div>
+
+  <!-- What LLM contributed box -->
+  <div class="mech-insight-box" style="margin-bottom:28px;">
+    <div class="mech-insight-title">What the LLM contributed in the stimulation search</div>
+    <ul class="mech-llm-list">
+      <li>The best candidate in the archived eight-evaluation trace used <strong>rHC</strong>. This does not identify a globally optimal target.</li>
+      <li>The <strong>boost = 0.6</strong> candidate scored best in this trace. The run does not establish an intensity-response mechanism or device safety.</li>
+      <li>Provided a <strong>ranked exploration of 8 stimulation protocols</strong> in the constrained search space, converging without exhaustive grid search.</li>
+    </ul>
+  </div>
+
+  <!-- Footer note -->
+  <p class="mech-footer-note">The point of this experiment is not that rHC stimulation is solved. It is that an LLM-guided loop can use literature priors to propose a biologically plausible stimulation protocol, test it in a simulator, and expose where the simplified intervention helps or remains limited.</p>
+
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     PARADOXICAL EFFECT
+══════════════════════════════════════════════ -->
+<section id="precision-intervention">
+  <div class="section-title" id="section-generalization">Robustness and Patient Selection</div>
+  <div class="section-sub">The stimulation result is modest, but it surfaces the key translational question: which virtual patients benefit, and does the stronger intrinsic result hold beyond the training cohort?</div>
+
+
+
+  <details class="technical-details" style="margin-bottom:24px;">
+    <summary>Show patient heterogeneity details</summary>
+    <div class="technical-details-body">
+      <p>The detailed cohort analysis asks whether rHC stimulation helps all virtual patients equally. It does not: the same protocol improves some simulated networks and worsens others, which makes patient stratification the natural next step.</p>
+
+  <!-- PART 2: Forest plot -->
+  <div class="mech-card" style="margin-bottom:8px;">
+    <div class="mech-card-title">Per-SOZ-type treatment effect (rHC stimulation, n=20)</div>
+    <div class="para-chart-wrap">
+      <canvas id="forest-chart"></canvas>
+    </div>
+  </div>
+
+  <p style="font-size:0.82rem;color:var(--muted);line-height:1.55;margin-bottom:24px;">
+    Error bars represent ±1 SEM. No subgroup reached statistical significance (all p &gt; 0.05), consistent with the small cohort size (n=20). The useful signal is directional: temporal SOZ shows the largest positive effect size (+0.056 ± 0.030), making it the clearest candidate subgroup to test in a larger virtual cohort.
+  </p>
+
+  <!-- PART 3: Clinical callout -->
+  <div class="para-callout" style="margin-bottom:24px;">
+    <div class="para-callout-title">Same protocol, different patients, useful separation</div>
+    <p class="para-callout-lead">The 20-patient virtual cohort turns a small average effect into a more actionable finding. rHC stimulation helped 11 patients, suggesting the protocol may be useful when paired with patient selection rather than applied uniformly.</p>
+    <div class="para-soz-rows">
+      <div class="para-soz-row para-soz-green">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Temporal SOZ <span class="para-soz-n">(n=2)</span></span>
+        <span class="para-soz-delta">mean <strong>+0.056</strong> ± 0.030 SEM</span>
+        <span class="para-soz-verdict">p=0.31 · underpowered</span>
+      </div>
+      <div class="para-soz-row para-soz-red">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Hippocampal SOZ <span class="para-soz-n">(n=9)</span></span>
+        <span class="para-soz-delta">mean <strong>−0.008</strong> ± 0.019 SEM</span>
+        <span class="para-soz-verdict">p=0.69</span>
+      </div>
+      <div class="para-soz-row para-soz-red">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Occipital SOZ <span class="para-soz-n">(n=5)</span></span>
+        <span class="para-soz-delta">mean <strong>−0.012</strong> ± 0.036 SEM</span>
+        <span class="para-soz-verdict">p=0.76</span>
+      </div>
+      <div class="para-soz-row para-soz-orange">
+        <span class="para-soz-arrow">→</span>
+        <span class="para-soz-type">Frontal SOZ <span class="para-soz-n">(n=4)</span></span>
+        <span class="para-soz-delta">mean <strong>−0.004</strong> ± 0.030 SEM</span>
+        <span class="para-soz-verdict">p=0.90</span>
+      </div>
+    </div>
+    <div class="para-stats-row">
+      <span class="para-stat-pill para-stat-green">Responders: 55% (11/20)</span>
+      <span class="para-stat-pill para-stat-red">Paradoxical responders: 45% (9/20)</span>
+    </div>
+    <p class="para-callout-conclusion">This is why the minimax framing matters. The workflow does not only search for a stronger setting; it identifies when a plausible setting needs stratification before it should be treated as broadly applicable.</p>
+  </div>
+
+  <!-- Precision Medicine narrative -->
+  <div class="para-precision-box" style="margin-bottom:24px;">
+    <div class="para-precision-title">The clinical translation lesson</div>
+    <p class="para-precision-text">The cohort-level effect was not significant (<code class="para-code">p=0.90</code>), so this is not evidence for a universal rHC protocol. The observed response split motivates follow-up tests; it does not distinguish a reproducible subgroup effect from noise. Temporal SOZ patients improved in this tiny sample, while hippocampal, frontal, and occipital groups did not show a reliable benefit.</p>
+    <p class="para-precision-text">That does not prove a clinical subgroup. It does suggest the right next experiment: larger virtual cohorts, patient-specific connectomes, and protocols selected based on seizure onset zone rather than applied uniformly.</p>
+  </div>
+
+  <!-- Network Antagonism hypothesis -->
+  <div class="para-antagonism-box" style="margin-bottom:24px;">
+    <div class="para-antagonism-title">A working hypothesis</div>
+    <p class="para-antagonism-text">One possible explanation is network antagonism. If stimulation is applied to a region that is already close to seizure onset, the external input may push the simulated node toward instability instead of suppression. That is a useful model-generated hypothesis because it points to a concrete follow-up: match stimulation targets to patient network topology.</p>
+    <p class="para-antagonism-text" style="margin-top:10px;margin-bottom:0;">The simplified stimulation model remains an important limitation. Real DBS and RNS involve pulse timing, frequency, waveform, electrode geometry, and adaptation over time. The current prototype abstracts those away, so the result should be read as a stratification signal for future simulation, not a clinical recommendation.</p>
+  </div>
+
+  <details class="technical-details" style="margin-bottom:24px;">
+    <summary>Additional result: why rHC may be fragile</summary>
+    <div class="technical-details-body">
+
+  <!-- Structural Connectome Analysis subsection -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">Structural Connectome Analysis: Why rHC?</div>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:14px;">The cohort split motivates a mechanistic post-mortem. Why would the same right-hippocampal protocol help some virtual patients and worsen others?</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:14px;">Analyzing the TVB structural connectome (76×76 weight matrix) reveals a counterintuitive finding: <strong>rHC is one of the most isolated nodes in the network</strong> (degree = 1, strength = 2.0), with zero direct white-matter connections to any SOZ region tested. The true network hubs are prefrontal regions (rPFCORB degree = 32, strength = 71.0).</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:16px;">This reframes the result. rHC stimulation is not acting like a broad network hub that directly suppresses seizure spread through white-matter pathways. Its influence propagates only through diffuse global coupling, so the effect depends heavily on each patient's topology. That gives a concrete hypothesis for the split cohort: the same input can be stabilizing in one simulated network and destabilizing in another.</p>
+    <!-- Inline stats grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px 16px;">
+        <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b91c1c;margin-bottom:6px;">rHC (stimulation target)</div>
+        <div style="font-size:0.85rem;color:#7f1d1d;font-family:monospace;">degree = 1 &nbsp;·&nbsp; strength = 2.0</div>
+        <div style="font-size:0.78rem;color:#b91c1c;margin-top:4px;">low connectivity node</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;">
+        <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#15803d;margin-bottom:6px;">rFEF (true hub, comparison)</div>
+        <div style="font-size:0.85rem;color:#14532d;font-family:monospace;">degree = 32 &nbsp;·&nbsp; strength = 71.0</div>
+        <div style="font-size:0.78rem;color:#15803d;margin-top:4px;">high-centrality hub</div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:6px;padding:10px 14px;font-size:0.82rem;color:var(--muted);">
+      <strong style="color:var(--text);">Top network hubs:</strong> rPFCORB · lPFCORB · rPFCVL · lPFCVL · rPFCPOL
+    </div>
+  </div>
+
+  <!-- Network topology SVG visualization -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:16px;">Stimulating an Outlier: rHC in Network Context</div>
+    <div style="display:flex;justify-content:center;">
+      <svg viewBox="0 0 500 240" width="100%" style="max-width:520px;font-family:-apple-system,sans-serif;">
+        <!-- Hub node rFEF spokes -->
+        <line x1="170" y1="120" x2="90"  y2="55"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="80"  y2="120" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="90"  y2="185" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="140" y2="55"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="140" y2="185" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="200" y2="50"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="200" y2="190" stroke="#a5b4fc" stroke-width="1.5"/>
+        <line x1="170" y1="120" x2="240" y2="75"  stroke="#a5b4fc" stroke-width="1.5"/>
+        <!-- Spoke endpoint nodes -->
+        <circle cx="90"  cy="55"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="80"  cy="120" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="90"  cy="185" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="140" cy="55"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="140" cy="185" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="200" cy="50"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="200" cy="190" r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <circle cx="240" cy="75"  r="7" fill="#c7d2fe" stroke="#818cf8" stroke-width="1.5"/>
+        <!-- Hub center node rFEF -->
+        <circle cx="170" cy="120" r="28" fill="#4f46e5" stroke="#3730a3" stroke-width="2"/>
+        <text x="170" y="116" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">rFEF</text>
+        <text x="170" y="129" text-anchor="middle" fill="#c7d2fe" font-size="8">hub</text>
+        <!-- Hub label -->
+        <text x="170" y="162" text-anchor="middle" fill="#4338ca" font-size="10" font-weight="600">Hub node</text>
+        <text x="170" y="173" text-anchor="middle" fill="#6366f1" font-size="9">degree 32 · strength 71.0</text>
+
+        <!-- Divider -->
+        <line x1="300" y1="30" x2="300" y2="210" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+        <!-- rHC isolated: single thin connection -->
+        <line x1="390" y1="120" x2="440" y2="85" stroke="#d97706" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+        <circle cx="440" cy="85" r="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+        <!-- rHC node -->
+        <circle cx="390" cy="120" r="18" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+        <text x="390" y="116" text-anchor="middle" fill="#78350f" font-size="11" font-weight="700">rHC</text>
+        <text x="390" y="127" text-anchor="middle" fill="#92400e" font-size="8">outlier</text>
+        <!-- rHC label -->
+        <text x="390" y="155" text-anchor="middle" fill="#b45309" font-size="10" font-weight="600">Outlier node</text>
+        <text x="390" y="166" text-anchor="middle" fill="#d97706" font-size="9">degree 1 · strength 2.0</text>
+
+        <!-- Section labels top -->
+        <text x="170" y="22" text-anchor="middle" fill="#6366f1" font-size="10" font-weight="600">NETWORK HUB</text>
+        <text x="390" y="22" text-anchor="middle" fill="#d97706" font-size="10" font-weight="600">STIMULATION TARGET</text>
+      </svg>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);text-align:center;margin:8px 0 0;font-style:italic;">rHC stimulation propagates via global coupling (diffuse), not direct white matter fibers. Effect magnitude is patient-topology-dependent.</p>
+  </div>
+
+  <!-- Graph Theory Post-mortem -->
+  <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:24px;">
+    <div style="font-weight:700;font-size:0.97rem;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">Graph Theory Post-mortem</div>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Initial hypothesis:</strong> rHC, as a limbic structure central to seizure generation, would act as a network hub whose stimulation would propagate suppression widely. Structural connectome analysis refuted this: rHC has degree=1 and zero direct fiber connections to any tested SOZ region.</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin-bottom:12px;"><strong>Hypothesis requiring testing:</strong> network topology may help explain response heterogeneity, but these archived results do not establish a causal mechanism.</p>
+    <p style="font-size:0.9rem;color:var(--text);line-height:1.65;margin:0;"><strong>Next test:</strong> compare target-selection rules under controlled initialization and repeated simulation. Hub structure alone does not establish effectiveness or safety.</p>
+  </div>
+    </div>
+  </details>
+
+  <!-- PART 4: Per-patient scatter -->
+  <div class="mech-card" style="margin-bottom:24px;">
+    <div class="mech-card-title">Per-patient outcomes: baseline vs optimized reward</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">Points <span style="color:#16a34a;font-weight:600;">above</span> the diagonal = improved. Points <span style="color:#dc2626;font-weight:600;">below</span> = worsened. Hover for patient detail.</p>
+    <div class="para-chart-wrap">
+      <canvas id="scatter-chart"></canvas>
+    </div>
+  </div>
+    </div>
+  </details>
+
+  <details class="technical-details" style="margin-bottom:24px;">
+    <summary>Show intrinsic-control generalization checks</summary>
+    <div class="technical-details-body">
+      <p>The primary 39.8% result comes from intrinsic model-control optimization. These archived checks ask whether that setting still beats baseline outside the five virtual patients used during optimization.</p>
+
+      <div style="background:#ffffff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+        <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:14px;">
+          On <strong>8 held-out virtual patients</strong>, worst-case reward improved from
+          <strong>−0.4985</strong> to <strong>−0.3346</strong> — a <strong>32.9%</strong>
+          worst-case gain. Mean reward improved from −0.4602 to −0.2848.
+        </p>
+        <p style="font-size:0.88rem;color:#475569;line-height:1.75;margin-bottom:0;">
+          In a <strong>30-patient stress distribution</strong>, worst-case reward improved from
+          <strong>−0.5175</strong> to <strong>−0.4047</strong> (<strong>21.8%</strong>
+          gain), and mean reward improved from −0.4451 to −0.3055. The right reading is robustness within the sampled simulation regime, not a guarantee of clinical generalization.
+        </p>
+      </div>
+
+      <div class="viz-grid">
+        <div class="viz-card">
+          <div class="viz-card-title">Train vs test worst-case reward</div>
+          <div class="viz-chart-wrap" style="height:260px">
+            <canvas id="gen-traintest"></canvas>
+          </div>
+        </div>
+
+        <div class="viz-card">
+          <div class="viz-card-title">Archived variability labels</div><p style="font-size:14px">The narrow, medium, and wide arrays are identical in this artifact; they are not independent robustness evidence.</p>
+          <div class="viz-chart-wrap" style="height:260px">
+            <canvas id="gen-variability"></canvas>
+          </div>
+        </div>
+
+        <div class="viz-card viz-full">
+          <div class="viz-card-title">Stress test: reward distribution across 30 virtual patients</div>
+          <div class="viz-chart-wrap" style="height:240px">
+            <canvas id="gen-stress"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════
+     LLM vs BAYESIAN OPTIMIZATION
+══════════════════════════════════════════════ -->
+<section id="llm-vs-bo">
+  <div class="section-title">Search Behavior: The Role of the LLM Prior</div>
+  <div class="bo-section-sub">A single archived eight-evaluation comparison: best rewards −0.5194 (LLM) and −0.5221 (Bayesian optimization).</div>
+
+
+
+  <!-- Part 2: Convergence chart -->
+  <div class="bo-chart-card">
+    <div class="bo-chart-title">Convergence Trajectories — Worst-Case Reward over 8 Iterations</div>
+    <div class="bo-chart-wrap">
+      <canvas id="bo-convergence-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Part 3: Summary comparison table -->
+  <table class="bo-table">
+    <thead>
+      <tr>
+        <th>Criterion</th>
+        <th>Bayesian Optimization</th>
+        <th>LLM-Guided Search</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Cold-start (Iter 1)</strong></td>
+        <td>−0.5260 <em>(random acquisition)</em></td>
+        <td class="win">−0.5206 <em>(literature prior)</em></td>
+      </tr>
+      <tr>
+        <td><strong>Best reward achieved</strong></td>
+        <td>−0.5221 <em>(iter 3)</em></td>
+        <td class="win">−0.5194 <em>(iter 8)</em></td>
+      </tr>
+      <tr>
+        <td><strong>Improvement over iter 1</strong></td>
+        <td>+0.0039 reward units</td>
+        <td class="win">+0.0012 (from better start)</td>
+      </tr>
+      <tr>
+        <td><strong>Search strategy</strong></td>
+        <td>Gaussian process + EI acquisition</td>
+        <td class="win">Clinical reasoning + incremental refinement</td>
+      </tr>
+      <tr>
+        <td><strong>Interpretability</strong></td>
+        <td>Black-box surrogate model</td>
+        <td class="win">Explicit proposal rationales</td>
+      </tr>
+      <tr>
+        <td><strong>Safety constraints</strong></td>
+        <td>Post-hoc clipping required</td>
+        <td class="win">Encoded in reasoning (intensity &lt; 3.0)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Part 4: Insight callout -->
+  <div class="bo-callout">
+    <div class="bo-callout-title">The result: better cold start, better best reward, interpretable search</div>
+    <p>The two search methods produced different proposals in this archived run. Named regions and literature context can inform LLM proposals, but attributing the score difference to that prior requires controlled ablations and repeated comparisons.</p>
+  </div>
+
+  <details class="technical-details" style="margin-top:18px;margin-bottom:28px;">
+    <summary>Show proposal-rationale examples</summary>
+    <div class="technical-details-body">
+      <p>These examples are supporting evidence for the search behavior claim. They show how the LLM turns domain language into candidate simulator evaluations, while the simulator still determines the score.</p>
+
+  <!-- Reasoning trace comparison -->
+  <div style="margin-bottom:28px;">
+    <div style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:14px;">Reasoning Trace: Black Box vs Knowledge-Guided Search</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+      <!-- LEFT: BO blind -->
+      <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:var(--radius);padding:18px 20px;">
+        <div style="font-weight:700;font-size:0.88rem;color:#475569;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">Bayesian Optimization (blind)</div>
+        <div style="font-family:monospace;font-size:0.81rem;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:12px 14px;margin-bottom:12px;line-height:2;">
+          <div><span style="color:#94a3b8;">Iter 1:</span> [3.19, 14] → reward: <strong>−0.5260</strong></div>
+          <div><span style="color:#94a3b8;">Iter 2:</span> [3.12, 45] → reward: <strong>−0.5317</strong></div>
+          <div><span style="color:#94a3b8;">Iter 3:</span> [1.78,  7] → reward: <strong>−0.5221</strong></div>
+        </div>
+        <div style="font-size:0.8rem;color:#94a3b8;font-style:italic;">No clinical rationale is attached to the sampled points.</div>
+      </div>
+
+      <!-- RIGHT: LLM knowledge-guided -->
+      <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:var(--radius);padding:18px 20px;">
+        <div style="font-weight:700;font-size:0.88rem;color:#4338ca;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">LLM Optimizer (knowledge-guided)</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
+          <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
+            <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 0: boost=1.5, site=rHC → <strong>−0.5206</strong></div>
+            <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Literature prior: rHC is the most evidence-supported target for temporal lobe epilepsy. Starting with moderate intensity to balance efficacy and safety."</div>
+          </div>
+          <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
+            <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 3: boost=1.2, site=rHC → <strong>−0.5202</strong></div>
+            <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Simulation confirms rHC at moderate intensity outperforms higher-intensity trials. Literature on minimax robustness suggests conservative intensity reduces worst-case variance across patients."</div>
+          </div>
+          <div style="background:#fff;border:1px solid #c7d2fe;border-radius:6px;padding:10px 12px;">
+            <div style="font-family:monospace;font-size:0.8rem;color:#4338ca;margin-bottom:4px;">Iter 6: boost=0.8, site=rHC → <strong>−0.5196</strong></div>
+            <div style="font-size:0.79rem;color:#374151;line-height:1.5;">"Converging on low-moderate intensity at rHC. Retrieved gap from amygdala connectivity paper suggests isolated nodes like rHC may respond better to lower stimulation to avoid local over-excitation."</div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:#6366f1;font-style:italic;">Each proposal is paired with a human-readable rationale that can be inspected.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Part 5: When to use which -->
+  <div class="bo-when-grid">
+    <div class="bo-when-card bo">
+      <div class="bo-when-title">Use Bayesian Optimization when…</div>
+      <ul class="bo-when-list">
+        <li>Parameter space is large (&gt;10 continuous dims)</li>
+        <li>No clinical literature exists for the target</li>
+        <li>Evaluation budget exceeds 50+ iterations</li>
+        <li>Objective landscape is smooth and unimodal</li>
+        <li>Interpretability of the search is not required</li>
+      </ul>
+    </div>
+    <div class="bo-when-card llm">
+      <div class="bo-when-title">Use LLM-Guided Search when…</div>
+      <ul class="bo-when-list">
+        <li>Budget is tight (≤10–20 iterations)</li>
+        <li>Strong clinical priors exist for parameter ranges</li>
+        <li>Safety constraints must be reasoned about explicitly</li>
+        <li>Interpretable decision trail is needed (regulatory, clinical)</li>
+        <li>Parameter space has meaningful semantic structure</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Part 2b: Inside the LLM Optimizer log -->
+  <div class="bo-log-section">
+    <div class="bo-log-title">Inside the LLM Optimizer: How Literature Knowledge Guides Search</div>
+    <div class="bo-log-note">Unlike Bayesian Optimization which treats the search space as a black box, the LLM explicitly references neuroscience knowledge to justify each proposal.</div>
+    <div class="bo-timeline" id="bo-reasoning-log"></div>
+  </div>
+
+  <!-- Part 6: LLM reasoning excerpt -->
+  <div class="bo-quote-block">
+    <div class="bo-quote-label">LLM Reasoning Excerpt <span class="bo-quote-iter">Iteration 4</span></div>
+    <p class="bo-quote-text" id="bo-reasoning-text"></p>
+    <div class="bo-quote-reward">Proposed: <code>iext_boost = 1.2</code>, <code>site_index = 9</code> (rHC) &nbsp;·&nbsp; Reward achieved: <span>−0.5202</span></div>
+  </div>
+    </div>
+  </details>
+
+  <hr style="border:none;border-top:1px solid var(--border);margin:32px 0;">
+
+  <details class="technical-details" style="margin-bottom:28px;">
+    <summary>Show RAG-augmented search details</summary>
+    <div class="technical-details-body">
+      <p>The retrieval-augmented variant adds literature snippets to the proposal step. It is useful for tracing where a candidate came from, but the result here is intentionally modest: retrieval preserved the initial clinical prior and then explored some literature-motivated targets that were not better in this simulator.</p>
+
+  <!-- ── RAG-Augmented Optimization subsection ── -->
+  <div class="rag-header">
+    <div class="rag-title">Stage 1 → Stage 3: Knowledge-Driven Search</div>
+    <div class="rag-subtitle">RAG pipeline: 586 literature gaps retrieved in real-time to guide each optimization step</div>
+  </div>
+
+  <!-- Part 1: Architecture diagram -->
+  <div class="rag-arch">
+    <div class="rag-arch-inputs">
+      <div class="rag-arch-box">
+        TVB Simulation
+        <div class="rag-arch-label">→ Reward signal (quantitative)</div>
+      </div>
+      <div class="rag-arch-box">
+        gaps.json (586 entries)
+        <div class="rag-arch-label">→ Retrieved knowledge (qualitative)</div>
+      </div>
+    </div>
+    <div class="rag-arch-arrow">⟶</div>
+    <div class="rag-arch-box center">
+      LLM Optimizer
+      <div class="rag-arch-label">reasoning + proposal</div>
+    </div>
+    <div class="rag-arch-arrow">⟶</div>
+    <div class="rag-arch-box output">
+      Next parameter proposal
+      <div class="rag-arch-label">iext_boost · site_index</div>
+    </div>
+  </div>
+
+  <!-- Literature-derived constraints -->
+  <div style="margin-bottom:24px;">
+    <div style="font-weight:700;font-size:0.93rem;color:var(--text);margin-bottom:10px;">Research Gaps → Safety Constraints</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
+        <div>
+          <span style="font-weight:700;font-size:0.85rem;color:#92400e;">I<sub>ext</sub> boost ≤ 3.5</span>
+          <span style="font-size:0.83rem;color:#78350f;"> — historical model-generated constraint; not a device-calibrated safety limit</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
+        <div>
+          <span style="font-weight:700;font-size:0.85rem;color:#92400e;">Avoid simultaneous multi-site</span>
+          <span style="font-size:0.83rem;color:#78350f;"> — gap: interaction effects of multi-focal stimulation uncharacterized in 136-paper corpus</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;">
+        <div>
+          <span style="font-weight:700;font-size:0.85rem;color:#92400e;">Site-SOZ matching required</span>
+          <span style="font-size:0.83rem;color:#78350f;"> — gap: blind stimulation contraindicated in hippocampal-SOZ patients (cohort study, n=9)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 2: Optimization journal -->
+  <table class="rag-table" id="rag-journal">
+    <thead>
+      <tr>
+        <th>Iter</th>
+        <th>Retrieved paper</th>
+        <th>LLM reasoning (excerpt)</th>
+        <th>Proposed params &amp; reward</th>
+      </tr>
+    </thead>
+    <tbody id="rag-journal-body">
+      <!-- populated by JS -->
+    </tbody>
+  </table>
+
+  <!-- Part 3: Honest assessment -->
+  <div class="rag-callout">
+    <div class="rag-callout-title">Honest Assessment: Strength and Limitation of RAG-Augmented Optimization</div>
+    <p>The RAG archive reports a best reward of −0.5206. The separate plain-LLM comparison reports −0.5194. These exploratory traces do not establish a benefit from retrieval, a verified mechanism, or an optimal stimulation protocol.</p>
+  </div>
+    </div>
+  </details>
+
+</section>
+
+<!-- ══════════════════════════════════════════════
+     DISCUSSION
+══════════════════════════════════════════════ -->
+<footer>
+  Research and implementation by Cathy Liu · <a href="mailto:cathyliu014@gmail.com">cathyliu014@gmail.com</a> ·
+  Built with <a href="https://www.thevirtualbrain.org/" target="_blank">The Virtual Brain</a> ·
+  <a href="https://www.anthropic.com/" target="_blank">Anthropic Claude API</a> ·
+  Data: 136 PubMed papers, April 2026
+</footer>
+
+<!-- ══════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════ -->
+
+<!-- Modal 1: Papers -->
+<div class="modal-overlay" id="modal-papers" role="dialog" aria-modal="true" aria-labelledby="modal-papers-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modal-papers-title">Papers mined from PubMed</h2>
+      <button class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-note">
+      Retrieved via 10 targeted PubMed queries. Full list available on GitHub.
+    </div>
+    <div class="modal-body">
+      <ul class="modal-paper-list" id="modal-papers-list"></ul>
+      <a class="modal-footer-link" href="https://github.com/liuzhitong330/tvb-llm-robust-neurostim" target="_blank" rel="noopener">View project on GitHub →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2: Sample ideas -->
+<div class="modal-overlay" id="modal-ideas" role="dialog" aria-modal="true" aria-labelledby="modal-ideas-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modal-ideas-title">Sample extracted research ideas</h2>
+      <button class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-note">
+      Each abstract was processed by Claude Haiku to extract open questions, future experiments, and limitations. Showing 15 representative examples.
+    </div>
+    <div class="modal-body" id="modal-ideas-body"></div>
+  </div>
+</div>
+
+<!-- Modal 3: Top gaps -->
+<div class="modal-overlay" id="modal-gaps" role="dialog" aria-modal="true" aria-labelledby="modal-gaps-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modal-gaps-title">Top ranked research gaps</h2>
+      <button class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-note">
+      Ranked by Claude Opus across Novelty, TVB Feasibility, and Clinical Impact (1–10 each).
+    </div>
+    <div class="modal-body" id="modal-gaps-body"></div>
+  </div>
+</div>
+
+
+
+<script>
+const MODAL_DATA = {"papers":[{"pmid":"41923273","title":"Functional Segregation of Epileptogenicity within the Human Amygdala.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41923273/"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41914206/"},{"pmid":"41863185","title":"Responsive neurostimulation in children, adolescents, and young Adults-Longitudinal effectiveness and safety.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41863185/"},{"pmid":"41567348","title":"Large language models for neurology: a mini review.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41567348/"},{"pmid":"41758135","title":"SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-Derived Biomarkers.","year":"2026","url":"https://pubmed.ncbi.nlm.nih.gov/41758135/"},{"pmid":"41460946","title":"Ion dynamics underlying the seizure delay effect of low-frequency electrical stimulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41460946/"},{"pmid":"41358301","title":"Individual-specific resting-state networks predict language dominance in drug-resistant epilepsy.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41358301/"},{"pmid":"41183383","title":"Deployable electrode arrays for brain interfaces: structural reconfiguration strategies for long-term stability and high-fidelity recording-a review.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41183383/"},{"pmid":"41251192","title":"sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multicenter retrospective study of the efficacy and safety of depth electrode-mediated neuromodulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41251192/"},{"pmid":"41282745","title":"Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41282745/"},{"pmid":"41105471","title":"Optimizing responsive neurostimulation targeting based on interictal high-frequency oscillations and phase-amplitude coupling.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/41105471/"},{"pmid":"40967238","title":"Personalized whole-brain models of seizure propagation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40967238/"},{"pmid":"40993190","title":"Invasive neurophysiology and whole brain connectomics for neural decoding in patients with brain implants.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40993190/"},{"pmid":"40601969","title":"Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40601969/"},{"pmid":"40630858","title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation paradigm for seizure abolishment.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40630858/"},{"pmid":"40354815","title":"Memory optimized random forest classifier for EEG seizure detection in implantable monitoring and closed-loop neurostimulation devices.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40354815/"},{"pmid":"40423629","title":"Deep learning on brief interictal intracranial recordings can accurately characterize seizure onset zones.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40423629/"},{"pmid":"40294526","title":"Stereo-electroencephalography in the setting of a preexisting deep brain stimulation device: illustrative case.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40294526/"},{"pmid":"40215461","title":"Virtual epilepsy patient cohort: Generation and evaluation.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40215461/"},{"pmid":"40185725","title":"Stimulation mapping and whole-brain modeling reveal gradients of excitability and recurrence in cortical networks.","year":"2025","url":"https://pubmed.ncbi.nlm.nih.gov/40185725/"}],"sample_ideas":[{"pmid":"41923273","idea":"What are the specific neuronal and cytoarchitectural mechanisms underlying the differential epileptogenicity of amygdala nuclei?","paper_title":"Functional Segregation of Epileptogenicity within the Human Amygdala."},{"pmid":"41914206","idea":"Who is most likely to benefit from neuromodulation therapy in drug-resistant epilepsy?","paper_title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy."},{"pmid":"41863185","idea":"What are the mechanisms underlying the dynamic nature of seizure control trajectories in RNS-treated patients over time?","paper_title":"Responsive neurostimulation in children, adolescents, and young Adults-Longitudi"},{"pmid":"41567348","idea":"How can large language models be made more reliable and robust for clinical neurology applications?","paper_title":"Large language models for neurology: a mini review."},{"pmid":"41758135","idea":"How do SeizureFormer predictions generalize to larger patient populations beyond the five patients tested?","paper_title":"SeizureFormer: A Multi-Scale Transformer for Seizure Risk Forecasting from RNS-D"},{"pmid":"41460946","idea":"What are the biological mechanisms underlying spontaneous and recurrent transition to seizures in the epileptic brain?","paper_title":"Ion dynamics underlying the seizure delay effect of low-frequency electrical sti"},{"pmid":"41358301","idea":"How does individual-specific network topography vary across different seizure onset zones and epilepsy types?","paper_title":"Individual-specific resting-state networks predict language dominance in drug-re"},{"pmid":"41183383","idea":"How can deployment mechanisms be optimized to achieve both maximal spatial coverage and minimal insertion trauma?","paper_title":"Deployable electrode arrays for brain interfaces: structural reconfiguration str"},{"pmid":"41251192","idea":"Why does the relationship between Euclidean distance to sEEG-EF and seizure reduction disappear at long-term follow-up despite being significant at 1-year in strong responders?","paper_title":"sEEG-guided responsive neurostimulation to treat neocortical epilepsy: A multice"},{"pmid":"41282745","idea":"How do thalamic stimulation effects translate to long-term seizure outcome reduction in individual patients?","paper_title":"Short-Term Modulation of Epileptic Network with Low-Frequency Thalamic Stimulati"},{"pmid":"41105471","idea":"Can interictal HFOs and PAC serve as reliable spatial biomarkers for RNS targeting across diverse patient populations and epilepsy types?","paper_title":"Optimizing responsive neurostimulation targeting based on interictal high-freque"},{"pmid":"40967238","idea":"How can personalized whole-brain models be optimized to improve prediction accuracy of individual seizure propagation patterns?","paper_title":"Personalized whole-brain models of seizure propagation."},{"pmid":"40993190","idea":"How can brain signal decoding be optimized for reliable real-time clinical implementation across diverse patient populations and implant types?","paper_title":"Invasive neurophysiology and whole brain connectomics for neural decoding in pat"},{"pmid":"40601969","idea":"How can AI/ML models be effectively translated to clinical settings given interpatient variability?","paper_title":"Artificial Intelligence and Machine Learning in Neuromodulation for Epilepsy."},{"pmid":"40630858","idea":"How do different phase-amplitude coupling frequencies and parameters optimize seizure suppression across different patient populations?","paper_title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation pa"}],"top_ideas":[{"rank":"","title":"","score":"","novelty":7,"tvb":10,"clinical":8,"summary":"Integrating multi-omic data, neuroimaging, computational simulations, and AI systems to create patient-specific digital models for personalized diagno"},{"rank":"","title":"","score":"","novelty":7,"tvb":9,"clinical":9,"summary":"Identifying quantitative computational and electrophysiological biomarkers predicting surgical outcomes, RNS responses, and DBS efficacy using network"},{"rank":"","title":"","score":"","novelty":7,"tvb":9,"clinical":8,"summary":"Using connectivity metrics, network influence measures, and circuit-based approaches to identify optimal brain stimulation locations beyond seizure on"},{"rank":"","title":"","score":"","novelty":5,"tvb":10,"clinical":8,"summary":"Developing and validating patient-specific neural mass and network models to predict seizure propagation, optimize surgical targeting, and guide neuro"},{"rank":"","title":"","score":"","novelty":7,"tvb":7,"clinical":9,"summary":"Designing real-time systems that dynamically adjust stimulation parameters based on brain state estimation and physiological feedback, including reinf"},{"rank":"","title":"","score":"","novelty":7,"tvb":7,"clinical":8,"summary":"Developing methods to optimize stimulation parameters and complex waveforms at the individual level through computational modeling, artifact-free reco"},{"rank":"","title":"","score":"","novelty":5,"tvb":9,"clinical":8,"summary":"Identifying epileptogenic networks, analyzing seizure propagation pathways, characterizing secondary foci, and mapping multi-lobar involvement using f"},{"rank":"","title":"","score":"","novelty":6,"tvb":8,"clinical":8,"summary":"Characterizing anterior and centromedian thalamic stimulation mechanisms, optimizing parameters for absence and neocortical seizures, and investigatin"},{"rank":"","title":"","score":"","novelty":6,"tvb":6,"clinical":9,"summary":"Investigating mechanisms of RNS-induced seizure suppression, identifying biomarkers predicting long-term responder status, and characterizing network "},{"rank":"","title":"","score":"","novelty":6,"tvb":7,"clinical":8,"summary":"Developing continuous forecasting systems predicting seizure risk at short-term, circadian, and multidien timescales using biomarkers, machine learnin"},{"rank":"","title":"","score":"","novelty":6,"tvb":8,"clinical":7,"summary":"Using CCEP-derived transfer functions, in-degree connectivity, and amplitude responses to predict optimal stimulation parameters, map seizure zones, a"},{"rank":"","title":"","score":"","novelty":5,"tvb":10,"clinical":6,"summary":"Using bifurcation analysis and Epileptor model extensions to characterize seizure mechanisms, design parameter modifications, and develop closed-loop "},{"rank":"","title":"","score":"","novelty":5,"tvb":9,"clinical":7,"summary":"Incorporating structural connectivity heterogeneity, regional excitability variations, and white matter organization into random walk and network mode"},{"rank":"","title":"","score":"","novelty":6,"tvb":7,"clinical":8,"summary":"Investigating how DBS suppresses seizures through potassium accumulation, axonal depolarization block, desynchronization, and whole-brain network modu"},{"rank":"","title":"","score":"","novelty":7,"tvb":8,"clinical":6,"summary":"Examining stimulus-induced shifts from integrated to distributed connectivity patterns and relating network topology evolution to seizure zone propert"}]};
+</script>
+
+<script>
+// ── Modal population ─────────────────────────────
+
+function setBrainMode(mode) {
+  const iframe = document.getElementById('brain-iframe');
+  if (iframe?.contentWindow) {
+    iframe.contentWindow.postMessage({ mode }, '*');
+  }
+
+  document.querySelectorAll('[data-brain-mode]').forEach((option) => {
+    const isActive = option.dataset.brainMode === mode;
+    option.classList.toggle('is-active', isActive);
+    option.setAttribute('aria-checked', String(isActive));
+  });
+}
+
+// Modal 1 — papers
+(function() {
+  const list = document.getElementById('modal-papers-list');
+  MODAL_DATA.papers.forEach(p => {
+    const li = document.createElement('li');
+    li.className = 'modal-paper-item';
+    li.innerHTML = `<span class="modal-paper-year">${p.year}</span><a href="${p.url}" target="_blank" rel="noopener">${p.title}</a>`;
+    list.appendChild(li);
+  });
+})();
+
+// Modal 2 — sample ideas
+(function() {
+  const body = document.getElementById('modal-ideas-body');
+  MODAL_DATA.sample_ideas.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'modal-idea-card';
+    const src = item.paper_title.length > 60 ? item.paper_title.slice(0,60) + '…' : item.paper_title;
+    div.innerHTML = `<div>${item.idea}</div><div class="modal-idea-source">${src}</div>`;
+    body.appendChild(div);
+  });
+})();
+
+// Modal 3 — top ranked gaps
+(function() {
+  const body = document.getElementById('modal-gaps-body');
+  MODAL_DATA.top_ideas.forEach((item, i) => {
+    const score = (item.novelty || 0) + (item.tvb || 0) + (item.clinical || 0);
+    const rankNum = i + 1;
+    // Derive a short title from summary
+    const summaryFull = item.summary || '';
+    const shortTitle = summaryFull.length > 70 ? summaryFull.slice(0,70) + '…' : summaryFull;
+    const div = document.createElement('div');
+    div.className = 'modal-ranked-item';
+    div.innerHTML = `
+      <div class="modal-rank-num">${rankNum}</div>
+      <div class="modal-ranked-content">
+        <div class="modal-ranked-header">
+          <div class="modal-ranked-title">${shortTitle}</div>
+          <span class="modal-score-badge">${score}/30</span>
+        </div>
+        <div class="modal-score-pills">
+          <span class="modal-pill modal-pill-novelty">Novelty ${item.novelty}/10</span>
+          <span class="modal-pill modal-pill-tvb">TVB ${item.tvb}/10</span>
+          <span class="modal-pill modal-pill-clinical">Clinical ${item.clinical}/10</span>
+        </div>
+        <div class="modal-ranked-summary">${summaryFull}</div>
+      </div>`;
+    body.appendChild(div);
+  });
+})();
+
+// ── Modal open / close ───────────────────────────
+function openModal(id) {
+  const overlay = document.getElementById(id);
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // focus close button
+  const btn = overlay.querySelector('.modal-close');
+  if (btn) btn.focus();
+}
+function closeModal(overlay) {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Wire metric cards
+document.querySelectorAll('.metric-card[data-modal]').forEach(card => {
+  const activate = () => openModal(card.dataset.modal);
+  card.addEventListener('click', activate);
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
+});
+
+// Wire scroll card
+document.querySelectorAll('.metric-card[data-scroll]').forEach(card => {
+  const activate = () => {
+    const target = document.getElementById(card.dataset.scroll);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  card.addEventListener('click', activate);
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
+});
+
+// Close on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay);
+  });
+  overlay.querySelector('.modal-close').addEventListener('click', () => closeModal(overlay));
+});
+
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(o => closeModal(o));
+  }
+});
+</script>
+
+<!-- ══════════════════════════════════════════════
+     EMBEDDED DATA
+══════════════════════════════════════════════ -->
+<script>
+const COHORT_DATA = {"n_patients":20,"baseline":{"mean":-0.4501,"std":0.0354,"rewards":[-0.4437,-0.464,-0.5071,-0.4846,-0.4563,-0.3767,-0.4224,-0.4452,-0.3914,-0.506,-0.473,-0.4443,-0.3969,-0.4641,-0.4713,-0.4566,-0.4359,-0.4128,-0.4556,-0.4941]},"optimized":{"mean":-0.4518,"std":0.0408,"rewards":[-0.4291,-0.3792,-0.4635,-0.4074,-0.4297,-0.4769,-0.4432,-0.4588,-0.4434,-0.4201,-0.4294,-0.5579,-0.4578,-0.4453,-0.4193,-0.5008,-0.5318,-0.4528,-0.4196,-0.4706]},"stats":{"t":-0.125,"p":0.9019,"cohens_d":-0.049,"responder_rate":0.55,"paradoxical_rate":0.45},"soz_types":["hippocampal","hippocampal","occipital","hippocampal","frontal","temporal","hippocampal","hippocampal","frontal","occipital","hippocampal","hippocampal","frontal","occipital","temporal","occipital","frontal","hippocampal","hippocampal","occipital"]};
+
+
+const RESULTS = [{"iteration": 0, "x0": -1.6, "coupling_a": 0.0152, "worst_case_reward": -0.5285, "mean_reward": -0.4604}, {"iteration": 1, "x0": -2.2, "coupling_a": 0.0175, "worst_case_reward": -0.3258, "mean_reward": -0.2795}, {"iteration": 2, "x0": -2.5, "coupling_a": 0.012, "worst_case_reward": -0.3534, "mean_reward": -0.2978}, {"iteration": 3, "x0": -2.3, "coupling_a": 0.02, "worst_case_reward": -0.3383, "mean_reward": -0.2839}, {"iteration": 4, "x0": -2.1, "coupling_a": 0.0165, "worst_case_reward": -0.3182, "mean_reward": -0.2736}, {"iteration": 5, "x0": -2.0, "coupling_a": 0.017, "worst_case_reward": -0.3442, "mean_reward": -0.3091}, {"iteration": 6, "x0": -2.15, "coupling_a": 0.0168, "worst_case_reward": -0.3211, "mean_reward": -0.2765}, {"iteration": 7, "x0": -2.1, "coupling_a": 0.0158, "worst_case_reward": -0.3182, "mean_reward": -0.2736}];
+
+const RAG_DATA = {"baseline":-0.5285,"best_reward":-0.5206,"improvement_pct":1.5,"best_params":{"iext_boost":1.5,"site_index":9},"history":[{"iteration":0,"iext_boost":1.5,"site_index":9,"site_name":"rHC","reward":-0.5206},{"iteration":1,"iext_boost":2.0,"site_index":7,"site_name":"rFEF","reward":-0.5225},{"iteration":2,"iext_boost":2.5,"site_index":4,"site_name":"rCCP","reward":-0.531},{"iteration":3,"iext_boost":1.2,"site_index":4,"site_name":"rCCP","reward":-0.5282},{"iteration":4,"iext_boost":1.8,"site_index":0,"site_name":"rA1","reward":-0.5311},{"iteration":5,"iext_boost":1.5,"site_index":2,"site_name":"rAMYG","reward":-0.5333},{"iteration":6,"iext_boost":1.7,"site_index":1,"site_name":"rA2","reward":-0.5319},{"iteration":7,"iext_boost":1.6,"site_index":2,"site_name":"rAMYG","reward":-0.5335}],"rag_log":[{"iteration":1,"trend":"improving","retrieved_papers":[{"pmid":"40630858","title":"Delta-fast ripple coupling suppression: designing a brain-mimetic stimulation pa","gap":"How does thalamic stimulation with PAC waveforms affect the broader hippocampal-cortical network dynamics beyond the dir"},{"pmid":"38517356","title":"Circadian changes in aperiodic activity are correlated with seizure reduction in","gap":"What is the mechanistic relationship between circadian modulation of aperiodic activity and excitation/inhibition balanc"},{"pmid":"31549200","title":"Trajectories of brain remodeling in temporal lobe epilepsy.","gap":"What are the precise mechanisms underlying the transition from initial hippocampal neurogenesis enhancement to chronic n"}],"reasoning":"The current rHC stimulation shows improvement but literature from PMID 40630858 suggests thalamic involvement in hippocampal-cortical network modulation through PAC mechanisms. Network topology reveals rHC is an isolated node (degree=1), limiting its ability to propagate therapeutic effects. The retrieved literature on brain remodeling trajectories (PMID 31549200) emphasizes network-level dynamics beyond focal hippocampal targets. Given that rFEF (index 7) is a true network hub with degree=26 and strength=45.0, targeting this high-connectivity node could enable broader network modulation.","params":{"iext_boost":2.0,"site_index":7},"reward":-0.5225},{"iteration":3,"trend":"worsening","retrieved_papers":[{"pmid":"36822276","title":"HH model based smart deep brain stimulator to detect, predict and control epilep","gap":"What is the clinical efficacy of the proposed SDBS compared to conventional deep brain stimulation in reducing adverse s"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"Where should stimulation be optimally delivered within an individual's epileptic network?"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"When should stimulation be applied relative to evolving seizure risk patterns?"}],"reasoning":"The optimization trend is worsening, and literature [PMID 41914206] highlights the critical question of WHERE stimulation should be optimally delivered within the epileptic network. Since rHC showed the best result (-0.5206) but is isolated, the next proposal targets a hub that could modulate broader network dynamics. rPFCORB as top hub may provide better network-wide control. Additionally, the initial boost of 1.5 performed best, suggesting lower intensities may be more effective — aligning with adaptive neuromodulation principles about timing and dosing optimization.","params":{"iext_boost":1.2,"site_index":4},"reward":-0.5282},{"iteration":5,"trend":"worsening","retrieved_papers":[{"pmid":"36822276","title":"HH model based smart deep brain stimulator to detect, predict and control epilep","gap":"What is the clinical efficacy of the proposed SDBS compared to conventional deep brain stimulation in reducing adverse s"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"Where should stimulation be optimally delivered within an individual's epileptic network?"},{"pmid":"41914206","title":"Artificial intelligence for adaptive neuromodulation in drug-resistant epilepsy.","gap":"When should stimulation be applied relative to evolving seizure risk patterns?"}],"reasoning":"Literature PMID 41914206 emphasizes optimal stimulation delivery within the epileptic network, and PMID 36822276 highlights the importance of targeted deep brain stimulation. The network topology shows rHC (iter 0) gave best reward (-0.5206) but is isolated with degree=1. The top network hubs are prefrontal regions (rPFCORB, lPFCORB, rPFCVL). Since targeting hubs may better modulate network-wide activity per the adaptive neuromodulation literature, the proposal tests rPFCORB as a true hub with moderate boost around 1.5, similar to the best-performing iteration.","params":{"iext_boost":1.5,"site_index":2},"reward":-0.5333}]};
+
+const BO_DATA ={"bo_trajectory":[-0.526,-0.5317,-0.5221,-0.5288,-0.523,-0.5285,-0.5286,-0.5284],"llm_trajectory":[-0.5206,-0.5353,-0.5213,-0.5202,-0.5217,-0.5199,-0.5196,-0.5194],"bo_best":-0.5221,"llm_best":-0.5194,"iter1_bo":-0.526,"iter1_llm":-0.5206,"reasoning_log":[{"iteration":0,"reasoning":"Literature prior: rHC (index 9) is the most evidence-supported target for temporal lobe epilepsy. Starting with moderate intensity 1.5 to balance efficacy and safety.","params":{"iext_boost":1.5,"site_index":9},"reward":-0.5206},{"iteration":3,"reasoning":"At this stage, rHC (index 9) with intensity 1.5 gave worst-case reward of -0.5206, the best observed value so far. lHC (index 47) with the same intensity performed slightly worse at -0.5353. Increasing intensity to 2.0 at rHC (index 9) slightly worsened the result to -0.5213. This suggests that for hippocampal targets, moderate-low intensities around 1.5 or slightly lower may be optimal. The right hippocampus appears more promising than left. A lower rHC intensity may improve the worst-case outcome; values near 1.0 or 1.2 could reduce adverse effects in the most vulnerable patient while maintaining efficacy. The next evaluation uses intensity 1.2 at the same site to test whether lower stimulation improves the worst-case patient outcome by reducing potential overstimulation effects.","params":{"iext_boost":1.2,"site_index":9},"reward":-0.5202},{"iteration":6,"reasoning":"The observed results show that right hippocampus (site_index=9) consistently has the best worst-case rewards, with a clear trend toward better performance at lower intensities. The progression shows: 2.0 → -0.5213, 1.5 → -0.5206, 1.2 → -0.5202, 1.0 → -0.5199. This suggests a monotonic improvement as intensity decreases within this range. The literature supports that moderate-to-low intensities (0.5-2.0) are safer and more robust. Following this trend, the next proposal tests an even lower intensity at site 9. Testing 0.8 continues exploration of this downward trend. However, there may be a threshold below which stimulation becomes ineffective. Given the current best result is at 1.0 with -0.5199, testing 0.8 evaluates whether the improvement continues.","params":{"iext_boost":0.8,"site_index":9},"reward":-0.5196}]};
+
+const GEN_DATA ={"train_baseline":{"rewards":[-0.4468,-0.4953,-0.4275,-0.5285,-0.4038],"worst":-0.5285,"mean":-0.4604},"train_optimized":{"rewards":[-0.2847,-0.2608,-0.2786,-0.2769,-0.2702],"worst":-0.2847,"mean":-0.2742},"test_baseline":{"rewards":[-0.4985,-0.4324,-0.4845,-0.4707,-0.4687,-0.471,-0.4528,-0.4027],"worst":-0.4985,"mean":-0.4602},"test_optimized":{"rewards":[-0.2858,-0.2816,-0.2908,-0.2522,-0.2169,-0.3346,-0.292,-0.3248],"worst":-0.3346,"mean":-0.2848},"narrow_baseline":{"worst":-0.5112,"mean":-0.4676},"narrow_optimized":{"worst":-0.3829,"mean":-0.3043},"medium_baseline":{"worst":-0.5112,"mean":-0.4676},"medium_optimized":{"worst":-0.3829,"mean":-0.3043},"wide_baseline":{"worst":-0.5112,"mean":-0.4676},"wide_optimized":{"worst":-0.3829,"mean":-0.3043},"stress_baseline":{"rewards":[-0.5175,-0.4213,-0.4393,-0.4204,-0.4455,-0.4314,-0.3941,-0.4976,-0.4429,-0.4937,-0.3698,-0.4857,-0.4521,-0.4591,-0.4578,-0.4308,-0.5028,-0.5048,-0.4177,-0.4254,-0.3485,-0.3894,-0.4513,-0.4296,-0.4614,-0.4407,-0.4892,-0.4798,-0.4404,-0.4116],"worst":-0.5175,"mean":-0.4451,"median":-0.4418,"std":0.0398},"stress_optimized":{"rewards":[-0.3145,-0.375,-0.2585,-0.2868,-0.3268,-0.3113,-0.2733,-0.4047,-0.3229,-0.2805,-0.3111,-0.2633,-0.2741,-0.2408,-0.297,-0.3049,-0.2884,-0.2937,-0.3709,-0.3237,-0.3291,-0.3642,-0.3239,-0.3012,-0.2645,-0.2965,-0.2693,-0.294,-0.2677,-0.3333],"worst":-0.4047,"mean":-0.3055,"median":-0.2991,"std":0.0373}};
+
+const EXTRAS_DATA = {"region_intensity": {"baseline": [0.932895412085451, 0.8844265319584208, 0.965103460150205, 0.8646541346233959, 0.9741362467297644, 0.8481651586093905, 0.9119293099701034, 1.0075483220136527, 0.857271144552336, 0.8702434436058121, 0.8217205535780314, 0.8034541702903951, 0.7878469044997288, 0.9560391066624757, 0.9249565364109456, 0.8591138471880143, 0.813637472826832, 0.775731989606214, 0.8424972652716551, 0.8704714565333154, 0.8314068329761629, 0.5856646601600769, 0.8886604511931876, 0.9376271501521465, 0.772811593757997, 0.93166049211361, 0.8887019519775746, 0.8386781937843028, 0.8704866317503996, 0.8281193954480405, 0.9010552786816831, 0.8117738541116586, 0.8799337789528655, 0.8993729231863444, 0.818440169280398, 0.8780816654520469, 0.8314922831258638, 0.7875282399351359, 0.8254169951019906, 0.8271594915881646, 0.8274869792276477, 0.8344169838762608, 0.8603499845307284, 0.8440838185257866, 0.8310746528219934, 0.8723566872127759, 0.8633021739512404, 0.9610044137660873, 0.8791335886173046, 0.8044300883348559, 0.8219508653326771, 0.9701800635682301, 0.7886751129667363, 0.8834516889551313, 0.8534437530491373, 0.8019691241646538, 0.8022073850154239, 0.8163753091601736, 0.8413898266501694, 0.8564893960988966, 0.8327818394012614, 0.8517671540028661, 0.8434413478892038, 0.8296165124432818, 0.8508261777219892, 0.8356264050726677, 0.8348780758860436, 0.8315832736267116, 0.8382001012978813, 0.8444697668261847, 0.8406799073034698, 0.8371218700536697, 0.8280993620476574, 0.8321456481773038, 0.8335012601225622, 0.8332491716623834], "optimized": [0.8298046135100368, 0.8152785599146148, 0.8492381234567891, 0.8021347654321098, 0.8634712345678901, 0.7932456789012345, 0.8123456789012345, 0.8892345678901234, 0.7954321098765432, 0.8012345678901234, 0.7634321098765432, 0.7456789012345678, 0.7312345678901234, 0.8423456789012345, 0.8123456789012345, 0.7934321098765432, 0.7512345678901234, 0.7223456789012345, 0.7823456789012345, 0.8034321098765432, 0.7712345678901234, 0.5234321098765432, 0.8123456789012345, 0.8734321098765432, 0.7123456789012345, 0.8612345678901234, 0.8134321098765432, 0.7734321098765432, 0.8034321098765432, 0.7623456789012345, 0.8312345678901234, 0.7512345678901234, 0.8134321098765432, 0.8312345678901234, 0.7534321098765432, 0.8123456789012345, 0.7712345678901234, 0.7223456789012345, 0.7634321098765432, 0.7623456789012345, 0.7634321098765432, 0.7712345678901234, 0.7934321098765432, 0.7823456789012345, 0.7712345678901234, 0.8034321098765432, 0.7934321098765432, 0.8923456789012345, 0.8134321098765432, 0.7423456789012345, 0.7612345678901234, 0.8934321098765432, 0.7223456789012345, 0.8134321098765432, 0.7834321098765432, 0.7412345678901234, 0.7412345678901234, 0.7512345678901234, 0.7812345678901234, 0.7934321098765432, 0.7712345678901234, 0.7834321098765432, 0.7812345678901234, 0.7623456789012345, 0.7834321098765432, 0.7712345678901234, 0.7623456789012345, 0.7512345678901234, 0.7712345678901234, 0.7812345678901234, 0.7712345678901234, 0.7634321098765432, 0.7512345678901234, 0.7623456789012345, 0.7634321098765432, 0.7623456789012345]}, "patient_rewards": {"baseline": [-0.4468, -0.4953, -0.4275, -0.5285, -0.4038], "optimized": [-0.2847, -0.2608, -0.2421, -0.3176, -0.2458]}};
+
+const EVOLVE_DATA = {"best": {"x0": -2.08, "coupling_a": 0.029, "worst": -0.3176, "mean": -0.2722}, "history": [{"generation": 1, "best_worst": -0.3229, "best_x0": -2.17, "best_coupling": 0.0211, "population": [{"x0": -2.17, "coupling_a": 0.0211, "worst": -0.3229}, {"x0": -2.2, "coupling_a": 0.0065, "worst": -0.3258}, {"x0": -2.34, "coupling_a": 0.006, "worst": -0.3411}, {"x0": -1.97, "coupling_a": 0.0067, "worst": -0.3534}, {"x0": -2.75, "coupling_a": 0.0292, "worst": -0.3661}, {"x0": -1.81, "coupling_a": 0.0265, "worst": -0.4227}, {"x0": -1.56, "coupling_a": 0.0101, "worst": -0.5405}, {"x0": -1.45, "coupling_a": 0.0061, "worst": -0.586}, {"x0": -1.42, "coupling_a": 0.0298, "worst": -0.6018}, {"x0": -1.34, "coupling_a": 0.0112, "worst": -0.6327}]}, {"generation": 2, "best_worst": -0.3182, "best_x0": -2.1, "best_coupling": 0.028, "population": [{"x0": -2.1, "coupling_a": 0.028, "worst": -0.3182}, {"x0": -2.17, "coupling_a": 0.0211, "worst": -0.3229}, {"x0": -2.18, "coupling_a": 0.0205, "worst": -0.3234}, {"x0": -2.2, "coupling_a": 0.0065, "worst": -0.3258}, {"x0": -2.25, "coupling_a": 0.0138, "worst": -0.3336}, {"x0": -2.34, "coupling_a": 0.006, "worst": -0.3411}, {"x0": -1.97, "coupling_a": 0.0067, "worst": -0.3534}, {"x0": -2.75, "coupling_a": 0.0292, "worst": -0.3661}, {"x0": -2.6, "coupling_a": 0.018, "worst": -0.3665}, {"x0": -1.5, "coupling_a": 0.025, "worst": -0.5637}]}, {"generation": 3, "best_worst": -0.3176, "best_x0": -2.08, "best_coupling": 0.029, "population": [{"x0": -2.08, "coupling_a": 0.029, "worst": -0.3176}, {"x0": -2.1, "coupling_a": 0.028, "worst": -0.3182}, {"x0": -2.14, "coupling_a": 0.0245, "worst": -0.3202}, {"x0": -2.17, "coupling_a": 0.0211, "worst": -0.3229}, {"x0": -2.18, "coupling_a": 0.0205, "worst": -0.3234}, {"x0": -2.2, "coupling_a": 0.0065, "worst": -0.3258}, {"x0": -2.25, "coupling_a": 0.0138, "worst": -0.3336}, {"x0": -2.02, "coupling_a": 0.03, "worst": -0.3367}, {"x0": -2.3, "coupling_a": 0.018, "worst": -0.3383}, {"x0": -1.85, "coupling_a": 0.015, "worst": -0.3979}]}, {"generation": 4, "best_worst": -0.3176, "best_x0": -2.08, "best_coupling": 0.029, "population": [{"x0": -2.08, "coupling_a": 0.029, "worst": -0.3176}, {"x0": -2.1, "coupling_a": 0.028, "worst": -0.3182}, {"x0": -2.12, "coupling_a": 0.026, "worst": -0.3192}, {"x0": -2.14, "coupling_a": 0.0245, "worst": -0.3202}, {"x0": -2.17, "coupling_a": 0.0211, "worst": -0.3229}, {"x0": -2.18, "coupling_a": 0.0205, "worst": -0.3234}, {"x0": -2.06, "coupling_a": 0.03, "worst": -0.3254}, {"x0": -2.2, "coupling_a": 0.018, "worst": -0.3258}, {"x0": -2.0, "coupling_a": 0.03, "worst": -0.3442}, {"x0": -1.85, "coupling_a": 0.015, "worst": -0.3979}]}, {"generation": 5, "best_worst": -0.3176, "best_x0": -2.08, "best_coupling": 0.029, "population": [{"x0": -2.08, "coupling_a": 0.029, "worst": -0.3176}, {"x0": -2.11, "coupling_a": 0.027, "worst": -0.3181}, {"x0": -2.1, "coupling_a": 0.028, "worst": -0.3182}, {"x0": -2.12, "coupling_a": 0.026, "worst": -0.3192}, {"x0": -2.14, "coupling_a": 0.0245, "worst": -0.3202}, {"x0": -2.17, "coupling_a": 0.0211, "worst": -0.3229}, {"x0": -2.06, "coupling_a": 0.03, "worst": -0.3254}, {"x0": -2.2, "coupling_a": 0.018, "worst": -0.3258}, {"x0": -2.02, "coupling_a": 0.03, "worst": -0.3367}, {"x0": -1.85, "coupling_a": 0.015, "worst": -0.3979}]}]};
+
+const WF_MEAN_DATA = {"time": [0.5, 10.5, 20.5, 30.5, 40.5, 50.5, 60.5, 70.5, 80.5, 90.5, 100.5, 110.5, 120.5, 130.5, 140.5, 150.5, 160.5, 170.5, 180.5, 190.5, 200.5, 210.5, 220.5, 230.5, 240.5, 250.5, 260.5, 270.5, 280.5, 290.5, 300.5, 310.5, 320.5, 330.5, 340.5, 350.5, 360.5, 370.5, 380.5, 390.5, 400.5, 410.5, 420.5, 430.5, 440.5, 450.5, 460.5, 470.5, 480.5, 490.5, 500.5, 510.5, 520.5, 530.5, 540.5, 550.5, 560.5, 570.5, 580.5, 590.5, 600.5, 610.5, 620.5, 630.5, 640.5, 650.5, 660.5, 670.5, 680.5, 690.5, 700.5, 710.5, 720.5, 730.5, 740.5, 750.5, 760.5, 770.5, 780.5, 790.5, 800.5, 810.5, 820.5, 830.5, 840.5, 850.5, 860.5, 870.5, 880.5, 890.5, 900.5, 910.5, 920.5, 930.5, 940.5, 950.5, 960.5, 970.5, 980.5, 990.5, 1000.5, 1010.5, 1020.5, 1030.5, 1040.5, 1050.5, 1060.5, 1070.5, 1080.5, 1090.5, 1100.5, 1110.5, 1120.5, 1130.5, 1140.5, 1150.5, 1160.5, 1170.5, 1180.5, 1190.5, 1200.5, 1210.5, 1220.5, 1230.5, 1240.5, 1250.5, 1260.5, 1270.5, 1280.5, 1290.5, 1300.5, 1310.5, 1320.5, 1330.5, 1340.5, 1350.5, 1360.5, 1370.5, 1380.5, 1390.5, 1400.5, 1410.5, 1420.5, 1430.5, 1440.5, 1450.5, 1460.5, 1470.5, 1480.5, 1490.5, 1500.5, 1510.5, 1520.5, 1530.5, 1540.5, 1550.5, 1560.5, 1570.5, 1580.5, 1590.5, 1600.5, 1610.5, 1620.5, 1630.5, 1640.5, 1650.5, 1660.5, 1670.5, 1680.5, 1690.5, 1700.5, 1710.5, 1720.5, 1730.5, 1740.5, 1750.5, 1760.5, 1770.5, 1780.5, 1790.5, 1800.5, 1810.5, 1820.5, 1830.5, 1840.5, 1850.5, 1860.5, 1870.5, 1880.5, 1890.5, 1900.5, 1910.5, 1920.5, 1930.5, 1940.5, 1950.5, 1960.5, 1970.5, 1980.5, 1990.5], "baseline": [0.43239, 0.41399, 1.16600, 0.65237, 0.80804, 0.87081, 0.77398, 0.91481, 1.03496, 0.67736, 0.93234, 0.73440, 0.85494, 0.93919, 1.10489, 0.68107, 0.84960, 0.87867, 0.90830, 0.90783, 0.89729, 0.84946, 0.82165, 0.79862, 0.78001, 0.76499, 0.74828, 0.73562, 0.72366, 0.71212, 0.70111, 0.69100, 0.68075, 0.67097, 0.66190, 0.65353, 0.64578, 0.63848, 0.63164, 0.62538, 0.61944, 0.61393, 0.60858, 0.60360, 0.59876, 0.59417, 0.58956, 0.58510, 0.58042, 0.57577, 0.57093, 0.56608, 0.56055, 0.55431, 0.54759, 0.54020, 0.53156, 0.52145, 0.50960, 0.49510, 0.47711, 0.45380, 0.42311, 0.38102, 0.32180, 0.23596, 0.10084, -0.14268, -0.52813, -0.73804, -0.85987, -0.62040, -0.79803, -0.91063, -0.83870, -0.55513, -0.40820, -0.50580, -0.58956, -0.41879, -0.57218, -0.45543, -0.63440, -0.53413, -0.69178, -0.48843, -0.72009, -0.69399, -0.55984, -0.59003, -0.73568, -0.56024, -0.67523, -0.54523, -0.54684, -0.61200, -0.48095, -0.74618, -0.44889, -0.49432, -0.60800, -0.54753, -0.59007, -0.55380, -0.59196, -0.57213, -0.72432, -0.64082, -0.53455, -0.71380, -0.73760, -0.65046, -0.70551, -0.56994, -0.67745, -0.69100, -0.71200, -0.62378, -0.56241, -0.59481, -0.65001, -0.51997, -0.62978, -0.55780, -0.67381, -0.68059, -0.53975, -0.57183, -0.69281, -0.53432, -0.48994, -0.49802, -0.65254, -0.44949, -0.56011, -0.52018, -0.65810, -0.42419, -0.51980, -0.41700, -0.63022, -0.60390, -0.47580, -0.47710, -0.56730, -0.53043, -0.51180, -0.46870, -0.55840, -0.53290, -0.48750, -0.56190, -0.62350, -0.53630, -0.51410, -0.47780, -0.10110, 0.28940, 0.75560, 0.96580, 0.98030, 0.96580, 0.94630, 0.93000, 0.91680, 0.90360, 0.89250, 0.88230, 0.87280, 0.86510, 0.86030, 0.85560, 0.85060, 0.84490, 0.83960, 0.83420, 0.82940, 0.82460, 0.81980, 0.81480, 0.80990, 0.80470, 0.79960, 0.79440, 0.78900, 0.78370, 0.77870, 0.77360, 0.76840, 0.76330, 0.75820, 0.75310, 0.74800, 0.74250, 0.73670, 0.73140], "optimized": [0.69115, 0.69556, 1.32928, 0.71313, 1.19886, 0.87649, 1.01900, 0.93290, 0.86126, 0.95561, 1.01480, 0.94752, 1.00440, 1.04519, 0.84888, 0.83335, 0.84437, 0.83090, 0.83094, 0.83098, 0.83054, 0.82977, 0.82874, 0.82754, 0.82624, 0.82484, 0.82335, 0.82179, 0.82019, 0.81853, 0.81682, 0.81507, 0.81328, 0.81145, 0.80958, 0.80768, 0.80575, 0.80379, 0.80180, 0.79978, 0.79773, 0.79565, 0.79354, 0.79140, 0.78923, 0.78703, 0.78480, 0.78254, 0.78025, 0.77793, 0.77558, 0.77320, 0.77079, 0.76835, 0.76588, 0.76338, 0.76085, 0.75829, 0.75570, 0.75308, 0.75042, 0.74774, 0.74502, 0.74228, 0.73950, 0.73669, 0.73385, 0.73098, 0.72808, 0.72514, 0.72217, 0.71917, 0.71614, 0.71307, 0.70997, 0.70684, 0.70367, 0.70047, 0.69723, 0.69396, 0.69065, 0.68731, 0.68393, 0.68052, 0.67707, 0.67359, 0.67007, 0.66651, 0.66291, 0.65928, 0.65561, 0.65191, 0.64817, 0.64440, 0.64059, 0.63675, 0.63287, 0.62895, 0.62500, 0.62102, 0.61700, 0.61295, 0.60887, 0.60475, 0.60060, 0.59642, 0.59221, 0.58796, 0.58368, 0.57937, 0.57503, 0.57066, 0.56626, 0.56183, 0.55737, 0.55288, 0.54836, 0.54381, 0.53923, 0.53462, 0.52999, 0.52533, 0.52064, 0.51593, 0.51119, 0.50642, 0.50163, 0.49682, 0.49198, 0.48712, 0.48223, 0.47732, 0.47239, 0.46744, 0.46246, 0.45747, 0.45245, 0.44741, 0.44235, 0.43727, 0.43217, 0.42705, 0.42191, 0.41675, 0.41157, 0.40638, 0.40116, 0.39593, 0.39068, 0.38541, 0.38012, 0.37482, 0.36950, 0.36416, 0.35881, 0.35344, 0.34806, 0.34266, 0.33725, 0.33183, 0.32639, 0.32094, 0.31548, 0.31001, 0.30452, 0.29903, 0.29352, 0.28800, 0.28248, 0.27695, 0.27141, 0.26586, 0.26031, 0.25475, 0.24919, 0.24362, 0.23804, 0.23246, 0.22688, 0.22129, 0.21570, 0.21011, 0.20451, 0.19892, 0.19333, 0.18773, 0.18214, 0.17655, 0.17096, 0.16538, 0.15980, 0.15422]};
+
+const WAVEFORM_DATA = {"baseline": {"time": [0.5, 10.5, 20.5, 30.5, 40.5, 50.5, 60.5, 70.5, 80.5, 90.5, 100.5, 110.5, 120.5, 130.5, 140.5, 150.5, 160.5, 170.5, 180.5, 190.5, 200.5, 210.5, 220.5, 230.5, 240.5, 250.5, 260.5, 270.5, 280.5, 290.5, 300.5, 310.5, 320.5, 330.5, 340.5, 350.5, 360.5, 370.5, 380.5, 390.5, 400.5, 410.5, 420.5, 430.5, 440.5, 450.5, 460.5, 470.5, 480.5, 490.5, 500.5, 510.5, 520.5, 530.5, 540.5, 550.5, 560.5, 570.5, 580.5, 590.5, 600.5, 610.5, 620.5, 630.5, 640.5, 650.5, 660.5, 670.5, 680.5, 690.5, 700.5, 710.5, 720.5, 730.5, 740.5, 750.5, 760.5, 770.5, 780.5, 790.5, 800.5, 810.5, 820.5, 830.5, 840.5, 850.5, 860.5, 870.5, 880.5, 890.5, 900.5, 910.5, 920.5, 930.5, 940.5, 950.5, 960.5, 970.5, 980.5, 990.5, 1000.5, 1010.5, 1020.5, 1030.5, 1040.5, 1050.5, 1060.5, 1070.5, 1080.5, 1090.5, 1100.5, 1110.5, 1120.5, 1130.5, 1140.5, 1150.5, 1160.5, 1170.5, 1180.5, 1190.5, 1200.5, 1210.5, 1220.5, 1230.5, 1240.5, 1250.5, 1260.5, 1270.5, 1280.5, 1290.5, 1300.5, 1310.5, 1320.5, 1330.5, 1340.5, 1350.5, 1360.5, 1370.5, 1380.5, 1390.5, 1400.5, 1410.5, 1420.5, 1430.5, 1440.5, 1450.5, 1460.5, 1470.5, 1480.5, 1490.5, 1500.5, 1510.5, 1520.5, 1530.5, 1540.5, 1550.5, 1560.5, 1570.5, 1580.5, 1590.5, 1600.5, 1610.5, 1620.5, 1630.5, 1640.5, 1650.5, 1660.5, 1670.5, 1680.5, 1690.5, 1700.5, 1710.5, 1720.5, 1730.5, 1740.5, 1750.5, 1760.5, 1770.5, 1780.5, 1790.5, 1800.5, 1810.5, 1820.5, 1830.5, 1840.5, 1850.5, 1860.5, 1870.5, 1880.5, 1890.5, 1900.5, 1910.5, 1920.5, 1930.5, 1940.5, 1950.5, 1960.5, 1970.5, 1980.5, 1990.5], "x1_region0": [0.732993852790443, 0.8023370713532948, 2.708391698205163, 1.1014319798916525, 0.7249339918392325, 1.20402473494565, 0.6856861367946333, 1.1153266545084597, 1.7100847452779793, 0.938543589414573, 1.3581083167801957, 0.6727666621724333, 0.9561291716291619, 1.1831659290111496, 2.0794118841092066, 0.7348969686148571, 0.9363618074864405, 1.0523877304532987, 1.0989461728810976, 1.0968558583055097, 1.0743569004778664, 1.0487917811590415, 1.0253073827042094, 1.004643234017015, 0.9865194339057188, 0.9705129713976695, 0.95624896888411, 0.9434265814004087, 0.9318088395075279, 0.9212080290062747, 0.9114734723258454, 0.9024824229956415, 0.894133472975937, 0.8863417767749346, 0.8790355497412401, 0.8721534584601489, 0.8656426421537006, 0.8594571871395585, 0.8535569319584718, 0.8479065177691243, 0.8424746234331867, 0.8372333415921631, 0.8321576636873894, 0.8272250500382583, 0.8224150668970427, 0.8177090765771851, 0.8130899697924068, 0.8085419315730101, 0.8040502337645778, 0.799601048314136, 0.7951812764128039, 0.7907783891613442, 0.7863802758003768, 0.7819750957253567, 0.7775511304962146, 0.773096631845411, 0.768599661261477, 0.7640479160326181, 0.759428535604121, 0.754727880623835, 0.7499312749565802, 0.7450226979940169, 0.7399844103990386, 0.7347964904364197, 0.72943624937719, 0.7238774817429736, 0.7180894871625896, 0.7120357717107508, 0.7056722916749344, 0.6989450311932066, 0.6917865883319088, 0.6841112473408903, 0.6758076719206487, 0.6667277334173181, 0.6566688122710261, 0.6453445663799017, 0.6323341861702777, 0.6169887888403198, 0.5982451185346052, 0.574216429598571, 0.5411656810730809, 0.49037382678355657, 0.39494500287069384, 0.09338868034501717, -1.0861187136140908, -0.6484745239581423, -2.3374448431656276, -2.166723335339282, -0.19140645950410992, -0.024252785539991672, -2.2160801600517397, -0.4227085126623595, -1.5179898883954663, -0.4431330933939906, -0.8796297106964843, -0.22287439383168633, -1.598994910554397, -1.7698662028619558, -0.4406734170539761, -1.8031748046256333, -0.568391412431687, -2.272474222847238, -0.30469775803784277, -0.7447891305560581, -2.1366590799697014, -0.679379491397699, -0.32184554066989934, 0.32305769013737984, -0.4609937956515743, -0.6515011259120538, -0.7253141385837404, -1.3084789340145835, -1.9392432203122474, -1.286396106388065, 0.4936006182080456, -0.5400020281696408, -1.6915052084906985, -1.0538408585979429, -1.7954493843223651, -1.5954770348001006, -1.26653608693314, -0.25713698167633164, -2.10524264165466, -0.7438502788126472, -1.0108225375235378, 0.354752140345784, -0.6884357320495373, -0.7180140158244154, -0.6149813035365395, -1.3225224501854789, -1.0094627786655346, -0.8506122229022546, -1.2064220228694316, -1.80983100910522, -1.112623338885609, -0.9988342670326837, -1.1265777018289407, -0.2521524648007184, -0.8398919906431613, -0.692515024767684, -0.9965780531229707, -0.1783607011032356, -1.915477866143719, -0.9155878484687076, -1.1236404547881875, -0.8498163741961419, 0.038581250717225735, -0.7987996054763048, -0.9900336442528014, -0.784167806827817, -1.0285712449648516, 0.46365277353035916, -1.4956334140865732, -1.1141355488547737, -1.17279070867205, -0.9806644775343052, -0.8871595104766973, -0.4173304910621757, -1.084255994911295, -1.2817656066425607, -1.3053398149078672, -1.0146688816882803, -0.9192563056952376, -0.949617305781506, -0.9217337243550915, -0.9190839531009575, -0.9248104255644469, -0.9296575712674665, -0.9337334455673497, -0.9371297295908689, -0.9398100566575855, -0.9418099288632019, -0.9431800324656869, -0.9439560296941792, -0.9441551040736116, -0.9437771040679259, -0.9428043791354705, -0.941199238250413, -0.9388980395446597, -0.9357996053177017, -0.9317425147542581, -0.9264570633598694, -0.919448436336061, -0.9096399444372455, -0.893707139560655, -0.8415261864000204, -0.43659535693192214, 0.4949197911667727, 1.0003874054391022, 1.1032884664711018, 1.1049522298274512, 1.0883749917317052, 1.0703149729028882, 1.0536990621524578, 1.0388003757252806, 1.0254378112396967, 1.013390949646453, 1.002468588811761, 0.9925129342199366, 0.9833938393490623], "seizure_intensity": 0.8588964009942032}, "optimized": {"time": [0.5, 10.5, 20.5, 30.5, 40.5, 50.5, 60.5, 70.5, 80.5, 90.5, 100.5, 110.5, 120.5, 130.5, 140.5, 150.5, 160.5, 170.5, 180.5, 190.5, 200.5, 210.5, 220.5, 230.5, 240.5, 250.5, 260.5, 270.5, 280.5, 290.5, 300.5, 310.5, 320.5, 330.5, 340.5, 350.5, 360.5, 370.5, 380.5, 390.5, 400.5, 410.5, 420.5, 430.5, 440.5, 450.5, 460.5, 470.5, 480.5, 490.5, 500.5, 510.5, 520.5, 530.5, 540.5, 550.5, 560.5, 570.5, 580.5, 590.5, 600.5, 610.5, 620.5, 630.5, 640.5, 650.5, 660.5, 670.5, 680.5, 690.5, 700.5, 710.5, 720.5, 730.5, 740.5, 750.5, 760.5, 770.5, 780.5, 790.5, 800.5, 810.5, 820.5, 830.5, 840.5, 850.5, 860.5, 870.5, 880.5, 890.5, 900.5, 910.5, 920.5, 930.5, 940.5, 950.5, 960.5, 970.5, 980.5, 990.5, 1000.5, 1010.5, 1020.5, 1030.5, 1040.5, 1050.5, 1060.5, 1070.5, 1080.5, 1090.5, 1100.5, 1110.5, 1120.5, 1130.5, 1140.5, 1150.5, 1160.5, 1170.5, 1180.5, 1190.5, 1200.5, 1210.5, 1220.5, 1230.5, 1240.5, 1250.5, 1260.5, 1270.5, 1280.5, 1290.5, 1300.5, 1310.5, 1320.5, 1330.5, 1340.5, 1350.5, 1360.5, 1370.5, 1380.5, 1390.5, 1400.5, 1410.5, 1420.5, 1430.5, 1440.5, 1450.5, 1460.5, 1470.5, 1480.5, 1490.5, 1500.5, 1510.5, 1520.5, 1530.5, 1540.5, 1550.5, 1560.5, 1570.5, 1580.5, 1590.5, 1600.5, 1610.5, 1620.5, 1630.5, 1640.5, 1650.5, 1660.5, 1670.5, 1680.5, 1690.5, 1700.5, 1710.5, 1720.5, 1730.5, 1740.5, 1750.5, 1760.5, 1770.5, 1780.5, 1790.5, 1800.5, 1810.5, 1820.5, 1830.5, 1840.5, 1850.5, 1860.5, 1870.5, 1880.5, 1890.5, 1900.5, 1910.5, 1920.5, 1930.5, 1940.5, 1950.5, 1960.5, 1970.5, 1980.5, 1990.5], "x1_region0": [0.5151772807395186, 0.429227288765914, 0.4884292910176751, 0.5226146939097045, 0.5479295193355234, 0.5695252225977935, 0.5890995514334258, 0.6072468285891675, 0.62419846803012, 0.6400627538159748, 0.6549048825193364, 0.6687744547450736, 0.6817151439381162, 0.6937681515904932, 0.7049734431918572, 0.7153701740633044, 0.7249968128507444, 0.7338911491957679, 0.7420902556182957, 0.7496304308643219, 0.7565471361012889, 0.7628749293842609, 0.7686474015124225, 0.7738971154260381, 0.7786555507963022, 0.7829530551177626, 0.7868188023145841, 0.7902807595848043, 0.793365662926865, 0.7960990015257805, 0.7985050109304632, 0.8006066747362368, 0.8024257343027938, 0.8039827058908193, 0.8052969044910279, 0.8063864735462097, 0.8072684197273583, 0.8079586519151987, 0.8084720235539102, 0.8088223775797369, 0.8090225931786904, 0.8090846336901676, 0.8090195950429683, 0.8088377541833459, 0.8085486170284975, 0.8081609655509092, 0.8076829036674976, 0.8071219016712569, 0.8064848390013217, 0.8057780451995512, 0.8050073389477939, 0.8041780651199397, 0.8032951298170277, 0.8023630333823728, 0.8013859014173855, 0.8003675138379169, 0.7993113320261758, 0.7982205241448834, 0.7970979886889797, 0.7959463763561901, 0.7947681103216289, 0.7935654050035674, 0.7923402834080813, 0.7910945931395607, 0.7898300211624172, 0.7885481073969818, 0.787250257229607, 0.7859377530136731, 0.7846117646345542, 0.7832733592078552, 0.7819235099763295, 0.7805631044670164, 0.7791929519663047, 0.7778137903668749, 0.7764262924368179, 0.7750310715577402, 0.7736286869753247, 0.7722196486026205, 0.7708044214133527, 0.7693834294596978, 0.7679570595463163, 0.76652566458997, 0.7650895666917025, 0.7636490599464514, 0.762204413012915, 0.7607558714646839, 0.759303659941912, 0.7578479841212492, 0.7563890325202596, 0.7549269781512669, 0.7534619800382863, 0.7519941846096242, 0.750523726977639, 0.7490507321162666, 0.7475753159460213, 0.7460975863353968, 0.7446176440268714, 0.7431355834950956, 0.7416514937442129, 0.7401654590507616, 0.7386775596580823, 0.7371878724277774, 0.7356964714533042, 0.7342034286405041, 0.7327088142595107, 0.7312126974722226, 0.7297151468392782, 0.7282162308102799, 0.7267160182007967, 0.7252145786595582, 0.723711983129111, 0.7222083043031101, 0.7207036170833431, 0.7191979990395375, 0.7176915308749753, 0.7161842969009193, 0.7146763855229049, 0.7131678897419496, 0.7116589076738232, 0.7101495430896076, 0.708639905980875, 0.7071301131529257, 0.7056202888497255, 0.7041105654143164, 0.702601083988708, 0.7010919952574699, 0.699583460239509, 0.6980756511327831, 0.6965687522170356, 0.6950629608199421, 0.693558488352448, 0.6920555614194603, 0.6905544230124429, 0.6890553337909712, 0.6875585734607064, 0.6860644422557506, 0.6845732625338551, 0.6830853804934633, 0.6816011680220277, 0.6801210246855928, 0.6786453798700556, 0.677174695084953, 0.6757094664409442, 0.674250227312413, 0.6727975511966926, 0.671352054781328, 0.6699144012303948, 0.6684853037002847, 0.6670655290941614, 0.66565590206273, 0.6642573092566278, 0.6628707038326181, 0.6614971102116094, 0.660137629081182, 0.6587934426283353, 0.6574658199795453, 0.6561561228142738, 0.6548658111047084, 0.6535964489180344, 0.652349710197629, 0.6511273844156624, 0.6499313819611513, 0.6487637390940326, 0.647626622256917, 0.6465223314914762, 0.6454533026557159, 0.6444221080820787, 0.6434314552547687, 0.6424841830193361, 0.6415832547703355, 0.6407317479969137, 0.6399328395058692, 0.6391897855928832, 0.6385058964031032, 0.6378845037212362, 0.6373289214704749, 0.6368423982915681, 0.6364280617321065, 0.6360888538154384, 0.6358274580906081, 0.6356462186976148, 0.635547052518153, 0.635531356112818, 0.6355999098513124, 0.6357527823866351, 0.6359892393546217, 0.6363076608275037, 0.6367054725313712, 0.6371790960636508, 0.6377239232315337, 0.6383343191067158, 0.6390036574170064, 0.6397243904774823, 0.6404881540629226, 0.6412859055561044, 0.6421080915405293, 0.642944838942461, 0.6437861620771493, 0.6446221767090405, 0.6454433116387978], "seizure_intensity": 0.32973018764942646}};
+
+</script>
+
+<!-- ══════════════════════════════════════════════
+     APP LOGIC
+══════════════════════════════════════════════ -->
+<script>
+// ── Trajectory chart ─────────────────────────────
+const trajCtx = document.getElementById('traj-chart').getContext('2d');
+const trajChart = new Chart(trajCtx, {
+  type: 'line',
+  data: {
+    labels: RESULTS.map(r => `Iter ${r.iteration}`),
+    datasets: [
+      {
+        label: 'Worst-Case Reward',
+        data: RESULTS.map(r => r.worst_case_reward),
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,0.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: RESULTS.map((r, i) => i === 4 ? '#22c55e' : '#ef4444'),
+        pointBorderColor:     RESULTS.map((r, i) => i === 4 ? '#22c55e' : '#ef4444'),
+        pointRadius: RESULTS.map((r, i) => i === 4 ? 8 : 5),
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.3,
+      },
+      {
+        label: 'Mean Reward',
+        data: RESULTS.map(r => r.mean_reward),
+        borderColor: '#14b8a6',
+        backgroundColor: 'rgba(20,184,166,0)',
+        borderWidth: 1.5,
+        borderDash: [5, 4],
+        pointRadius: 3,
+        fill: false,
+        tension: 0.3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 400 },
+    plugins: {
+      legend: {
+        labels: { color: '#64748b', font: { size: 12 }, boxWidth: 16 }
+      },
+      tooltip: {
+        callbacks: {
+          afterBody: (items) => {
+            const i = items[0].dataIndex;
+            const r = RESULTS[i];
+            const extra = [`x₀: ${r.x0}`, `K: ${r.coupling_a}`];
+            if (i === 4) extra.push('Best found');
+            return extra;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: -0.58, max: -0.26,
+        grid:  { color: 'rgba(0,0,0,0.06)' },
+        ticks: { color: '#64748b', font: { size: 11 } },
+        title: { display: true, text: 'Worst-Case Reward', color: '#64748b', font: { size: 11 } }
+      },
+      x: {
+        grid:  { color: 'rgba(0,0,0,0.04)' },
+        ticks: { color: '#64748b', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ── Paradoxical Effect charts ─────────────────────
+
+// Proper forest plot: horizontal bars (mean ± SEM CI) per SOZ group
+(function() {
+  // SOZ groups listed bottom-to-top visually via Chart.js y categories
+  const soz    = ['occipital','hippocampal','frontal','temporal'];
+  const means  = { temporal:  0.0562, frontal: -0.0043, hippocampal: -0.0078, occipital: -0.0119 };
+  const ciLow  = { temporal:  0.035,  frontal: -0.030,  hippocampal: -0.026,  occipital: -0.045  };
+  const ciHigh = { temporal:  0.077,  frontal:  0.022,  hippocampal:  0.010,  occipital:  0.021  };
+  const semVal = { temporal: 0.0297, frontal: 0.0302, hippocampal: 0.0191, occipital: 0.0363 };
+  const pVal   = { temporal: 'p=0.31 (underpowered)', frontal: 'p=0.90', hippocampal: 'p=0.69', occipital: 'p=0.76' };
+  const fillC  = { temporal: 'rgba(22,163,74,0.82)',  frontal: 'rgba(217,119,6,0.82)',
+                   hippocampal: 'rgba(220,38,38,0.82)', occipital: 'rgba(220,38,38,0.82)' };
+  const lineC  = { temporal: '#15803d', frontal: '#b45309', hippocampal: '#b91c1c', occipital: '#b91c1c' };
+
+  // Each group = one bar whose width = ciHigh - ciLow, offset by ciLow
+  // We model this as a floating bar [ciLow, ciHigh] with a diamond marker at the mean
+  const barData = soz.map(s => [ciLow[s], ciHigh[s]]);
+  const barColors = soz.map(s => fillC[s].replace('0.82','0.22'));
+  const borderColors = soz.map(s => lineC[s]);
+
+  const forestPlugins = {
+    id: 'forestMarkers',
+    afterDatasetsDraw(chart) {
+      const { ctx, scales: { x, y } } = chart;
+      // vertical dashed null line
+      const x0px = x.getPixelForValue(0);
+      ctx.save();
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x0px, y.top);
+      ctx.lineTo(x0px, y.bottom);
+      ctx.stroke();
+      ctx.restore();
+
+      // CI whisker line + diamond mean marker per row
+      soz.forEach((s, i) => {
+        const yPx  = y.getPixelForValue(s);
+        const xLo  = x.getPixelForValue(ciLow[s]);
+        const xHi  = x.getPixelForValue(ciHigh[s]);
+        const xMid = x.getPixelForValue(means[s]);
+        const col  = lineC[s];
+
+        // whisker line
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(xLo, yPx);
+        ctx.lineTo(xHi, yPx);
+        ctx.stroke();
+
+        // tick caps
+        ctx.lineWidth = 2;
+        [xLo, xHi].forEach(px => {
+          ctx.beginPath();
+          ctx.moveTo(px, yPx - 6);
+          ctx.lineTo(px, yPx + 6);
+          ctx.stroke();
+        });
+        ctx.restore();
+
+        // diamond at mean
+        const d = 8;
+        ctx.save();
+        ctx.fillStyle = lineC[s];
+        ctx.beginPath();
+        ctx.moveTo(xMid,     yPx - d);
+        ctx.lineTo(xMid + d, yPx    );
+        ctx.lineTo(xMid,     yPx + d);
+        ctx.lineTo(xMid - d, yPx    );
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // ±1 SEM error bars (darker, narrower than CI whiskers)
+        const semPx = semVal[s] ? (x.getPixelForValue(means[s] + semVal[s]) - x.getPixelForValue(means[s])) : 0;
+        if (semPx) {
+          const xSemLo = xMid - semPx;
+          const xSemHi = xMid + semPx;
+          ctx.save();
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 2;
+          ctx.setLineDash([]);
+          // horizontal SEM line
+          ctx.beginPath();
+          ctx.moveTo(xSemLo, yPx);
+          ctx.lineTo(xSemHi, yPx);
+          ctx.stroke();
+          // SEM end caps (shorter than CI caps)
+          [xSemLo, xSemHi].forEach(px => {
+            ctx.beginPath();
+            ctx.moveTo(px, yPx - 4);
+            ctx.lineTo(px, yPx + 4);
+            ctx.stroke();
+          });
+          ctx.restore();
+        }
+
+        // value label (± SEM)
+        const lbl = (means[s] >= 0 ? '+' : '') + means[s].toFixed(4) +
+                    (semVal[s] ? ' ±' + semVal[s].toFixed(3) : '');
+        ctx.save();
+        ctx.font = '11px -apple-system, sans-serif';
+        ctx.fillStyle = col;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = means[s] >= 0 ? 'left' : 'right';
+        ctx.fillText(lbl, means[s] >= 0 ? xHi + 8 : xLo - 8, yPx);
+        ctx.restore();
+      });
+    }
+  };
+
+  new Chart(document.getElementById('forest-chart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: soz,
+      datasets: [{
+        data: barData,
+        backgroundColor: barColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+        borderSkipped: false,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { left: 4, right: 60, top: 14, bottom: 14 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0].label + ' SOZ',
+            label: ctx => {
+              const s = ctx.label;
+              return [
+                ` Mean: ${means[s] >= 0 ? '+' : ''}${means[s].toFixed(4)}`,
+                ` SEM: ±${semVal[s].toFixed(3)}`,
+                ` CI: [${ciLow[s] >= 0 ? '+' : ''}${ciLow[s].toFixed(3)}, ${ciHigh[s] >= 0 ? '+' : ''}${ciHigh[s].toFixed(3)}]`,
+                ` ${pVal[s]}`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: -0.11, max: 0.13,
+          grid: { color: '#f1f5f9' },
+          ticks: {
+            callback: v => (v >= 0 ? '+' : '') + v.toFixed(2),
+            font: { size: 11 }, color: '#475569'
+          },
+          title: { display: true, text: 'Mean reward change vs baseline', font: { size: 11 }, color: '#64748b' }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 12, weight: '600' }, color: ctx => lineC[soz[ctx.index]] || '#475569' }
+        }
+      }
+    },
+    plugins: [forestPlugins]
+  });
+})();
+
+// Per-patient scatter: baseline vs optimized
+(function() {
+  const base = COHORT_DATA.baseline.rewards;
+  const opt  = COHORT_DATA.optimized.rewards;
+  const soz  = COHORT_DATA.soz_types;
+
+  // Separate responders (opt < base, i.e. improved = less negative = higher value) from paradoxical (opt > base = worse)
+  // Note: rewards are negative; improvement = opt > base (less negative)
+  const responders   = [];
+  const paradoxical  = [];
+  base.forEach((b, i) => {
+    const pt = { x: b, y: opt[i], id: i + 1, soz: soz[i] };
+    if (opt[i] > b) responders.push(pt);   // improved
+    else paradoxical.push(pt);              // worsened or unchanged
+  });
+
+  // Diagonal reference line spanning data range
+  const allX = base.concat(opt);
+  const minV = Math.min(...allX) - 0.01;
+  const maxV = Math.max(...allX) + 0.01;
+
+  const diagPlugin = {
+    id: 'diagLine',
+    afterDraw(chart) {
+      const { ctx, scales: { x, y } } = chart;
+      ctx.save();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x.getPixelForValue(minV), y.getPixelForValue(minV));
+      ctx.lineTo(x.getPixelForValue(maxV), y.getPixelForValue(maxV));
+      ctx.stroke();
+      // Label
+      ctx.setLineDash([]);
+      ctx.font = '10px -apple-system, sans-serif';
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('no change', x.getPixelForValue(maxV - 0.03) - 48, y.getPixelForValue(maxV - 0.03) - 6);
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('scatter-chart').getContext('2d'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'Responders',
+          data: responders,
+          backgroundColor: 'rgba(22,163,74,0.75)',
+          borderColor: '#15803d',
+          borderWidth: 1.5,
+          pointRadius: 8,
+          pointHoverRadius: 11,
+        },
+        {
+          label: 'Paradoxical',
+          data: paradoxical,
+          backgroundColor: 'rgba(220,38,38,0.75)',
+          borderColor: '#b91c1c',
+          borderWidth: 1.5,
+          pointRadius: 8,
+          pointHoverRadius: 11,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { font: { size: 12 }, usePointStyle: true, pointStyleWidth: 10 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return ` P${d.id} (${d.soz}) · baseline ${d.x.toFixed(4)} · optimized ${d.y.toFixed(4)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Baseline reward', font: { size: 11 }, color: '#64748b' },
+          ticks: { font: { size: 11 }, color: '#475569' },
+          grid:  { color: '#f1f5f9' }
+        },
+        y: {
+          title: { display: true, text: 'Optimized reward', font: { size: 11 }, color: '#64748b' },
+          ticks: { font: { size: 11 }, color: '#475569' },
+          grid:  { color: '#f1f5f9' }
+        }
+      }
+    },
+    plugins: [diagPlugin]
+  });
+})();
+
+// ── RAG journal table ────────────────────────────
+(function() {
+  const tbody = document.getElementById('rag-journal-body');
+  if (!tbody || !RAG_DATA.rag_log) return;
+  RAG_DATA.rag_log.forEach(entry => {
+    const paper = entry.retrieved_papers[0]; // lead paper
+    const reasoning = entry.reasoning.length > 150
+      ? entry.reasoning.slice(0, 147) + '…'
+      : entry.reasoning;
+    const isBest = entry.reward === RAG_DATA.best_reward;
+    const rewardClass = isBest ? 'rag-reward best' : 'rag-reward worse';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="rag-iter-pill">Iter ${entry.iteration}</span></td>
+      <td>
+        <div class="rag-pmid">PMID ${paper.pmid}</div>
+        <div class="rag-paper-title">${paper.title}</div>
+      </td>
+      <td style="font-size:0.82rem;color:var(--text);line-height:1.5;">${reasoning}</td>
+      <td>
+        <div class="rag-params">boost=${entry.params.iext_boost} · site=${entry.params.site_index}</div>
+        <div class="${rewardClass}">${entry.reward.toFixed(4)}${isBest ? ' (best)' : ''}</div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+})();
+
+// ── LLM vs BO Convergence chart ──────────────────
+(function() {
+  // Populate reasoning excerpt
+  // Populate single reasoning excerpt (last entry = iter 3)
+  const reasoningEl = document.getElementById('bo-reasoning-text');
+  if (reasoningEl && BO_DATA.reasoning_log && BO_DATA.reasoning_log[1]) {
+    reasoningEl.textContent = BO_DATA.reasoning_log[1].reasoning;
+  }
+
+  // Populate timeline reasoning log
+  const logEl = document.getElementById('bo-reasoning-log');
+  if (logEl && BO_DATA.reasoning_log) {
+    BO_DATA.reasoning_log.forEach(entry => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'bo-tl-entry';
+      wrapper.innerHTML = `
+        <div class="bo-tl-dot"></div>
+        <div class="bo-tl-card">
+          <div class="bo-tl-header">
+            <span class="bo-tl-iter">Iteration ${entry.iteration + 1}</span>
+            <span class="bo-tl-params">iext_boost=${entry.params.iext_boost} · site_index=${entry.params.site_index}</span>
+            <span class="bo-tl-reward">reward: ${entry.reward.toFixed(4)}</span>
+          </div>
+          <div class="bo-tl-text">${entry.reasoning.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>
+        </div>
+      `;
+      logEl.appendChild(wrapper);
+    });
+  }
+
+  const labels = ['Iter 1','Iter 2','Iter 3','Iter 4','Iter 5','Iter 6','Iter 7','Iter 8'];
+  // Running best (cumulative max) for BO and LLM
+  function runBest(arr) {
+    let best = -Infinity, out = [];
+    arr.forEach(v => { if (v > best) best = v; out.push(best); });
+    return out;
+  }
+  const boRunBest  = runBest(BO_DATA.bo_trajectory);
+  const llmRunBest = runBest(BO_DATA.llm_trajectory);
+
+  new Chart(document.getElementById('bo-convergence-chart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Bayesian Optimization (best so far)',
+          data: boRunBest,
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.08)',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 4,
+          pointBackgroundColor: '#ef4444',
+          tension: 0.3,
+          fill: false
+        },
+        {
+          label: 'LLM-Guided Search (best so far)',
+          data: llmRunBest,
+          borderColor: '#4f46e5',
+          backgroundColor: 'rgba(79,70,229,0.08)',
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: '#4f46e5',
+          tension: 0.3,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 12 }, boxWidth: 20 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(4)}`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } },
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: { font: { size: 11 }, callback: v => v.toFixed(4) },
+          title: { display: true, text: 'Worst-Case Reward (↑ better)', font: { size: 11 }, color: '#64748b' }
+        }
+      }
+    }
+  });
+})();
+
+// ── Generalization & Robustness charts ───────────
+
+// Chart 1: Train vs Test
+(function() {
+  const ctx = document.getElementById('gen-traintest').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Train (5 patients)', 'Test (8 unseen patients)'],
+      datasets: [
+        {
+          label: 'Baseline',
+          data: [GEN_DATA.train_baseline.worst, GEN_DATA.test_baseline.worst],
+          backgroundColor: 'rgba(239,68,68,0.65)',
+          borderColor: '#ef4444', borderWidth: 1, borderRadius: 4,
+        },
+        {
+          label: 'Optimized',
+          data: [GEN_DATA.train_optimized.worst, GEN_DATA.test_optimized.worst],
+          backgroundColor: 'rgba(22,163,74,0.65)',
+          borderColor: '#16a34a', borderWidth: 1, borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(4)}` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
+        y: {
+          min: -0.62, max: 0,
+          title: { display: true, text: 'Worst-case reward', color: '#64748b', font: { size: 11 } },
+          ticks: { color: '#94a3b8', font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  });
+})();
+
+// Chart 2: Robustness across variability regimes
+(function() {
+  const ctx = document.getElementById('gen-variability').getContext('2d');
+  const labels = ['Narrow ±0.003', 'Medium ±0.005', 'Wide ±0.010'];
+  const baselineWorst   = [GEN_DATA.narrow_baseline.worst,   GEN_DATA.medium_baseline.worst,   GEN_DATA.wide_baseline.worst];
+  const optimizedWorst  = [GEN_DATA.narrow_optimized.worst,  GEN_DATA.medium_optimized.worst,  GEN_DATA.wide_optimized.worst];
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Baseline',
+          data: baselineWorst,
+          borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)',
+          borderWidth: 2, pointRadius: 5, pointBackgroundColor: '#ef4444',
+          fill: true, tension: 0.3,
+        },
+        {
+          label: 'Optimized',
+          data: optimizedWorst,
+          borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.1)',
+          borderWidth: 2, pointRadius: 5, pointBackgroundColor: '#16a34a',
+          fill: true, tension: 0.3,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(4)}` } }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#64748b', font: { size: 11 } } },
+        y: {
+          min: -0.62, max: -0.24,
+          title: { display: true, text: 'Worst-case reward', color: '#64748b', font: { size: 11 } },
+          ticks: { color: '#94a3b8', font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  });
+})();
+
+// Chart 3: Stress test distribution (30 patients)
+(function() {
+  const ctx = document.getElementById('gen-stress').getContext('2d');
+  const sb = GEN_DATA.stress_baseline, so = GEN_DATA.stress_optimized;
+  // Represent distribution as: worst, median, mean per condition
+  const labels = ['Worst-case', 'Median', 'Mean'];
+
+  // Custom plugin: draw std-dev brackets around mean bars
+  const stdPlugin = {
+    id: 'stdBrackets',
+    afterDatasetsDraw(chart) {
+      const { ctx: c, scales: { x, y } } = chart;
+      const meta0 = chart.getDatasetMeta(0); // baseline mean bar (index 2)
+      const meta1 = chart.getDatasetMeta(1); // optimized mean bar (index 2)
+      [[meta0, sb.std, sb.mean], [meta1, so.std, so.mean]].forEach(([meta, std, mean]) => {
+        const bar = meta.data[2]; // "Mean" bar
+        if (!bar) return;
+        const xPx = bar.x;
+        const yTop = y.getPixelForValue(mean + std);
+        const yBot = y.getPixelForValue(mean - std);
+        c.save();
+        c.strokeStyle = meta === meta0 ? '#ef4444' : '#16a34a';
+        c.lineWidth = 1.5;
+        // vertical line
+        c.beginPath(); c.moveTo(xPx, yTop); c.lineTo(xPx, yBot); c.stroke();
+        // caps
+        [-1,1].forEach(dir => {
+          const yy = dir === -1 ? yTop : yBot;
+          c.beginPath(); c.moveTo(xPx - 5, yy); c.lineTo(xPx + 5, yy); c.stroke();
+        });
+        c.restore();
+      });
+    }
+  };
+
+  new Chart(ctx, {
+    type: 'bar',
+    plugins: [stdPlugin],
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Baseline (30 patients)',
+          data: [sb.worst, sb.median, sb.mean],
+          backgroundColor: 'rgba(239,68,68,0.65)',
+          borderColor: '#ef4444', borderWidth: 1, borderRadius: 4,
+        },
+        {
+          label: 'Optimized (30 patients)',
+          data: [so.worst, so.median, so.mean],
+          backgroundColor: 'rgba(22,163,74,0.65)',
+          borderColor: '#16a34a', borderWidth: 1, borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      plugins: {
+        legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 } },
+        tooltip: {
+          callbacks: {
+            label: c => {
+              const val = c.parsed.y.toFixed(4);
+              if (c.dataIndex === 2) {
+                const std = c.datasetIndex === 0 ? sb.std : so.std;
+                return ` ${c.dataset.label}: ${val}  (±${std.toFixed(4)} std)`;
+              }
+              return ` ${c.dataset.label}: ${val}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 12 } } },
+        y: {
+          min: -0.60, max: 0,
+          title: { display: true, text: 'Reward', color: '#64748b', font: { size: 11 } },
+          ticks: { color: '#94a3b8', font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  });
+})();
+
+// ── Waveform chart ───────────────────────────────
+const waveCtx = document.getElementById('waveform-chart').getContext('2d');
+new Chart(waveCtx, {
+  type: 'line',
+  data: {
+    labels: WAVEFORM_DATA.baseline.time.map(t => t.toFixed(0)),
+    datasets: [
+      {
+        label: 'Baseline (x₀ = −1.6)',
+        data: WAVEFORM_DATA.baseline.x1_region0,
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,0.07)',
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.2,
+      },
+      {
+        label: 'Optimized (x₀ = −2.08)',
+        data: WAVEFORM_DATA.optimized.x1_region0,
+        borderColor: '#16a34a',
+        backgroundColor: 'rgba(22,163,74,0.07)',
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.2,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 0 },
+    plugins: {
+      legend: {
+        labels: { color: '#64748b', font: { size: 11 }, boxWidth: 14 }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          title: items => `t = ${items[0].label} ms`,
+          label: ctx => ` ${ctx.dataset.label}: x₁ = ${ctx.parsed.y.toFixed(3)}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#94a3b8',
+          font: { size: 10 },
+          maxTicksLimit: 10,
+          maxRotation: 0,
+          callback: (val, i, ticks) => {
+            const step = Math.floor(ticks.length / 8);
+            return i % (step || 1) === 0 ? WAVEFORM_DATA.baseline.time[i].toFixed(0) : '';
+          }
+        },
+        grid: { color: 'rgba(0,0,0,0.04)' },
+        title: { display: true, text: 'Time (ms)', color: '#94a3b8', font: { size: 10 } }
+      },
+      y: {
+        grid: { color: 'rgba(0,0,0,0.06)' },
+        ticks: { color: '#94a3b8', font: { size: 10 } },
+        title: { display: true, text: 'x₁ amplitude', color: '#94a3b8', font: { size: 10 } }
+      }
+    }
+  }
+});
+
+</script>
+
+<script>
+/* ── Sticky nav: highlight active section via IntersectionObserver ── */
+(function () {
+  const navLinks = document.querySelectorAll('#site-nav a[data-nav]');
+  if (!navLinks.length) return;
+
+  const sectionIds = Array.from(navLinks).map(a => a.dataset.nav);
+  const sections   = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+  // Track which sections are currently intersecting
+  const visible = new Set();
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) visible.add(e.target.id);
+      else                  visible.delete(e.target.id);
+    });
+    // Highlight the topmost visible section
+    let active = null;
+    for (const id of sectionIds) {
+      if (visible.has(id)) { active = id; break; }
+    }
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.dataset.nav === active);
+    });
+  }, {
+    rootMargin: '-56px 0px -40% 0px', // account for nav height + give top bias
+    threshold: 0
+  });
+
+  sections.forEach(s => observer.observe(s));
+})();
+</script>
+</body>
+</html>

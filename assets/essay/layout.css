@@ -1,0 +1,66 @@
+/* Center the article opening, while keeping the figure caption left-aligned. */
+.hero>.eyebrow,.hero>h1,.hero>.deck{text-align:center}
+.hero>h1,.hero>.deck{margin-left:auto;margin-right:auto}
+.hero>.byline,.hero>.article-actions{justify-content:center;text-align:center}
+
+/* Give the contents and article separate columns. Figures stay in the article. */
+.reading-layout{
+  display:grid;
+  grid-template-columns:170px minmax(0,740px);
+  column-gap:70px;
+  align-items:start;
+}
+.contents{float:none;width:auto;min-width:0}
+article{margin:0;width:100%;min-width:0;max-width:740px}
+.article-figure{margin-left:0;margin-right:0;max-width:100%;min-width:0}
+@media(max-width:1180px){
+  .reading-layout{grid-template-columns:150px minmax(0,700px);column-gap:50px}
+}
+@media(max-width:900px){
+  .reading-layout{grid-template-columns:minmax(0,700px);justify-content:center;column-gap:0}
+  .contents{width:100%;max-width:100%}
+  article{max-width:700px}
+}
+@media print{
+  .reading-layout{display:block}
+  article{max-width:none}
+}
+
+/* Quiet author footer with the same monochrome social-link treatment as the reference. */
+.footer{align-items:center;padding-top:26px;padding-bottom:34px}
+.footer-credit{line-height:1.5}
+.footer-links{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.footer-contact{margin-right:9px;text-decoration:none;font-size:14px;line-height:1.5}
+.footer-contact:hover{text-decoration:underline}
+.social-link{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;flex:0 0 38px;color:var(--ink);text-decoration:none}
+.social-link:hover{color:var(--accent)}
+.social-link svg{width:20px;height:20px}
+@media(max-width:600px){
+  .footer{align-items:flex-start;gap:14px}
+  .footer-links{gap:12px}
+  .footer-contact{margin-right:8px}
+}
+
+/* Secondary reading tools stay in the footer; citation expands only on request. */
+.footer{flex-direction:row;flex-wrap:wrap;gap:12px 24px}
+.footer-credit{margin-right:auto}
+.footer-tool{font-size:14px;line-height:1.5;text-decoration:none;padding:9px 0}
+.footer-tool:hover{text-decoration:underline}
+.footer-citation{margin:0;border:0;min-width:0;max-width:100%;flex:0 0 auto;font-size:14px}
+.footer-citation>summary{padding:9px 0;gap:8px;font-size:14px;line-height:1.5}
+.footer-citation>summary:after{font-size:17px;line-height:1.2}
+.footer-citation>summary:hover{color:var(--accent)}
+.footer-citation[open]{order:1;flex-basis:100%;width:100%;border-top:1px solid var(--line);margin-top:4px;padding-top:12px}
+.footer-citation .details-body{max-width:740px;padding:12px 0 0}
+.footer-citation .citation{font-size:14px;line-height:1.6;margin:0 0 18px}
+.footer-citation pre{padding:16px 18px;border:1px solid var(--line);background:#f3f2ee;margin:0 0 14px}
+.footer-citation .copy-button{color:var(--ink)}
+@media(max-width:900px){
+  .footer-credit{flex-basis:100%;margin-right:0}
+  .footer-links{margin-left:auto}
+}
+@media(max-width:600px){
+  .footer{gap:6px 22px}
+  .footer-links{flex-basis:100%;margin-left:0}
+  .footer-citation .details-body{padding-top:10px}
+}
