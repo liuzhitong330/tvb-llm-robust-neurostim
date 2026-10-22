@@ -1,11 +1,25 @@
 # LLM-Guided Robust Optimization for Epilepsy Neurostimulation
 
-**[→ Read the research essay](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/)** · **[→ Paper PDF](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/paper/tvb_llm_robust_neurostimulation.pdf)**
+Can a model-guided search find interventions that remain useful across different simulated neural systems—not just one favorable case?
 
+This exploratory project combines The Virtual Brain's Epileptor model with an LLM-guided parameter search. It examines intrinsic model parameters and a separate external-input experiment, using a worst-case objective to test robustness across sampled model variation.
 
-Public research essay and reproducible code for Cathy Liu's TVB + LLM neurostimulation project.
+[Read the research essay](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/) · [Paper PDF](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/paper/tvb_llm_robust_neurostimulation.pdf) · [Code](src/tvb_llm_neurostim/) · [Run locally](#setup)
 
-The project asks whether a large language model can help search for brain-stimulation parameters that are robust across virtual epilepsy patients. The core result: in the intrinsic-parameter experiment, the best protocol improved worst-case reward by 39.8% over baseline while preserving the existing result artifacts used by the GitHub Pages site.
+## What the Results Show—and Do Not Show
+
+In the checked-in intrinsic-parameter experiment, the best worst-case reward changed from −0.5285 to −0.3182: a 39.8% improvement relative to the baseline reward magnitude. This reward is a simulated activity-variance proxy, not a measured reduction in clinical seizures.
+
+The separate 20-model external-input evaluation illustrates the generalization problem: the proxy improved in 11 models and worsened in 9, with no overall improvement in the cohort mean. These results motivate examining individual responses rather than treating one optimized setting as universally effective.
+
+This is an in-silico proof of concept using sampled model variation, not patient-specific clinical validation or a treatment recommendation. LLM-generated literature summaries and search rationales are hypotheses to check, not evidence of safety or efficacy.
+
+## Explore the Project
+
+- **Research narrative:** [interactive essay](https://liuzhitong330.github.io/tvb-llm-robust-neurostim/) and [paper](paper/).
+- **Implementation and evidence:** [Python package](src/tvb_llm_neurostim/), [research scripts](scripts/), and [checked-in result artifacts](results/).
+- **Reproduction and checks:** [setup](#setup), [commands](#common-commands), and [tests](tests/). Tests check code behavior and stored artifacts; they do not independently reproduce the expensive simulation or API runs.
+- **Literature-mining provenance:** [methodology appendix](METHODOLOGY.md), including prompts and limitations.
 
 ## What Is In This Repository
 
@@ -19,7 +33,7 @@ The project asks whether a large language model can help search for brain-stimul
 ## Pipeline
 
 1. Literature mining: PubMed retrieval, LLM gap extraction, and idea ranking.
-2. TVB digital twins: Epileptor simulations across virtual patient variability.
+2. TVB simulations: Epileptor models with sampled parameter variation, not patient-fitted clinical digital twins.
 3. Robust optimization: Claude proposes parameters, TVB evaluates them, and the objective maximizes worst-case reward.
 
 The public essay deliberately starts with the lay explanation first, then moves into the technical details, charts, and limitations.
@@ -62,7 +76,7 @@ The repository keeps the published results as static artifacts:
 
 - `results/results.json` and `results/results.png`: intrinsic minimax optimization trajectory.
 - `results/results_v2.json`: clinical-style external-stimulation optimization.
-- `results/cohort_results_20.json`: 20-patient cohort study.
+- `results/cohort_results_20.json`: evaluation across 20 simulated models, not a clinical patient cohort.
 - `results/bo_comparison.json`: LLM versus Bayesian optimization comparison.
 - `results/clinical_landscape.json`: all-region external-stimulation landscape and random-search baselines.
 - `results/rag_results.json`: RAG-augmented optimizer trace.
